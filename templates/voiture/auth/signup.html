@@ -1,0 +1,62 @@
+
+{% extends 'voiture/base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Créer un compte</title>
+    <!-- Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .signup-container {
+            margin-top: 100px;
+        }
+        .card {
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .btn-primary {
+            width: 100%;
+        }
+        .form-link {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container signup-container">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card">
+                <h3 class="text-center mb-4">Créer un compte</h3>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary mt-3">S'inscrire</button>
+                </form>
+
+                <a href="{% url 'login' %}" class="form-link">Déjà un compte ? Connexion</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 4 JS + dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+{% endblock content %}

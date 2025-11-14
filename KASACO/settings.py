@@ -28,6 +28,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = "voitures.CustomUser"  # Assure-toi que CustomUser est dans l'app 'voiture'
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "redirect_by_role"
+LOGOUT_REDIRECT_URL = "login"
+
+
 
 # Application definition
 
@@ -38,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+      "crispy_forms",
+    "crispy_bootstrap4",
     'voitures',
 ]
 
@@ -115,13 +123,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
+STATIC_URL = '/static/'
 
-STATIC_URL = 'static/'
-
-STATIC_DIRS=[
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static/'),
     
-    os.path.join(BASE_DIR,'static/')
-    ]
+]
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

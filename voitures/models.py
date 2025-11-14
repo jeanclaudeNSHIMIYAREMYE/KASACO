@@ -1,8 +1,20 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+class CustomUser(AbstractUser):
+    ROLE_CHOICES = (
+        ('admin', 'Administrateur'),
+        ('user', 'Utilisateur'),
+    )
 
-# Create your models here.
-from django.db import models
-from django.contrib.auth.models import User
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
+
+    def __str__(self):
+        return self.username
+
+
+
+
 
 
 class Marque(models.Model):
@@ -87,8 +99,7 @@ class Voiture(models.Model):
 class Reservation(models.Model):
     
     # Représente une réservation faite par un utilisateur pour une voiture.
-
-    utilisateur = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservations')
+    utilisateur = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     voiture = models.OneToOneField(Voiture, on_delete=models.CASCADE, related_name='reservation')
     date_reservation = models.DateTimeField(auto_now_add=True)
 
