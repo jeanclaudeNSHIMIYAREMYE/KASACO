@@ -1,0 +1,79 @@
+{% extends "voiture/admin/dashboard.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2 class="mb-4">
+        <i class="fa fa-tags me-2 text-primary"></i> Gestion des Marques
+    </h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Bouton Ajouter -->
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addMarqueModal">
+        <i class="fa fa-plus me-1"></i> Ajouter une marque
+    </button>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-bordered table-striped text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Nom</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for marque in marques %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ marque.nom }}</td>
+                            <td>
+                                <a href="{% url 'supprimer_marque' marque.id %}" 
+                                   class="btn btn-danger btn-sm" 
+                                   onclick="return confirm('Supprimer cette marque ?')">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3">Aucune marque trouvée.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL Ajouter une Marque -->
+<div class="modal fade" id="addMarqueModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'ajouter_voiture' %}">
+                {% csrf_token %}
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Ajouter une marque</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

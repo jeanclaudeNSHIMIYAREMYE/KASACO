@@ -1,0 +1,86 @@
+{% extends "voiture/admin/dashboard.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">
+        <i class="fa fa-car text-primary me-2"></i> Gestion des Modèles
+    </h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Bouton Ajouter -->
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModelModal">
+        <i class="fa fa-plus me-1"></i> Ajouter un modèle
+    </button>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-bordered table-striped text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Nom</th>
+                        <th>Marque</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for m in modeles %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ m.nom }}</td>
+                        <td>{{ m.marque.nom }}</td>
+                     
+                        <td>
+                            <a href="{% url 'supprimer_modele' m.id %}" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Supprimer ce modèle ?')">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Modal Modifier -->
+                  
+
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal Ajouter -->
+<div class="modal fade" id="addModelModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'ajouter_modele' %}">
+                {% csrf_token %}
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Ajouter un modèle</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

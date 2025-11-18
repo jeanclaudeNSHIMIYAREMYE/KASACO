@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasaco</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .form-control-borderless {
+            border-radius: 50px;
+            border: 1px solid #ced4da;
+        }
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            border-top-left-radius: .25rem;
+            border-top-right-radius: .25rem;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            transition: 0.3s;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        .badge {
+            font-size: 0.9em;
+        }
+        .btn-sm {
+            border-radius: 20px;
+        }
+        .pagination {
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm rounded mb-4">
+        <a class="navbar-brand font-weight-bold" href="#">Kasaco</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active"><a class="nav-link" href="#">Accueil</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Voitures</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="modeleDropdown"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Modèles</a>
+                    <div class="dropdown-menu" aria-labelledby="modeleDropdown">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li>
+            </ul>
+            <button id="panier" type="button" class="btn btn-outline-secondary"
+                    data-toggle="popover" data-placement="bottom"
+                    data-content="Votre panier est vide.">
+                Panier (0)
+            </button>
+        </div>
+    </nav>
+
+    <!-- Barre de recherche -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <form class="input-group shadow-sm">
+                <input type="search" name="item-name" class="form-control form-control-borderless"
+                       placeholder="Rechercher une voiture...">
+                <div class="input-group-append">
+                    <button class="btn btn-success" type="submit">Rechercher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cartes voitures -->
+    <div class="row">
+        {% for voiture in voitures %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if voiture.image %}
+                    <img src="{{ voiture.image }}" alt="{{ voiture.modele.nom }}" class="card-img-top">
+                {% else %}
+                    <img src="{% static 'images/default-car.jpg' %}" alt="Voiture par défaut" class="card-img-top">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ voiture.marque.nom }} - {{ voiture.modele.nom }}- ({{ voiture.id}})</h5>
+                    <p class="card-text text-warning font-weight-bold">Prix : {{ voiture.prix }} $</p>
+
+                    <p class="card-text">
+                        Statut :
+                        {% if voiture.etat == "Disponible" %}
+                            <span class="badge badge-success">{{ voiture.etat }}</span>
+                        {% elif voiture.etat == "Réservée" %}
+                            <span class="badge badge-warning">{{ voiture.etat }}</span>
+                        {% else %}
+                            <span class="badge badge-danger">{{ voiture.etat }}</span>
+                        {% endif %}
+                    </p>
+                    <div class="mt-auto">
+                        <a href="#" class="btn btn-warning btn-sm mb-1">Voir</a>
+                        {% if voiture.etat == "Disponible" %}
+                            <button class="btn btn-success btn-sm">Acheter</button>
+                        {% else %}
+                            <button class="btn btn-secondary btn-sm" disabled>Acheter</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="row">
+        <div class="col-12">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="?page=">Précédent</a></li>
+                    <li class="page-item active"><a class="page-link" href="?page=">1</a></li>
+                    <li class="page-item"><a class="page-link" href="?page=">Suivant</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Scripts JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+    $(function () { $('[data-toggle="popover"]').popover() })
+</script>
+{% block js %}{% endblock %}
+</body>
+</html>

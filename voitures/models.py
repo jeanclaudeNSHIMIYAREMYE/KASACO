@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+
+# --- Custom User ---
 class CustomUser(AbstractUser):
     ROLE_CHOICES = (
         ('admin', 'Administrateur'),
@@ -9,33 +11,27 @@ class CustomUser(AbstractUser):
 
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
 
+    class Meta:
+        ordering = ['username']
+
     def __str__(self):
         return self.username
 
 
-
-
-
-
+# --- Marque ---
 class Marque(models.Model):
-    
-    #Représente la marque d'une voiture (Toyota, Honda, etc.)
-    
     nom = models.CharField(max_length=100, unique=True)
 
     class Meta:
         ordering = ['nom']
         verbose_name = "Marque"
-         #verbose_name_plural = "Marques"
 
     def __str__(self):
         return self.nom
 
 
+# --- Modele ---
 class Modele(models.Model):
-    
-    # Représente un modèle spécifique d'une marque (ex: Corolla, RAV4, Civic, etc.)
-    
     marque = models.ForeignKey(Marque, on_delete=models.CASCADE, related_name='modeles')
     nom = models.CharField(max_length=100)
 
@@ -49,11 +45,8 @@ class Modele(models.Model):
         return f"{self.marque.nom} - {self.nom}"
 
 
+# --- Voiture ---
 class Voiture(models.Model):
-    
-     #Représente une voiture à vendre sur le site.
-    
-
     TRANSMISSION_CHOICES = [
         ('Manuelle', 'Manuelle'),
         ('Automatique', 'Automatique'),
@@ -76,7 +69,7 @@ class Voiture(models.Model):
     couleur = models.CharField(max_length=50)
     cylindree_cc = models.PositiveIntegerField(verbose_name="Cylindrée (CC)")
     prix = models.DecimalField(max_digits=12, decimal_places=2)
-    image = models.ImageField(upload_to='voitures/', blank=True, null=True)
+    image = models.CharField(blank=True, null=True)
     etat = models.CharField(max_length=20, choices=ETAT_CHOICES, default='Disponible')
     date_ajout = models.DateTimeField(auto_now_add=True)
 
@@ -86,20 +79,16 @@ class Voiture(models.Model):
         verbose_name_plural = "Voitures"
 
     def __str__(self):
-        return f"{self.marque.nom} {self.modele.nom} ({self.id})"
+        return f"{self.marque.nom} {self.modele.nom} ({self.numero_chassis})"
 
     def reserver(self):
-        """
-        Change l'état de la voiture à 'Réservée'
-        """
         self.etat = 'Réservée'
         self.save()
 
 
+# --- Reservation ---
 class Reservation(models.Model):
-    
-    # Représente une réservation faite par un utilisateur pour une voiture.
-    utilisateur = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    utilisateur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     voiture = models.OneToOneField(Voiture, on_delete=models.CASCADE, related_name='reservation')
     date_reservation = models.DateTimeField(auto_now_add=True)
 
@@ -111,10 +100,8 @@ class Reservation(models.Model):
         return f"Réservation de {self.voiture} par {self.utilisateur.username}"
 
 
+# --- ContactInfo ---
 class ContactInfo(models.Model):
-    
-     #Contient les informations de contact affichées sur la page d'accueil.
-    
     telephone_whatsapp = models.CharField(max_length=20, default='+257 69 08 02 78')
     email = models.EmailField(default='karinzi.bi.sab@gmail.com')
     adresse = models.CharField(max_length=255, default='Bujumbura - Burundi, bldg Saint Pierre Avenue de l’OUA')
@@ -125,6 +112,3 @@ class ContactInfo(models.Model):
 
     def __str__(self):
         return "Informations de contact de KASACO"
-
-    
-    

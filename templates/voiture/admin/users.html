@@ -1,0 +1,112 @@
+{% extends "voiture/admin/dashboard.html" %}
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <!-- Title + Action Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">
+            <i class="fa fa-users me-2 text-primary"></i>
+            Gestion des Utilisateurs
+        </h2>
+    </div>
+
+    <!-- Users List Card -->
+    <div class="card shadow rounded-3 border-0">
+        
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0"><i class="fa fa-list me-2"></i>Liste des utilisateurs</h5>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body">
+            <table id="usersTable" class="table table-striped table-hover table-bordered align-middle">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>#</th>
+                        <th>Nom d'utilisateur</th>
+                        <th>Email</th>
+                        <th>Rôle</th>
+                        <th>Date d'inscription</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for user in users %}
+                    <tr class="text-center">
+                        <td>{{ forloop.counter }}</td>
+
+                        <td class="text-start fw-semibold">
+                            <i class="fa fa-user-circle text-secondary me-1"></i>
+                            {{ user.username }}
+                        </td>
+
+                        <td class="text-start">{{ user.email }}</td>
+
+                        <td>
+                            {% if user.is_staff %}
+                                <span class="badge bg-success px-3 py-2">
+                                    <i class="fa fa-shield-alt me-1"></i> Admin
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary px-3 py-2">
+                                    <i class="fa fa-user me-1"></i> Utilisateur
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ user.date_joined|date:"d/m/Y H:i" }}</td>
+
+                        <td>
+                            <div class="btn-group">
+                                <!-- Change Role -->
+                                <a href="{% url 'changer_role' user.id %}" 
+                                   class="btn btn-warning btn-sm" 
+                                   title="Changer rôle">
+                                    <i class="fa fa-exchange-alt"></i>
+                                </a>
+
+                                <!-- Delete -->
+                                <a href="{% url 'supprimer_utilisateur' user.id %}" 
+                                   class="btn btn-danger btn-sm" 
+                                   title="Supprimer"
+                                   onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?')">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- DataTables Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#usersTable').DataTable({
+        language: {
+            search: "Rechercher :",
+            lengthMenu: "Afficher _MENU_ entrées",
+            info: "Affichage de _START_ à _END_ sur _TOTAL_ utilisateurs",
+            paginate: { first: "Premier", last: "Dernier", next: "Suivant", previous: "Précédent" }
+        },
+        responsive: true,
+        pageLength: 10,
+        columnDefs: [
+            { orderable: false, targets: 5 } // Actions non triables
+        ]
+    });
+});
+</script>
+
+{% endblock content %}
