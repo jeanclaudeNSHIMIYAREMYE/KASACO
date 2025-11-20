@@ -1,0 +1,28 @@
+{% extends "voiture/user/index.html" %}  {# Remplacer par ton layout de base #}
+
+{% block content %}
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <img src="{{ voiture.image}}" class="img-fluid rounded" alt="{{ voiture.modele.nom }}">
+    </div>
+
+    <div class="col-md-6">
+
+        <h2 class="text-warning">{{ voiture.modele.nom }}</h2>
+        <h4 class="text-danger">Prix : {{ voiture.prix }} Fbu</h4>
+
+        <p><strong>Marque :</strong> {{ voiture.marque.nom }}</p>
+        <p><strong>Châssis :</strong> {{ voiture.numero_chassis }}</p>
+        <p><strong>État :</strong> {{ voiture.etat }}</p>
+        <p><strong>Date d'ajout :</strong> {{ voiture.date_ajout }}</p>
+
+        {% if voiture.etat == "Disponible" %}
+            <a href="#" class="btn btn-success btn-lg">Acheter</a>
+               {% else %}
+            <button class="btn btn-secondary btn-lg" disabled>Non disponible</button>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

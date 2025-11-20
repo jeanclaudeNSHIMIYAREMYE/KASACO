@@ -78,8 +78,8 @@
     <!-- Barre de recherche -->
     <div class="row mb-4">
         <div class="col-md-12">
-            <form class="input-group shadow-sm">
-                <input type="search" name="item-name" class="form-control form-control-borderless"
+            <form class="input-group shadow-sm" method="get">
+                <input type="search" name="item_name"  value="{{ item_name }}"  class="form-control form-control-borderless"
                        placeholder="Rechercher une voiture...">
                 <div class="input-group-append">
                     <button class="btn btn-success" type="submit">Rechercher</button>
@@ -113,8 +113,8 @@
                         {% endif %}
                     </p>
                     <div class="mt-auto">
-                        <a href="#" class="btn btn-warning btn-sm mb-1">Voir</a>
-                        {% if voiture.etat == "Disponible" %}
+                    <a href="{% url 'details' voiture.id %}" class="btn btn-warning btn-sm mb-1">Voir</a>
+                         {% if voiture.etat == "Disponible" %}
                             <button class="btn btn-success btn-sm">Acheter</button>
                         {% else %}
                             <button class="btn btn-secondary btn-sm" disabled>Acheter</button>
@@ -130,16 +130,37 @@
     <div class="row">
         <div class="col-12">
             <nav>
-                <ul class="pagination">
-                    <li class="page-item"><a class="page-link" href="?page=">Précédent</a></li>
-                    <li class="page-item active"><a class="page-link" href="?page=">1</a></li>
-                    <li class="page-item"><a class="page-link" href="?page=">Suivant</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
+            <div class="col-12">
+    <nav>
+        <ul class="pagination">
 
-    {% block content %}{% endblock %}
+            {% if voitures.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ voitures.previous_page_number }}{% if item_name %}&item_name={{ item_name }}{% endif %}">
+                        Précédent
+                    </a>
+                </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <a class="page-link" href="#">
+                    {{ voitures.number }}
+                </a>
+            </li>
+
+            {% if voitures.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ voitures.next_page_number }}{% if item_name %}&item_name={{ item_name }}{% endif %}">
+                        Suivant
+                    </a>
+                </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+</div>
+
+    {% block content %}{% endblock content %}
 </div>
 
 <!-- Scripts JS -->

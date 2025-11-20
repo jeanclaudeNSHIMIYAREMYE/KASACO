@@ -3,6 +3,9 @@ from django.contrib.auth import login, logout
 from django.contrib import messages
 from .forms import CustomUserCreationForm, CustomerLoginForm, MarqueForm, ModeleForm, VoitureForm
 from .decorators import role_required
+from django.db.models import Q
+from django.core.paginator import Paginator
+
 from .models import CustomUser, Marque, Modele, Voiture
 
 # Page d'accueil
@@ -58,10 +61,43 @@ def admin_dashboard(request):
     return render(request, "voiture/admin/dashboard.html")
 
 # Dashboard utilisateur
+
+
+
 @role_required("user")
 def user_home(request):
+    # Terme recherché
+    item_name = request.GET.get('item_name')
+
+    # Base queryset
     voitures = Voiture.objects.all().order_by('-date_ajout')
-    return render(request, "voiture/user/index.html", {'voitures': voitures})
+
+    # Si une recherche est faite
+    if item_name:
+        voitures = voitures.filter(
+            Q(modele__nom__icontains=item_name) |
+            Q(marque__nom__icontains=item_name) |
+            Q(numero_chassis__icontains=item_name)
+        )
+         # PAGINATION
+    paginator = Paginator(voitures, 3)  # 3 voitures par page
+    page = request.GET.get('page')
+    voitures = paginator.get_page(page)
+    return render(request, "voiture/user/index.html", {
+        'voitures': voitures,
+        'item_name': item_name
+    })
+    
+    #----------------- details de voutures--------------
+    
+    
+def detail(request, myid):
+    voiture = get_object_or_404(Voiture, id=myid)
+    return render(request, "voiture/user/details.html", {"voiture": voiture})
+        
+
+
+
 
 # ------------------- Gestion utilisateurs -------------------
 @role_required("admin")

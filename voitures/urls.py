@@ -34,6 +34,13 @@ urlpatterns = [
     path('voitures/', views.liste_voitures, name='liste_voitures'),
     path('voitures/ajouter/', views.ajouter_voiture, name='ajouter_voiture'),
     path('voitures/supprimer/<int:id>/', views.supprimer_voiture, name='supprimer_voiture'),
+    
+    #gestion du page D' acceuil de clients des voitures--------
+    
+   path('detail/<int:myid>/', views.detail, name='details')
+
+    
+    
 ]
 
 # -------------------- Media files --------------------
