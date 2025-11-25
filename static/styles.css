@@ -1,0 +1,444 @@
+/* -----------------------------------
+   NAVIGATION HTML
+----------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", Arial, sans-serif;
+    background-color: #f8f9fc;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* NAVBAR */
+.navbar {
+    padding: 12px 0;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Effet sticky + ombre lors du scroll */
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Style des liens */
+.navbar .nav-link {
+    font-weight: 500;
+    font-size: 0.95rem;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+/* Soulignement animé au hover */
+.navbar .nav-link::after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    background: #dc3545;
+    left: 0;
+    bottom: -3px;
+    transition: width 0.3s ease;
+}
+
+.navbar .nav-link:hover::after {
+    width: 100%;
+}
+
+/* Boutons */
+.btn-danger, .btn-outline-danger {
+    border-radius: 25px;
+    padding: 6px 18px;
+    transition: all 0.3s ease;
+}
+
+/* Hover smooth */
+.btn-outline-danger:hover {
+    background: #dc3545;
+    color: #fff !important;
+}
+
+/*CONTENU PRINCIPAL */
+main {
+    margin-top: 90px;
+}
+
+/* Sections */
+.section {
+    padding: 60px 0;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 20px;
+}
+
+/*  CARTES VOITURES */
+.car-card {
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.car-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+}
+
+.car-card img {
+    height: 220px;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* Prix */
+.car-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #dc3545;
+}
+
+/* Bouton dans la carte */
+.car-card .btn {
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 600;
+}
+
+/*FOOTER*/
+footer {
+    background: #111;
+    color: #bbb;
+    letter-spacing: 0.5px;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer a {
+    color: #dc3545;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+footer a:hover {
+    opacity: 0.7;
+}
+
+/* ANIMATIONS GLOBALES*/
+/* Animation fade-in */
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.8s forwards ease;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* Animation slide-up */
+.slide-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.7s forwards ease;
+}
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* RESPONSIVE*/
+@media (max-width: 992px) {
+    .navbar .nav-link::after {
+        display: none;
+    }
+
+    .navbar-nav .btn {
+        margin-top: 5px;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .section-title {
+        font-size: 1.6rem;
+    }
+}
+
+/* -----------------------------------
+  user\ index HTML
+----------------------------------- */
+
+
+
+
+@import url('[https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap](https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap)');
+
+/* ======= Général ======= */
+body {
+font-family: 'Roboto', sans-serif;
+background-color: #f8f9fa;
+scroll-behavior: smooth;
+}
+
+a {
+text-decoration: none;
+transition: all 0.3s ease;
+}
+
+a:hover {
+text-decoration: none;
+color: #0d6efd;
+}
+
+/* ======= Navbar ======= */
+.navbar {
+transition: all 0.4s ease;
+}
+
+.navbar .nav-link {
+margin-right: 1rem;
+font-weight: 500;
+color: #333;
+position: relative;
+}
+
+.navbar .nav-link::after {
+content: '';
+position: absolute;
+width: 0;
+height: 2px;
+background-color: #0d6efd;
+left: 0;
+bottom: -4px;
+transition: width 0.3s ease;
+}
+
+.navbar .nav-link:hover::after {
+width: 100%;
+}
+
+.navbar-brand img {
+transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover img {
+transform: rotate(-10deg) scale(1.1);
+}
+
+/* ======= Formulaire de recherche ======= */
+.input-group {
+border-radius: 50px;
+overflow: hidden;
+transition: box-shadow 0.3s ease;
+}
+
+.input-group:focus-within {
+box-shadow: 0 0 15px rgba(13, 110, 253, 0.4);
+}
+
+.form-control-borderless {
+border: none;
+box-shadow: none;
+}
+
+.btn-success, .btn-warning {
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-success:hover, .btn-warning:hover {
+transform: translateY(-2px);
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ======= Cartes voitures ======= */
+.card {
+border-radius: 15px;
+overflow: hidden;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+cursor: pointer;
+}
+
+.card:hover {
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-top {
+height: 180px;
+object-fit: cover;
+transition: transform 0.5s ease;
+}
+
+.card:hover .card-img-top {
+transform: scale(1.05);
+}
+
+.card-title {
+font-size: 1.1rem;
+font-weight: 600;
+transition: color 0.3s ease;
+}
+
+.card:hover .card-title {
+color: #0d6efd;
+}
+
+.card-text span {
+font-weight: 700;
+}
+
+.btn-sm {
+border-radius: 50px;
+}
+
+/* ======= Pagination ======= */
+.pagination .page-link {
+color: #0d6efd;
+transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+background-color: #0d6efd;
+color: #fff;
+}
+
+.pagination .active .page-link {
+background-color: #0d6efd;
+border-color: #0d6efd;
+color: #fff;
+}
+
+/* ======= Footer ======= */
+footer {
+transition: all 0.3s ease;
+}
+
+footer:hover {
+background-color: #212529;
+}
+
+/* ======= Animations supplémentaires ======= */
+@keyframes fadeInUp {
+from {
+opacity: 0;
+transform: translateY(20px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+.card, .pagination, .input-group {
+animation: fadeInUp 0.6s ease forwards;
+}
+
+/* ======= Responsive ======= */
+@media (max-width: 768px) {
+.navbar .nav-link {
+margin-right: 0;
+margin-bottom: 0.5rem;
+}
+
+
+.card-img-top {
+    height: 150px;
+}
+
+
+}
+
+
+ /* ======= Détails voiture ======= */
+.row.mt-4 {
+animation: fadeInUp 0.6s ease forwards;
+}
+
+.img-fluid.rounded {
+border-radius: 15px;
+transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.img-fluid.rounded:hover {
+transform: scale(1.03);
+box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+h2.text-warning {
+font-weight: 700;
+margin-bottom: 1rem;
+transition: color 0.3s ease;
+}
+
+h2.text-warning:hover {
+color: #fd7e14;
+}
+
+h4.text-danger {
+font-weight: 600;
+margin-bottom: 1rem;
+}
+
+p {
+font-size: 1rem;
+line-height: 1.6;
+transition: color 0.3s ease;
+}
+
+p strong {
+color: #333;
+}
+
+.btn-lg {
+border-radius: 50px;
+transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
+}
+
+.btn-secondary:disabled {
+opacity: 0.7;
+cursor: not-allowed;
+}
+
+/* ======= Responsive détails ======= */
+@media (max-width: 768px) {
+.row.mt-4 {
+text-align: center;
+}
+
+.col-md-6 {
+    margin-bottom: 1.5rem;
+}
+
+
+}
+
+
+/* ======= main page html======= */
+
+
+
+
+
+

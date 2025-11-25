@@ -6,11 +6,11 @@ from .decorators import role_required
 from django.db.models import Q
 from django.core.paginator import Paginator
 
-from .models import CustomUser, Marque, Modele, Voiture
+from .models import CustomUser, Marque, Modele, Voiture , Commande,Reservation
 
 # Page d'accueil
 def home(request):
-    return render(request, 'voiture/base.html')
+  return render(request, 'voiture/main.html')
 
 # Inscription
 def signup_view(request):
@@ -57,14 +57,21 @@ def redirect_by_role(request):
 # Dashboard administrateur
 @role_required("admin")
 def admin_dashboard(request):
+    
+    stats = {
+        'utilisateurs_count': CustomUser.objects.count(),
+        'voitures_count': Voiture.objects.count(),
+        'reservations_count': Reservation.objects.count(),
+        'marques_count': Marque.objects.count(),
+    }
     messages.success(request, "Bienvenue sur le dashboard admin !")
-    return render(request, "voiture/admin/dashboard.html")
+    return render(request, "voiture/admin/dashboard.html", stats)
 
 # Dashboard utilisateur
 
 
 
-@role_required("user")
+role_required("user")
 def user_home(request):
     # Terme recherché
     item_name = request.GET.get('item_name')
@@ -79,14 +86,65 @@ def user_home(request):
             Q(marque__nom__icontains=item_name) |
             Q(numero_chassis__icontains=item_name)
         )
-         # PAGINATION
-    paginator = Paginator(voitures, 3)  # 3 voitures par page
+
+    # Vérifier si aucune voiture n’est trouvée
+    if not voitures.exists():
+        message = "Aucune voiture trouvée pour votre recherche."
+    else:
+        message = None
+
+    # Pagination
+    paginator = Paginator(voitures, 4)  # 4 voitures par page
     page = request.GET.get('page')
     voitures = paginator.get_page(page)
+
     return render(request, "voiture/user/index.html", {
         'voitures': voitures,
-        'item_name': item_name
+        'item_name': item_name,
+        'message': message
     })
+@role_required("user")
+def reserver_voiture(request, voiture_id):
+    voiture = get_object_or_404(Voiture, id=voiture_id)
+    
+    if voiture.etat == 'Disponible':
+        # Créer la réservation
+        Reservation.objects.create(utilisateur=request.user, voiture=voiture)
+        # Mettre à jour l'état de la voiture
+        voiture.reserver()
+        # Message de confirmation
+        messages.success(request, f"Vous avez réservé la voiture {voiture.marque.nom} {voiture.modele.nom} avec succès !")
+    else:
+        messages.warning(request, "Cette voiture est déjà réservée.")
+
+    return redirect('user_home')
+
+
+def reserver(request):
+    total_voitures = Voiture.objects.count()
+    total_reservees = Voiture.objects.filter(etat='Réservée').count()
+    total_utilisateurs = CustomUser.objects.filter(role='user').count()
+
+    # Liste des voitures réservées avec leur utilisateur
+    voitures_reservees = Reservation.objects.select_related('voiture', 'utilisateur').all()
+
+    context = {
+        'total_voitures': total_voitures,
+        'total_reservees': total_reservees,
+        'total_utilisateurs': total_utilisateurs,
+        'voitures_reservees': voitures_reservees,
+    }
+    return render(request, 'voiture/admin/reserver.html', context)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     #----------------- details de voutures--------------
     
@@ -94,7 +152,26 @@ def user_home(request):
 def detail(request, myid):
     voiture = get_object_or_404(Voiture, id=myid)
     return render(request, "voiture/user/details.html", {"voiture": voiture})
-        
+
+
+
+
+
+
+def checkout(request):
+    if request.method=="POST":
+        items=request.POST.get('items')
+        total=request.POST.get('total')
+        nom=request.POST.get('nom')
+        email=request.POST.get('email')
+        address=request.POST.get('address')
+        ville=request.POST.get('ville')
+        pays=request.POST.get('pays')
+        zipcode=request.POST.get('zipcode')
+        com=Commande(items=items,total=total,nom=nom,email=email,address=address,ville=ville,pays=pays,zipcode=zipcode)
+        com.save()
+    
+    return render(request, 'voiture/user/checkout.html')
 
 
 
@@ -189,9 +266,9 @@ def ajouter_voiture(request):
         form = VoitureForm(request.POST, request.FILES)
         if form.is_valid():
             voiture = form.save()
-            messages.success(request, f'La voiture {voiture} a été ajoutée avec succès.')
+            messages.success(request, f'La voiture {voiture} a été publie avec succès.')
         else:
-            messages.error(request, "Erreur lors de l'ajout de la voiture.")
+            messages.error(request, "Erreur lors de publication de la voiture.")
     return redirect('liste_voitures')
 
 @role_required("admin")
@@ -200,3 +277,6 @@ def supprimer_voiture(request, id):
     voiture.delete()
     messages.success(request, f'La voiture {voiture} a été supprimée avec succès.')
     return redirect('liste_voitures')
+
+
+

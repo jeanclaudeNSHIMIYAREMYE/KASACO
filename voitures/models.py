@@ -69,7 +69,7 @@ class Voiture(models.Model):
     couleur = models.CharField(max_length=50)
     cylindree_cc = models.PositiveIntegerField(verbose_name="Cylindrée (CC)")
     prix = models.DecimalField(max_digits=12, decimal_places=2)
-    image = models.CharField(blank=True, null=True)
+    photo = models.FileField(upload_to='photos', null=True, blank=True)
     etat = models.CharField(max_length=20, choices=ETAT_CHOICES, default='Disponible')
     date_ajout = models.DateTimeField(auto_now_add=True)
 
@@ -112,3 +112,19 @@ class ContactInfo(models.Model):
 
     def __str__(self):
         return "Informations de contact de KASACO"
+    
+class Commande(models.Model):
+        items=models.CharField( max_length=150)
+        total=models.CharField(max_length=300)
+        nom=models.CharField(max_length=340)
+        email=models.EmailField()
+        address=models.CharField(max_length=300)
+        ville=models.CharField(max_length=200)
+        pays=models.CharField(max_length=100)
+        zipcode=models.CharField(max_length=200)
+        date_commande=models.DateTimeField(auto_now=True)
+        
+        class meta:
+            ordering=["-date_commande"]
+        
+        

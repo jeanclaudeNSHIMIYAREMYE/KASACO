@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KASACO{% endblock %}</title>
+
+
+    {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- CSS personnalisé -->
+<link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+</head>
+
+<body>
+
+<!-- ======== Navbar ======== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center fw-bold text-danger" href="#">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" width="60" class="me-2">
+     
+        </a>
+
+        <!-- Toggle bouton responsive -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Liens de navigation -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-lg-center">
+                <li class="nav-item"><a class="nav-link px-3" href="#">Chercher des voitures</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="#">Comment acheter</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="#">Pourquoi choisir KASACO</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="#">Support</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="#">Contact</a></li>
+                <li class="nav-item">
+                    <a class="btn btn-outline-danger btn-sm mx-1" href="{% url 'login' %}">Connexion</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-danger btn-sm mx-1 text-white" href="{% url 'signup' %}">S’inscrire</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ======== Contenu principal ======== -->
+<main class="container mt-5 pt-5">
+    {% block content %}{% endblock %}
+</main>
+
+
+
+
+<style>
+
+    /* ---- CARROUSEL ---- */
+.home-carousel-img {
+    height: 450px;
+    object-fit: cover;
+}
+
+/* ---- MARQUES ---- */
+.brand-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    transition: 0.3s;
+    border: 1px solid #e6e6e6;
+    cursor: pointer;
+}
+
+.brand-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.brand-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.brand-count {
+    font-size: 0.85rem;
+    color: gray;
+}
+
+/* ---- CARTES VEHICULES ---- */
+.car-card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.car-card-img {
+    height: 200px;
+    object-fit: cover;
+}
+/* Assurer que le footer reste en bas et occupe toute la largeur */
+html, body {
+height: 100%;
+margin: 0;
+}
+
+body {
+display: flex;
+flex-direction: column;
+min-height: 100vh; /* Assure que le body prend toute la hauteur de l'écran */
+}
+
+main {
+flex: 1; /* Le contenu principal pousse le footer vers le bas */
+}
+
+footer {
+width: 100%;
+background-color: #343a40; /* bg-dark si tu veux rester avec bootstrap */
+color: #ffffff;
+padding: 1.5rem 0; /* correspond à py-4 */
+margin-top: auto; /* pousse le footer en bas si le contenu est court */
+}
+
+
+
+
+
+</style>
+{% include "voiture/user/chercher.html" %}
+
+<!-- CARROUSEL -->
+<section class="mt-5">
+    <div id="carouselHome" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+
+            <div class="carousel-item active">
+                <img src="{% static 'images/honda.jpg' %}" class="d-block w-100 home-carousel-img">
+                <div class="carousel-caption text-start">
+                    <h2 class="fw-bold">Trouvez la voiture idéale</h2>
+                    <p>Des centaines de véhicules disponibles immédiatement.</p>
+                    <a href="#" class="btn btn-light">Voir les voitures</a>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="{% static 'images/nissan.jpg' %}" class="d-block w-100 home-carousel-img">
+                <div class="carousel-caption text-start">
+                    <h2 class="fw-bold">Des prix imbattables</h2>
+                    <p>Comparez les modèles et choisissez le meilleur rapport qualité-prix.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselHome" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselHome" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+
+    </div>
+</section>
+
+
+<!-- SECTION MARQUES -->
+<section class="container mt-4">
+
+    <h2 class="fw-bold mb-4">À vous de choisir</h2>
+
+    <div class="d-flex justify-content-between mb-3">
+        <h5 class="fw-semibold">Rechercher par marque de voiture</h5>
+        <a href="#" class="text-primary fw-semibold">Voir toutes les voitures</a>
+    </div>
+
+    <div class="row g-3">
+
+        {% comment %} Exemple → à remplacer par une boucle Django si tu as un modèle Marque {% endcomment %}
+
+        <div class="col-6 col-md-3 col-lg-2">
+            <a href="#" class="text-decoration-none text-dark">
+                <div class="brand-card">
+                    <img src="{% static 'images/toyota.jpg' %}" class="brand-logo">
+                    <div class="fw-bold">Toyota</div>
+                    <div class="brand-count">(62 559)</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-3 col-lg-2">
+            <a href="#" class="text-decoration-none text-dark">
+                <div class="brand-card">
+                    <img src="{% static 'images/honda.jpg' %}" class="brand-logo">
+                    <div class="fw-bold">Honda</div>
+                    <div class="brand-count">(20 624)</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-3 col-lg-2">
+            <a href="#" class="text-decoration-none text-dark">
+                <div class="brand-card">
+                    <img src="{% static 'images/nissan.jpg' %}" class="brand-logo">
+                    <div class="fw-bold">Nissan</div>
+                    <div class="brand-count">(22 663)</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-3 col-lg-2">
+            <a href="#" class="text-decoration-none text-dark">
+                <div class="brand-card">
+                    <img src="{% static 'images/mazda.png' %}" class="brand-logo">
+                    <div class="fw-bold">Mazda</div>
+                    <div class="brand-count">(8 703)</div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PRODUITS EN VEDETTE -->
+<section class="container mt-5">
+    <h3 class="fw-bold mb-4">Voitures en vedette</h3>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm car-card">
+                <img src="{% static 'images/nissan.jpg' %}" class="card-img-top car-card-img">
+                <div class="card-body">
+                    <h5 class="card-title">Toyota Corolla 2020</h5>
+                    <p class="card-text fw-semibold text-primary">12 500 €</p>
+                    <a href="#" class="btn btn-primary w-100">Voir détails</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm car-card">
+                <img src="{% static 'images/honda.jpg' %}" class="card-img-top car-card-img">
+                <div class="card-body">
+                    <h5 class="card-title">Honda Civic 2019</h5>
+                    <p class="card-text fw-semibold text-primary">14 900 €</p>
+                    <a href="#" class="btn btn-primary w-100">Voir détails</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ======== Pied de page ======== -->
+<footer class="bg-dark text-white py-4 mt-auto">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <h5 class="fw-bold">KARINZI SAB COMPANY "KASACO"</h5>
+                <p>* Vente et importation des véhicules locales</p>
+                <p>* Vente et importation des véhicules en ligne</p>
+                <p>* Garages.</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h5 class="fw-bold">Contact & Infos Légales</h5>
+                <p>Email: nduwamungudism7@gmail.com</p>
+                <p>Téléphone: +257 69 080 278 / +257 62 227 155</p>
+                <p>Adresse: Bujumbura-Burundi, Commune Ntahangwa, Avenue: OUA Maison Saint Pierre, 1er étage D1; D2</p>
+                <p>NIF: 4002477083; RC: 0051659/23</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h5 class="fw-bold">Suivez-nous</h5>
+                <p>
+                    <a href="#" class="text-white me-2">Facebook</a>
+                    <a href="#" class="text-white me-2">Twitter</a>
+                    <a href="#" class="text-white">Instagram</a>
+                </p>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <!-- Copyright information kept from the original snippet -->
+            <p class="mb-0">&copy; KASACO 2025-2026. Mr.Django.Z-Pro.</p>
+        </div>
+    </div>
+</footer>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JS personnalisé -->
+<script src="{% static 'js/scripts.js' %}"></script>
+
+
+</body>
+</html>
+

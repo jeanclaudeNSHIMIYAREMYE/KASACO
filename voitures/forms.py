@@ -9,12 +9,22 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ["username", "email", "password1", "password2"]
 
         widgets = {
-            "username": forms.TextInput(attrs={"class": "form-control", "placeholder": "Nom d'utilisateur"} ),
-            "email": forms.EmailInput(attrs={ "class": "form-control","placeholder": "Adresse email" }),
-            "password1": forms.PasswordInput(attrs={ "class": "form-control","placeholder": "Mot de passe" } ),
-            "password2": forms.PasswordInput( attrs={ "class": "form-control", "placeholder": "Confirmer le mot de passe"}),
+            "username": forms.TextInput(attrs={"class": "form-control", "placeholder": "Nom d'utilisateur"}),
+            "email": forms.EmailInput(attrs={"class": "form-control", "placeholder": "Adresse email"}),
+            "password1": forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Mot de passe"}),
+            "password2": forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Confirmer le mot de passe"}),
         }
 
+        # Supprimer toutes les aides sous les champs
+        help_texts = {
+            "username": "",
+            "email": "",
+            "password1": "",
+            "password2": "",
+        }
+
+        # Supprimer éventuellement les messages d'erreur par défaut (optionnel)
+       
 class CustomerLoginForm(AuthenticationForm):
     username = forms.CharField(label="Nom d'utilisateur")
     password = forms.CharField(widget=forms.PasswordInput, label="Mot de passe")
@@ -44,7 +54,7 @@ class VoitureForm(forms.ModelForm):
         fields = [
             'marque', 'modele', 'numero_chassis', 'numero_moteur',
             'annee', 'transmission', 'kilometrage', 'couleur',
-            'cylindree_cc', 'prix', 'image', 'etat'
+            'cylindree_cc', 'prix', 'photo', 'etat'
         ]
         widgets = {
             'marque': forms.Select(attrs={'class': 'form-control'}),
@@ -57,7 +67,7 @@ class VoitureForm(forms.ModelForm):
             'couleur': forms.TextInput(attrs={'class': 'form-control'}),
             'cylindree_cc': forms.NumberInput(attrs={'class': 'form-control'}),
             'prix': forms.NumberInput(attrs={'class': 'form-control'}),
-            'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'photo': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             'etat': forms.Select(attrs={'class': 'form-control'}),
         }
 

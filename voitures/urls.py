@@ -37,8 +37,10 @@ urlpatterns = [
     
     #gestion du page D' acceuil de clients des voitures--------
     
-   path('detail/<int:myid>/', views.detail, name='details')
-
+   path('detail/<int:myid>/', views.detail, name='details'),
+   path('checkout',views.checkout,name='checkout'),
+   path('voitures/reserver/<int:voiture_id>/', views.reserver_voiture, name='reserver_voiture'),
+   path('reserver/', views.reserver, name='reserver'),
     
     
 ]
