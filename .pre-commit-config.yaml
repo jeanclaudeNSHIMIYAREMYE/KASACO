@@ -1,34 +1,11 @@
-# .pre-commit-config.yaml compatible pre-commit 4.5.0
 repos:
-  # 1️⃣ Hooks de base pour tous fichiers
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
     hooks:
-      - id: trailing-whitespace      # supprime les espaces à la fin des lignes
-      - id: end-of-file-fixer        # ajoute une ligne vide à la fin des fichiers
-      - id: check-yaml               # vérifie les fichiers YAML
-      - id: check-added-large-files  # empêche l'ajout de fichiers trop volumineux
-    default_language_version:
-      python: python3.12
-
-  # 2️⃣ Black pour formater le code Python
-  - repo: https://github.com/psf/black
-    rev: 22.12.0  # compatible avec pre-commit 4.5.0
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+-   repo: https://github.com/psf/black
+    rev: 22.10.0
     hooks:
-      - id: black
-        language_version: python3.12
-
-  # 3️⃣ Isort pour trier les imports Python
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1  # compatible avec pre-commit 4.5.0
-    hooks:
-      - id: isort
-        language_version: python3.12
-
-  # 4️⃣ Ruff pour vérifier et corriger le code Python
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.241  # compatible avec pre-commit 4.5.0
-    hooks:
-      - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-        language_version: python3.12
+    -   id: black

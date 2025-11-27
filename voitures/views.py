@@ -5,8 +5,13 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .decorators import role_required
-from .forms import (CustomerLoginForm, CustomUserCreationForm, MarqueForm,
-                    ModeleForm, VoitureForm)
+from .forms import (
+    CustomerLoginForm,
+    CustomUserCreationForm,
+    MarqueForm,
+    ModeleForm,
+    VoitureForm,
+)
 from .models import Commande, CustomUser, Marque, Modele, Reservation, Voiture
 
 

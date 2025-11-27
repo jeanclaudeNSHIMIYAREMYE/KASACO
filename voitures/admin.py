@@ -1,8 +1,15 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import (Commande, ContactInfo, CustomUser, Marque, Modele,
-                     Reservation, Voiture)
+from .models import (
+    Commande,
+    ContactInfo,
+    CustomUser,
+    Marque,
+    Modele,
+    Reservation,
+    Voiture,
+)
 
 # --- CustomUser Admin ---
 admin.site.site_header = "E_COMMERCE"
