@@ -1,11 +1,9 @@
 asgiref==3.10.0
 beautifulsoup4==4.14.2
 crispy-bootstrap4==2025.6
-crispy-bootstrap5==2025.6
 dj-database-url==3.0.1
 Django==4.2.26
 django-appconf==1.2.0
-django-bootstrap-v5==1.0.11
 django-crispy-forms==2.5
 git-filter-repo==2.47.0
 gunicorn==23.0.0

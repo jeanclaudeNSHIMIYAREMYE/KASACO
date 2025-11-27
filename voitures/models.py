@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 # --- Custom User ---
 class CustomUser(AbstractUser):
@@ -87,17 +88,48 @@ class Voiture(models.Model):
 
 
 # --- Reservation ---
+
 class Reservation(models.Model):
-    utilisateur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    voiture = models.OneToOneField(Voiture, on_delete=models.CASCADE, related_name='reservation')
+    utilisateur = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='reservations'
+    )
+    voiture = models.ForeignKey(
+        Voiture,
+        on_delete=models.CASCADE,
+        related_name='reservations'
+    )
     date_reservation = models.DateTimeField(auto_now_add=True)
+    date_debut = models.DateTimeField(null=True, blank=True)  # optionnel : pour réservation à partir d'une date précise
+    date_fin = models.DateTimeField(null=True, blank=True)    # optionnel : pour réservation avec fin
 
     class Meta:
         verbose_name = "Réservation"
         verbose_name_plural = "Réservations"
+        ordering = ['-date_reservation']
 
     def __str__(self):
         return f"Réservation de {self.voiture} par {self.utilisateur.username}"
+
+    def clean(self):
+        """
+        Validation pour empêcher qu'une voiture soit réservée plusieurs fois 
+        pour la même période (si date_debut et date_fin sont définis)
+        """
+        if self.date_debut and self.date_fin:
+            # Vérifie qu'aucune réservation existante ne chevauche les dates
+            conflit = Reservation.objects.filter(
+                voiture=self.voiture,
+                date_fin__gte=self.date_debut,
+                date_debut__lte=self.date_fin
+            ).exclude(pk=self.pk)
+            if conflit.exists():
+             raise ValidationError("Cette voiture est déjà réservée pour cette période.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Appelle clean() pour valider avant sauvegarde
+        super().save(*args, **kwargs)
 
 
 # --- ContactInfo ---

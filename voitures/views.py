@@ -1,18 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib import messages
-from .forms import CustomUserCreationForm, CustomerLoginForm, MarqueForm, ModeleForm, VoitureForm
+from .forms import (
+    CustomUserCreationForm, CustomerLoginForm, 
+    MarqueForm, ModeleForm, VoitureForm
+)
 from .decorators import role_required
 from django.db.models import Q
 from django.core.paginator import Paginator
 
-from .models import CustomUser, Marque, Modele, Voiture , Commande,Reservation
+from .models import CustomUser, Marque, Modele, Voiture, Commande, Reservation
 
-# Page d'accueil
+# ----------------- Page d'accueil -----------------
 def home(request):
-  return render(request, 'voiture/main.html')
+    return render(request, 'voiture/main.html')
 
-# Inscription
+# ----------------- Inscription -----------------
 def signup_view(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
@@ -27,7 +30,7 @@ def signup_view(request):
         form = CustomUserCreationForm()
     return render(request, "voiture/auth/signup.html", {"form": form})
 
-# Connexion
+# ----------------- Connexion -----------------
 def login_view(request):
     if request.method == "POST":
         form = CustomerLoginForm(request, data=request.POST)
@@ -42,44 +45,35 @@ def login_view(request):
         form = CustomerLoginForm()
     return render(request, "voiture/auth/login.html", {"form": form})
 
-# Déconnexion
+# ----------------- Déconnexion -----------------
 def logout_view(request):
     logout(request)
     messages.info(request, "Vous avez été déconnecté.")
     return redirect("home")
 
-# Redirection automatique selon rôle
+# ----------------- Redirection selon rôle -----------------
 def redirect_by_role(request):
     if request.user.role == "admin":
         return redirect("dashboard_admin")
     return redirect("user_home")
 
-# Dashboard administrateur
+# ----------------- Dashboard administrateur -----------------
 @role_required("admin")
 def admin_dashboard(request):
-    
     stats = {
         'utilisateurs_count': CustomUser.objects.count(),
         'voitures_count': Voiture.objects.count(),
         'reservations_count': Reservation.objects.count(),
         'marques_count': Marque.objects.count(),
     }
-    messages.success(request, "Bienvenue sur le dashboard admin !")
     return render(request, "voiture/admin/dashboard.html", stats)
 
-# Dashboard utilisateur
-
-
-
-role_required("user")
+# ----------------- Dashboard utilisateur -----------------
+@role_required("user")
 def user_home(request):
-    # Terme recherché
     item_name = request.GET.get('item_name')
-
-    # Base queryset
     voitures = Voiture.objects.all().order_by('-date_ajout')
 
-    # Si une recherche est faite
     if item_name:
         voitures = voitures.filter(
             Q(modele__nom__icontains=item_name) |
@@ -87,13 +81,10 @@ def user_home(request):
             Q(numero_chassis__icontains=item_name)
         )
 
-    # Vérifier si aucune voiture n’est trouvée
+    message = None
     if not voitures.exists():
         message = "Aucune voiture trouvée pour votre recherche."
-    else:
-        message = None
 
-    # Pagination
     paginator = Paginator(voitures, 4)  # 4 voitures par page
     page = request.GET.get('page')
     voitures = paginator.get_page(page)
@@ -103,29 +94,26 @@ def user_home(request):
         'item_name': item_name,
         'message': message
     })
+
 @role_required("user")
 def reserver_voiture(request, voiture_id):
     voiture = get_object_or_404(Voiture, id=voiture_id)
     
     if voiture.etat == 'Disponible':
-        # Créer la réservation
         Reservation.objects.create(utilisateur=request.user, voiture=voiture)
-        # Mettre à jour l'état de la voiture
-        voiture.reserver()
-        # Message de confirmation
+        voiture.reserver()  # Assurez-vous que la méthode 'reserver' existe dans le modèle Voiture
         messages.success(request, f"Vous avez réservé la voiture {voiture.marque.nom} {voiture.modele.nom} avec succès !")
     else:
         messages.warning(request, "Cette voiture est déjà réservée.")
-
     return redirect('user_home')
 
-
+# ----------------- Liste des réservations -----------------
+@role_required("admin")
 def reserver(request):
     total_voitures = Voiture.objects.count()
     total_reservees = Voiture.objects.filter(etat='Réservée').count()
     total_utilisateurs = CustomUser.objects.filter(role='user').count()
 
-    # Liste des voitures réservées avec leur utilisateur
     voitures_reservees = Reservation.objects.select_related('voiture', 'utilisateur').all()
 
     context = {
@@ -135,48 +123,34 @@ def reserver(request):
         'voitures_reservees': voitures_reservees,
     }
     return render(request, 'voiture/admin/reserver.html', context)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    #----------------- details de voutures--------------
-    
-    
+
+# ----------------- Détails d'une voiture -----------------
 def detail(request, myid):
     voiture = get_object_or_404(Voiture, id=myid)
     return render(request, "voiture/user/details.html", {"voiture": voiture})
 
-
-
-
-
-
+# ----------------- Checkout -----------------
 def checkout(request):
-    if request.method=="POST":
-        items=request.POST.get('items')
-        total=request.POST.get('total')
-        nom=request.POST.get('nom')
-        email=request.POST.get('email')
-        address=request.POST.get('address')
-        ville=request.POST.get('ville')
-        pays=request.POST.get('pays')
-        zipcode=request.POST.get('zipcode')
-        com=Commande(items=items,total=total,nom=nom,email=email,address=address,ville=ville,pays=pays,zipcode=zipcode)
+    if request.method == "POST":
+        items = request.POST.get('items')
+        total = request.POST.get('total')
+        nom = request.POST.get('nom')
+        email = request.POST.get('email')
+        address = request.POST.get('address')
+        ville = request.POST.get('ville')
+        pays = request.POST.get('pays')
+        zipcode = request.POST.get('zipcode')
+
+        com = Commande(
+            items=items, total=total, nom=nom, email=email, 
+            address=address, ville=ville, pays=pays, zipcode=zipcode
+        )
         com.save()
+        messages.success(request, "Commande passée avec succès !")
     
     return render(request, 'voiture/user/checkout.html')
 
-
-
-
-# ------------------- Gestion utilisateurs -------------------
+# ----------------- Gestion utilisateurs -----------------
 @role_required("admin")
 def utilisateurs_list(request):
     users = CustomUser.objects.all()
@@ -185,7 +159,7 @@ def utilisateurs_list(request):
 @role_required("admin")
 def supprimer_utilisateur(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
-    if request.user != user:  # éviter que l’admin supprime lui-même
+    if request.user != user:
         user.delete()
         messages.success(request, "Utilisateur supprimé avec succès.")
     else:
@@ -195,20 +169,18 @@ def supprimer_utilisateur(request, user_id):
 @role_required("admin")
 def changer_role(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
-    if user.role == 'admin':
-        user.role = 'user'
-    else:
-        user.role = 'admin'
+    user.role = 'user' if user.role == 'admin' else 'admin'
     user.save()
     messages.success(request, f"Le rôle de {user.username} a été changé avec succès.")
     return redirect('utilisateurs_list')
 
-# ------------------- Gestion marques -------------------
+# ----------------- Gestion marques -----------------
 @role_required("admin")
 def liste_marques(request):
     marques = Marque.objects.all()
     form = MarqueForm()
     return render(request, 'voiture/admin/marque.html', {"marques": marques, "form": form})
+
 
 @role_required("admin")
 def ajouter_marque(request):
@@ -217,9 +189,17 @@ def ajouter_marque(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Marque ajoutée avec succès !")
+            return redirect('liste_marques')
         else:
-            messages.error(request, "Erreur lors de l'ajout de la marque.")
-    return redirect('liste_marques')
+            # Afficher les erreurs du formulaire
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+            return redirect('liste_marques')
+    else:
+        form = MarqueForm()
+    
+    return render(request, 'voiture/admin/marque.html', {'form': form})
 
 @role_required("admin")
 def supprimer_marque(request, id):
@@ -228,7 +208,7 @@ def supprimer_marque(request, id):
     messages.success(request, "Marque supprimée avec succès !")
     return redirect("liste_marques")
 
-# ------------------- Gestion modèles -------------------
+# ----------------- Gestion modèles -----------------
 @role_required("admin")
 def liste_modeles(request):
     modeles = Modele.objects.select_related("marque").all().order_by("-id")
@@ -253,7 +233,7 @@ def supprimer_modele(request, id):
     messages.success(request, "Modèle supprimé avec succès !")
     return redirect("liste_modeles")
 
-# ------------------- Gestion voitures -------------------
+# ----------------- Gestion voitures -----------------
 @role_required("admin")
 def liste_voitures(request):
     voitures = Voiture.objects.all()
@@ -266,7 +246,7 @@ def ajouter_voiture(request):
         form = VoitureForm(request.POST, request.FILES)
         if form.is_valid():
             voiture = form.save()
-            messages.success(request, f'La voiture {voiture} a été publie avec succès.')
+            messages.success(request, f'La voiture {voiture} a été publiée avec succès.')
         else:
             messages.error(request, "Erreur lors de publication de la voiture.")
     return redirect('liste_voitures')
@@ -277,6 +257,3 @@ def supprimer_voiture(request, id):
     voiture.delete()
     messages.success(request, f'La voiture {voiture} a été supprimée avec succès.')
     return redirect('liste_voitures')
-
-
-

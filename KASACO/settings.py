@@ -44,9 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-     "crispy_bootstrap5",
-    'bootstrap5',
-    "crispy_forms",
+    'crispy_forms',
+	'crispy_bootstrap4',
     'voitures',
 ]
 
@@ -139,8 +138,8 @@ STATICFILES_DIRS = [
 
 
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 
 

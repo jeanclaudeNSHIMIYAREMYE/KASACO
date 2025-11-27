@@ -23,26 +23,23 @@ urlpatterns = [
     # -------------------- Gestion marques --------------------
     path('marques/', views.liste_marques, name='liste_marques'),
     path('marques/ajouter/', views.ajouter_marque, name='ajouter_marque'),
-    path('marques/supprimer/<int:id>/', views.supprimer_marque, name='supprimer_marque'),
+    path('marques/supprimer/<int:marque_id>/', views.supprimer_marque, name='supprimer_marque'),
 
     # -------------------- Gestion modèles --------------------
     path('modeles/', views.liste_modeles, name='liste_modeles'),
     path('modeles/ajouter/', views.ajouter_modele, name='ajouter_modele'),
-    path('modeles/supprimer/<int:id>/', views.supprimer_modele, name='supprimer_modele'),
+    path('modeles/supprimer/<int:modele_id>/', views.supprimer_modele, name='supprimer_modele'),
 
     # -------------------- Gestion voitures --------------------
     path('voitures/', views.liste_voitures, name='liste_voitures'),
     path('voitures/ajouter/', views.ajouter_voiture, name='ajouter_voiture'),
-    path('voitures/supprimer/<int:id>/', views.supprimer_voiture, name='supprimer_voiture'),
-    
-    #gestion du page D' acceuil de clients des voitures--------
-    
-   path('detail/<int:myid>/', views.detail, name='details'),
-   path('checkout',views.checkout,name='checkout'),
-   path('voitures/reserver/<int:voiture_id>/', views.reserver_voiture, name='reserver_voiture'),
-   path('reserver/', views.reserver, name='reserver'),
-    
-    
+    path('voitures/supprimer/<int:voiture_id>/', views.supprimer_voiture, name='supprimer_voiture'),
+
+    # -------------------- Pages clients --------------------
+    path('voitures/<int:myid>/', views.detail, name='details'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('voitures/reserver/<int:voiture_id>/', views.reserver_voiture, name='reserver_voiture'),
+    path('reserver/', views.reserver, name='reserver'),
 ]
 
 # -------------------- Media files --------------------

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 {% load static %}
-
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -8,25 +7,19 @@
     <title>{% block title %}KASACO{% endblock %}</title>
 
 
-    {% load bootstrap5 %}
-  {% bootstrap_css %}
-  {% bootstrap_javascript %}
-    <!-- Bootstrap CSS -->
+
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-    <!-- CSS personnalisé -->
-<link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
-
-
+<link rel="stylesheet" href="{% static 'styles.css' %}">
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
 </head>
-
 <body>
 
+<!-- ======== Navbar full-width compacte ======== -->
 <!-- ======== Navbar ======== -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
     <div class="container">
@@ -61,53 +54,35 @@
     </div>
 </nav>
 
+
 <!-- ======== Contenu principal ======== -->
 <main class="container mt-5 pt-5">
     {% block content %}{% endblock %}
-
 </main>
-<!-- ======== Pied de page ======== -->
-<footer class="bg-dark text-white py-4 mt-auto">
-    
-    <div class="container">
+
+<!-- ======== Footer full-width ======== -->
+<footer class="bg-dark text-white mt-5 w-100 py-3">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold">KARINZI SAB COMPANY "KASACO"</h5>
-                <p>* Vente et importation des véhicules locales</p>
-                <p>* Vente et importation des véhicules en ligne</p>
-                <p>* Garages.</p>
+            <div class="col-md-4 mb-2">
+                <h6 class="fw-bold">KARINZI SAB COMPANY "KASACO"</h6>
+                <p class="mb-1 small">* Vente et importation des véhicules locales</p>
+                <p class="mb-1 small">* Vente et importation des véhicules en ligne</p>
+                <p class="mb-0 small">* Garages</p>
             </div>
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold">Contact & Infos Légales</h5>
-                <p>Email: nduwamungudism7@gmail.com</p>
-                <p>Téléphone: +257 69 080 278 / +257 62 227 155</p>
-                <p>Adresse: Bujumbura-Burundi, Commune Ntahangwa, Avenue: OUA Maison Saint Pierre, 1er étage D1; D2</p>
-                <p>NIF: 4002477083; RC: 0051659/23</p>
-            </div>
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold">Suivez-nous</h5>
-                <p>
-                    <a href="#" class="text-white me-2">Facebook</a>
-                    <a href="#" class="text-white me-2">Twitter</a>
-                    <a href="#" class="text-white">Instagram</a>
-                </p>
+            <div class="col-md-4 mb-2">
+                <h6 class="fw-bold">Contact & Infos Légales</h6>
+                <p class="mb-0 small">Exemple: contact@kasaco.com</p>
             </div>
         </div>
-        <div class="text-center mt-3">
-            <!-- Copyright information kept from the original snippet -->
-            <p class="mb-0">&copy; KASACO 2025-2026. Mr.Django.Z-Pro.</p>
+        <div class="text-center mt-2">
+            <p class="mb-0 small">&copy; KASACO 2025-2026. Mr.Django.Z-Pro.</p>
         </div>
     </div>
 </footer>
 
-
-
-<!-- Bootstrap JS -->
+<!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- JS personnalisé -->
-<script src="{% static 'js/scripts.js' %}"></script>
-
 
 </body>
 </html>
