@@ -19,7 +19,7 @@
 <!-- Favicon -->
 <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
 
- 
+
 
 </head>
 
@@ -40,7 +40,7 @@
   <div class="container">
     <a class="navbar-brand fw-bold text-danger d-flex align-items-center" href="#">
         <img src="{% static 'images/logo.png' %}" alt="Logo" width="70" class="me-2">
-    
+
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,13 +84,13 @@
                     Prix : <span id="price{{ voiture.id }}">{{ voiture.prix }}</span> $
                 </p>
 
-  
+
 
 
                 <div class="mt-auto d-flex flex-column gap-1">
                     <a href="{% url 'details' voiture.id %}" class="btn btn-warning btn-sm">Voir</a>
-            
-                
+
+
                 </div>
             </div>
         </div>

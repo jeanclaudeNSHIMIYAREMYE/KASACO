@@ -1,0 +1,31 @@
+# Ignorer les environnements virtuels
+env/
+.env/
+
+# Ignorer les fichiers compilés
+*.pyc
+__pycache__/
+
+# Ignorer les bases de données SQLite
+*.sqlite3
+
+# Ignorer les fichiers logs et de sauvegarde
+*.log
+*.bak
+
+# Ignorer les fichiers médias et statiques générés
+media/
+static/
+
+# Ignorer les fichiers de configuration d'IDE et d'éditeurs
+.vscode/
+.idea/
+
+# Ignorer les rapports de tests et de couverture
+.tox/
+.coverage
+htmlcov/
+
+# Ignorer les fichiers de déploiement
+*.tar.gz
+*.zip

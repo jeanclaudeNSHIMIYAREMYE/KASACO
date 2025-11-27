@@ -1,5 +1,6 @@
-from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+
 
 def role_required(role_name):
     def decorator(view_func):
@@ -8,6 +9,7 @@ def role_required(role_name):
             if request.user.role == role_name:
                 return view_func(request, *args, **kwargs)
             return redirect("login")  # redirige si rôle non autorisé
-        return wrapper
-    return decorator
 
+        return wrapper
+
+    return decorator

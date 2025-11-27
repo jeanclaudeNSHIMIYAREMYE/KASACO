@@ -13,7 +13,7 @@
 
     <!-- Users List Card -->
     <div class="card shadow rounded-3 border-0">
-        
+
         <!-- Card Header -->
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
             <h5 class="mb-0"><i class="fa fa-list me-2"></i>Liste des utilisateurs</h5>
@@ -62,15 +62,15 @@
                         <td>
                             <div class="btn-group">
                                 <!-- Change Role -->
-                                <a href="{% url 'changer_role' user.id %}" 
-                                   class="btn btn-warning btn-sm" 
+                                <a href="{% url 'changer_role' user.id %}"
+                                   class="btn btn-warning btn-sm"
                                    title="Changer rôle">
                                     <i class="fa fa-exchange-alt"></i>
                                 </a>
 
                                 <!-- Delete -->
-                                <a href="{% url 'supprimer_utilisateur' user.id %}" 
-                                   class="btn btn-danger btn-sm" 
+                                <a href="{% url 'supprimer_utilisateur' user.id %}"
+                                   class="btn btn-danger btn-sm"
                                    title="Supprimer"
                                    onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?')">
                                     <i class="fa fa-trash"></i>

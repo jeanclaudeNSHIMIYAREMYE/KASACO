@@ -47,8 +47,8 @@
                             <td>{{ voiture.annee }}</td>
                             <td>{{ voiture.prix }}</td>
                             <td>
-                                <a href="{% url 'supprimer_voiture' voiture.id %}" 
-                                   class="btn btn-danger btn-sm" 
+                                <a href="{% url 'supprimer_voiture' voiture.id %}"
+                                   class="btn btn-danger btn-sm"
                                    onclick="return confirm('Supprimer cette voiture ?')">
                                     <i class="fa fa-trash"></i>
                                 </a>

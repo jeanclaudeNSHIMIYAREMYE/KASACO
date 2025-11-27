@@ -39,7 +39,7 @@
                         <td>{{ forloop.counter }}</td>
                         <td>{{ m.nom }}</td>
                         <td>{{ m.marque.nom }}</td>
-                     
+
                         <td>
                             <a href="{% url 'supprimer_modele' m.id %}" class="btn btn-danger btn-sm"
                                onclick="return confirm('Supprimer ce modèle ?')">
@@ -49,7 +49,7 @@
                     </tr>
 
                     <!-- Modal Modifier -->
-                  
+
 
                     {% endfor %}
                 </tbody>

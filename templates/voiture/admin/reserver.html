@@ -1,87 +1,72 @@
-<!-- admin_dashboard.html -->
 {% extends 'voiture/admin/navbar.html' %}
 
 {% block content %}
+
 <div class="container-fluid mt-4">
 
-
-
-    <!-- Statistiques -->
     <div class="row g-4 mb-5">
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 text-white bg-primary">
+            <div class="card bg-primary text-white shadow">
                 <div class="card-body text-center">
-                    <h5 class="card-title">Total Voitures</h5>
-                    <h2 class="display-4">{{ total_voitures }}</h2>
+                    <h5>Total Voitures</h5>
+                    <h2>{{ total_voitures }}</h2>
                 </div>
             </div>
         </div>
+
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 text-white bg-warning">
+            <div class="card bg-warning text-white shadow">
                 <div class="card-body text-center">
-                    <h5 class="card-title">Voitures Réservées</h5>
-                    <h2 class="display-4">{{ total_reservees }}</h2>
+                    <h5>Voitures Réservées</h5>
+                    <h2>{{ total_reservees }}</h2>
                 </div>
             </div>
         </div>
+
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 text-white bg-success">
+            <div class="card bg-success text-white shadow">
                 <div class="card-body text-center">
-                    <h5 class="card-title">clients</h5>
-                    <h2 class="display-4">{{ total_utilisateurs }}</h2>
+                    <h5>Clients</h5>
+                    <h2>{{ total_utilisateurs }}</h2>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Liste des voitures réservées -->
-    <div class="card shadow-sm border-0">
+    <div class="card shadow">
         <div class="card-header bg-dark text-white">
-            <h4 class="mb-0">Liste des voitures réservées</h4>
+            <h4>Liste des voitures réservées</h4>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Voitures</th>
-                            <th>clients</th>
-                            <th>Date de réservation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for res in voitures_reservees %}
-                        <tr>
-                            <td>{{ res.voiture.marque.nom }} {{ res.voiture.modele.nom }} 
-                                <span class="badge bg-warning">{{ res.voiture.etat }}</span>
-                                <br><small class="text-muted">Châssis: {{ res.voiture.numero_chassis }}</small>
-                            </td>
-                            <td>{{ res.utilisateur.username }}</td>
-                            <td>{{ res.date_reservation|date:"d/m/Y H:i" }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="3" class="text-center">Aucune réservation pour le moment.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+
+        <div class="table-responsive">
+            <table class="table mb-0 table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Voiture</th>
+                        <th>Client</th>
+                        <th>Date de réservation</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for res in voitures_reservees %}
+                    <tr>
+                        <td>{{ res.voiture.marque.nom }} {{ res.voiture.modele.nom }}</td>
+                        <td>{{ res.utilisateur.username }}</td>
+                        <td>{{ res.date_reservation|date:"d/m/Y H:i" }}</td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">Aucune réservation.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+
     </div>
 
 </div>
 
-<!-- CSS additionnel -->
-<style>
-    .card-title {
-        font-weight: 600;
-    }
-    table tbody tr:hover {
-        background-color: rgba(0, 123, 255, 0.1);
-    }
-    h1, h2, h4 {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-</style>
 {% endblock %}
