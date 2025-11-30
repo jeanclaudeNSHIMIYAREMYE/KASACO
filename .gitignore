@@ -1,40 +1,40 @@
-# Environnements virtuels et secrets
+# ----------------- Environnements virtuels et secrets -----------------
 env/
-.env/
+.env
 
-# Fichiers compilés Python
+# ----------------- Fichiers compilés Python -----------------
 *.pyc
 __pycache__/
 
-# Bases de données SQLite
+# ----------------- Bases de données -----------------
 *.sqlite3
 
-# Logs et sauvegardes
+# ----------------- Logs et sauvegardes -----------------
 *.log
 *.bak
 
-# Médias et fichiers statiques générés
+# ----------------- Médias et fichiers statiques générés -----------------
 media/
 static/
 
-# Fichiers de configuration IDE
+# ----------------- Fichiers de configuration IDE -----------------
 .vscode/
 .idea/
 
-# Rapports de tests et couverture
+# ----------------- Rapports de tests et couverture -----------------
 .tox/
 .coverage
 htmlcov/
 .pytest_cache/
 
-# Fichiers de déploiement
+# ----------------- Fichiers de déploiement -----------------
 *.tar.gz
 *.zip
 
-# Migrations compilées
-*/migrations/*.pyc
-*/migrations/__pycache__/
+# ----------------- Migrations compilées -----------------
+**/migrations/*.pyc
+**/migrations/__pycache__/
 
-# Fichiers temporaires
+# ----------------- Fichiers temporaires -----------------
 *.swp
 *.swo
