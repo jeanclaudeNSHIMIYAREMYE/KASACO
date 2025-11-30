@@ -1,151 +1,199 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrateur</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KASACO</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-    <!-- DataTables CSS -->
-    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            background-color: #f5f6fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            background: #1e1f23;
-        }
-        .sidebar a {
-            color: #cfd2d6;
-            padding: 12px;
-            border-radius: 6px;
-            transition: 0.3s;
-        }
-        .sidebar a:hover {
-            background: #343a40;
-            color: #fff;
-        }
-        .sidebar .nav-link.active {
-            background: #0d6efd;
-            color: #fff;
-        }
-
-        /* Cards */
-        .card {
-            border-radius: 15px;
-            background: #ffffff;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            transition: 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-
-        /* Badges état voiture */
-        .badge-disponible { background-color: #28a745; }
-        .badge-reservee { background-color: #ffc107; color: black; }
-        .badge-vendue { background-color: #dc3545; }
-
-        /* Table */
-        .table thead {
-            background-color: #343a40;
-            color: white;
-        }
-        .table-striped > tbody > tr:nth-of-type(odd) {
-            background-color: #f1f3f5;
-        }
-    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<!-- ChartJS -->
+ {% load tailwind_tags %}
+ {% tailwind_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body>
-<div class="d-flex">
+<body class="bg-gray-100 font-sans">
+
+<div class="flex min-h-screen">
 
     <!-- Sidebar -->
-    <nav class="sidebar d-flex flex-column p-3 text-white vh-100">
+    <aside class="w-64 bg-gray-900 text-gray-100 flex flex-col">
+        <div class="flex items-center justify-center h-20 border-b border-gray-700">
+            <i class="fa fa-user-cog fa-2x text-blue-500 mr-2"></i>
+            <span class="text-xl font-semibold">VENDEUR</span>
+        </div>
 
-        <a href="#" class="d-flex align-items-center mb-4 text-decoration-none">
-            <i class="fa fa-user-cog fa-2x me-2"></i>
-            <span class="fs-4 fw-semibold">VENDEUR</span>
-        </a>
-        <hr class="text-secondary">
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="{% url 'dashboard_admin' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition active:bg-blue-700">
+                <i class="fa fa-tachometer-alt mr-2"></i> Dashboard
+            </a>
+            <a href="{% url 'utilisateurs_list' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
+                <i class="fa fa-user mr-2"></i> Utilisateurs
+            </a>
+            <a href="{% url 'liste_marques' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
+                <i class="fa fa-tags mr-2"></i> Marques
+            </a>
+            <a href="{% url 'liste_modeles' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
+                <i class="fa fa-pencil-alt mr-2"></i> Modèles
+            </a>
+            <a href="{% url 'liste_voitures' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
+                <i class="fa fa-car mr-2"></i> Voitures
+            </a>
+            <a href="{% url 'reserver' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
+                <i class="fa fa-book mr-2"></i> Réservations
+            </a>
 
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li><a href="{% url 'dashboard_admin' %}" class="nav-link active"><i class="fa fa-tachometer-alt me-2"></i> Dashboard</a></li>
-            <li><a href="{% url 'utilisateurs_list' %}" class="nav-link"><i class="fa fa-user me-2"></i> Utilisateurs</a></li>
-            <li><a href="{% url 'liste_marques' %}" class="nav-link"><i class="fa fa-tags me-2"></i> Marques</a></li>
-            <li><a href="{% url 'liste_modeles' %}" class="nav-link"><i class="fa fa-pencil-alt me-2"></i> Modèles</a></li>
-            <li><a href="{% url 'liste_voitures' %}" class="nav-link"><i class="fa fa-car me-2"></i> Voitures</a></li>
-            <li><a href="{% url 'reserver' %}" class="nav-link"><i class="fa fa-book me-2"></i> Réservations</a></li>
-            <li><a href="#contactSection" class="nav-link"><i class="fa fa-envelope me-2"></i> Contact</a></li>
-            <li><a href="{% url 'logout' %}" class="nav-link"><i class="fa fa-cogs me-2"></i> Deconnexion</a></li>
-        </ul>
-
-    </nav>
+            <a href="{% url 'logout' %}" class="flex items-center p-2 rounded hover:bg-red-600 transition mt-auto">
+                <i class="fa fa-sign-out-alt mr-2"></i> Déconnexion
+            </a>
+        </nav>
+    </aside>
 
     <!-- Contenu principal -->
-    <div class="flex-grow-1 p-4">
+    <main class="flex-1 p-6">
 
         {% block content %}
-        <!-- Ton contenu Django va ici -->
+
+        <!-- Title -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold flex items-center">
+                <i class="fa fa-users text-blue-500 mr-2"></i> Gestion des Utilisateurs
+            </h1>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-blue-600 text-white p-4 rounded-xl shadow-lg flex justify-between items-center hover:shadow-2xl transition transform hover:-translate-y-1">
+                <div>
+                    <h6 class="uppercase text-sm">Clients</h6>
+                    <p class="text-3xl font-bold text-center">{{ utilisateurs_count }}</p>
+                </div>
+                <i class="fa fa-users fa-2x"></i>
+            </div>
+
+            <div class="bg-green-600 text-white p-4 rounded-xl shadow-lg flex justify-between items-center hover:shadow-2xl transition transform hover:-translate-y-1">
+                <div>
+                    <h6 class="uppercase text-sm">Voitures</h6>
+                    <p class="text-3xl font-bold text-center">{{ voitures_count }}</p>
+                </div>
+                <i class="fa fa-car fa-2x"></i>
+            </div>
+
+            <div class="bg-yellow-400 text-gray-800 p-4 rounded-xl shadow-lg flex justify-between items-center hover:shadow-2xl transition transform hover:-translate-y-1">
+                <div>
+                    <h6 class="uppercase text-sm">Réservations</h6>
+                    <p class="text-3xl font-bold text-center">{{ reservations_count }}</p>
+                </div>
+                <i class="fa fa-book fa-2x"></i>
+            </div>
+
+            <div class="bg-teal-500 text-white p-4 rounded-xl shadow-lg flex justify-between items-center hover:shadow-2xl transition transform hover:-translate-y-1">
+                <div>
+                    <h6 class="uppercase text-sm">Marques</h6>
+                    <p class="text-3xl font-bold text-center">{{ marques_count }}</p>
+                </div>
+                <i class="fa fa-tags fa-2x"></i>
+            </div>
+        </div>
+
+        <!-- Table Utilisateurs -->
+        <div class="bg-white p-4 rounded-xl shadow-lg mb-6 overflow-x-auto">
+            <table id="usersTable" class="min-w-full table-auto border border-gray-200">
+                <thead class="bg-gray-800 text-white">
+                    <tr>
+                        <th class="px-4 py-2">#</th>
+                        <th class="px-4 py-2">Nom d'utilisateur</th>
+                        <th class="px-4 py-2">Email</th>
+                        <th class="px-4 py-2">Rôle</th>
+                        <th class="px-4 py-2">Date d'inscription</th>
+                        <th class="px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="text-center border-b border-gray-200">
+                        <td class="px-4 py-2">{{ forloop.counter }}</td>
+                        <td class="px-4 py-2 text-left font-semibold flex items-center"><i class="fa fa-user-circle text-gray-400 mr-1"></i>{{ user.username }}</td>
+                        <td class="px-4 py-2 text-left">{{ user.email }}</td>
+                        <td class="px-4 py-2">
+                            {% if user.is_staff %}
+                            <span class="bg-green-500 text-white px-3 py-1 rounded-full inline-flex items-center"><i class="fa fa-shield-alt mr-1"></i>Admin</span>
+                            {% else %}
+                            <span class="bg-gray-400 text-white px-3 py-1 rounded-full inline-flex items-center"><i class="fa fa-user mr-1"></i>Utilisateur</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-2">{{ user.date_joined|date:"d/m/Y H:i" }}</td>
+                        <td class="px-4 py-2 flex justify-center space-x-2">
+                            <a href="{% url 'changer_role' user.id %}" class="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500"><i class="fa fa-exchange-alt"></i></a>
+                            <a href="{% url 'supprimer_utilisateur' user.id %}" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?')"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Graphiques -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-xl shadow-lg">
+                <h6 class="font-bold mb-2">État des voitures</h6>
+                <canvas id="voituresChart"></canvas>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-lg">
+                <h6 class="font-bold mb-2">Réservations par jour</h6>
+                <canvas id="reservationsChart"></canvas>
+            </div>
+        </div>
+
         {% endblock content %}
 
-    </div>
+    </main>
 </div>
 
-<!-- ================= SCRIPTS ================= -->
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<!-- DataTables -->
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-
-<!-- ChartJS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // Graphique Donut Voitures
+$(document).ready(function() {
+    $('#usersTable').DataTable({
+        responsive:true,
+        language:{
+            search:"Rechercher :",
+            lengthMenu:"Afficher _MENU_ entrées",
+            info:"Affichage de _START_ à _END_ sur _TOTAL_ utilisateurs",
+            paginate:{ first:"Premier", last:"Dernier", next:"Suivant", previous:"Précédent" }
+        }
+    });
+
+    // Chart Voitures
     const ctxVoitures = document.getElementById('voituresChart');
-    if (ctxVoitures) {
-        new Chart(ctxVoitures, {
-            type: 'doughnut',
-            data: {
-                labels: ['Disponible', 'Réservée', 'Vendue'],
-                datasets: [{
-                    data: [20, 15, 10],
-                    backgroundColor: ['#28a745', '#ffc107', '#dc3545']
-                }]
+    if(ctxVoitures){
+        new Chart(ctxVoitures,{
+            type:'doughnut',
+            data:{
+                labels:['Disponible','Réservée','Vendue'],
+                datasets:[{data:[20,15,10],backgroundColor:['#28a745','#ffc107','#dc3545']}]
             },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            options:{responsive:true, plugins:{legend:{position:'bottom'}}}
         });
     }
 
-    // Graphique Bar Réservations
+    // Chart Réservations
     const ctxRes = document.getElementById('reservationsChart');
-    if (ctxRes) {
-        new Chart(ctxRes, {
-            type: 'bar',
-            data: {
-                labels: ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
-                datasets: [{
-                    label: 'Réservations',
-                    data: [2,4,1,5,3,2,1],
-                    backgroundColor: '#0d6efd'
-                }]
+    if(ctxRes){
+        new Chart(ctxRes,{
+            type:'bar',
+            data:{
+                labels:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
+                datasets:[{label:'Réservations',data:[2,4,1,5,3,2,1],backgroundColor:'#3b82f6'}]
             },
-            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            options:{responsive:true, scales:{y:{beginAtZero:true}}}
         });
     }
+});
 </script>
 
 </body>

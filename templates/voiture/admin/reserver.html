@@ -1,72 +1,82 @@
 {% extends 'voiture/admin/navbar.html' %}
 
 {% block content %}
+<div class="container mx-auto mt-6 px-4">
 
-<div class="container-fluid mt-4">
-
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <div class="card bg-primary text-white shadow">
-                <div class="card-body text-center">
-                    <h5>Total Voitures</h5>
-                    <h2>{{ total_voitures }}</h2>
-                </div>
-            </div>
+    <!-- Statistiques compactes -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <!-- Total Voitures -->
+        <div class="bg-blue-600 text-white rounded-xl shadow-md p-4 flex flex-col items-center justify-center hover:shadow-xl transition transform hover:-translate-y-0.5">
+            <i class="fa fa-car fa-2x mb-2"></i>
+            <h5 class="font-semibold flex items-center text-base"><i class="fa fa-road mr-1"></i> Total Voitures</h5>
+            <p class="text-2xl font-bold mt-1">{{ total_voitures }}</p>
         </div>
 
-        <div class="col-md-4">
-            <div class="card bg-warning text-white shadow">
-                <div class="card-body text-center">
-                    <h5>Voitures Réservées</h5>
-                    <h2>{{ total_reservees }}</h2>
-                </div>
-            </div>
+        <!-- Voitures Réservées -->
+        <div class="bg-yellow-500 text-white rounded-xl shadow-md p-4 flex flex-col items-center justify-center hover:shadow-xl transition transform hover:-translate-y-0.5">
+            <i class="fa fa-car-side fa-2x mb-2"></i>
+            <h5 class="font-semibold flex items-center text-base"><i class="fa fa-calendar-alt mr-1"></i> Réservées</h5>
+            <p class="text-2xl font-bold mt-1">{{ total_reservees }}</p>
         </div>
 
-        <div class="col-md-4">
-            <div class="card bg-success text-white shadow">
-                <div class="card-body text-center">
-                    <h5>Clients</h5>
-                    <h2>{{ total_utilisateurs }}</h2>
-                </div>
-            </div>
+        <!-- Clients -->
+        <div class="bg-green-600 text-white rounded-xl shadow-md p-4 flex flex-col items-center justify-center hover:shadow-xl transition transform hover:-translate-y-0.5">
+            <i class="fa fa-users fa-2x mb-2"></i>
+            <h5 class="font-semibold flex items-center text-base"><i class="fa fa-user-check mr-1"></i> Clients</h5>
+            <p class="text-2xl font-bold mt-1">{{ total_utilisateurs }}</p>
         </div>
     </div>
 
-    <div class="card shadow">
-        <div class="card-header bg-dark text-white">
-            <h4>Liste des voitures réservées</h4>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table mb-0 table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Voiture</th>
-                        <th>Client</th>
-                        <th>Date de réservation</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for res in voitures_reservees %}
-                    <tr>
-                        <td>{{ res.voiture.marque.nom }} {{ res.voiture.modele.nom }}</td>
-                        <td>{{ res.utilisateur.username }}</td>
-                        <td>{{ res.date_reservation|date:"d/m/Y H:i" }}</td>
-                    </tr>
-
-                    {% empty %}
-                    <tr>
-                        <td colspan="3" class="text-center">Aucune réservation.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
+    <!-- Liste des voitures réservées - style cartes compactes -->
+    <div class="bg-gray-800 text-white px-4 py-3 rounded-t-xl flex items-center mb-3">
+        <i class="fa fa-list-alt mr-2"></i>
+        <h4 class="font-semibold text-base">Liste des voitures réservées</h4>
     </div>
+
+    {% if voitures_reservees %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for res in voitures_reservees %}
+        <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition duration-200">
+            <!-- Voiture -->
+            <div class="flex items-center mb-2">
+                <i class="fa fa-car text-blue-500 text-xl mr-2"></i>
+                <h5 class="font-semibold text-sm">{{ res.voiture.marque.nom }} {{ res.voiture.modele.nom }}</h5>
+            </div>
+
+            <!-- Utilisateur -->
+            <div class="flex items-center mb-1">
+                <i class="fa fa-user text-green-500 mr-2"></i>
+                <span class="text-sm">{{ res.utilisateur.username }}</span>
+            </div>
+
+            <!-- Date de réservation -->
+            <div class="flex items-center">
+                <i class="fa fa-calendar text-yellow-500 mr-2"></i>
+                <span class="text-sm">{{ res.date_reservation|date:"d/m/Y H:i" }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-xl shadow-sm p-4 text-center text-gray-500">
+        <i class="fa fa-exclamation-circle mr-2"></i> Aucune réservation pour le moment.
+    </div>
+    {% endif %}
+
+    {% if messages %}
+<div class="mb-4">
+    {% for message in messages %}
+    <div class="
+        p-3 rounded-lg mb-2 text-white
+        {% if message.tags == 'success' %} bg-green-600 {% endif %}
+        {% if message.tags == 'error' %} bg-red-600 {% endif %}
+    ">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 
 </div>
-
 {% endblock %}

@@ -1,0 +1,138 @@
+{% extends "voiture/user/navUser.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- IMAGE DE FOND -->
+<div class="min-h-screen bg-cover bg-center bg-fixed"
+     style="background-image: url('/media/bg/garage.jpg');">
+
+    <div class="backdrop-blur-md bg-black/40 min-h-screen px-4 py-10">
+
+        <div class="max-w-6xl mx-auto">
+
+            <!-- HEADER -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="bg-gradient-to-r from-blue-700 to-blue-500 text-white
+                            px-6 py-3 rounded-xl shadow-lg flex items-center gap-3">
+                    <i class="fa fa-bookmark text-2xl"></i>
+                    <h1 class="text-xl font-bold">Mes Réservations</h1>
+                </div>
+
+                <!-- PDF Button -->
+
+            </div>
+
+            {% if mes_res %}
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                {% for res in mes_res %}
+
+                <!-- FLIP CARD -->
+                <div class="w-full h-80 perspective fade-in">
+
+                    <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d hover:rotate-y-180">
+
+                        <!-- RECTO -->
+                        <div class="absolute w-full h-full bg-white/20 backdrop-blur-xl border border-white/30
+                                    rounded-2xl shadow-xl p-5 text-white backface-hidden">
+
+                            <!-- PHOTO -->
+                            <img src="{{ res.voiture.photo.url }}"
+                                 class="w-full h-40 object-cover rounded-xl mb-3 shadow-lg">
+
+                            <h2 class="text-lg font-semibold">
+                                <i class="fa fa-car-side mr-2 text-blue-300"></i>
+                                {{ res.voiture.marque.nom }} {{ res.voiture.modele.nom }}
+                            </h2>
+
+                            <p class="text-sm mt-2">
+                                <i class="fa fa-calendar-alt text-yellow-300 mr-2"></i>
+                                {{ res.date_reservation|date:"d/m/Y H:i" }}
+                            </p>
+
+                        </div>
+
+                        <!-- VERSO -->
+                        <div class="absolute w-full h-full bg-black/30 backdrop-blur-xl border border-white/20
+                                    rounded-2xl shadow-xl p-5 text-white rotate-y-180 backface-hidden">
+
+                            <h2 class="font-semibold text-lg mb-4">
+                                <i class="fa fa-info-circle mr-2"></i>Détails
+                            </h2>
+
+                            <p class="text-sm mb-2">
+                                <i class="fa fa-id-card mr-1"></i>
+                                <strong>Châssis :</strong> {{ res.voiture.chassis }}
+                            </p>
+
+                            <p class="text-sm mb-2">
+                                <i class="fa fa-money-bill-wave mr-1"></i>
+                                <strong>Prix :</strong> {{ res.voiture.prix }} Fbu
+                            </p>
+
+                         >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+            </div>
+
+            <!-- PAGINATION -->
+            <div class="flex justify-center mt-8">
+                <div class="flex space-x-2">
+
+                    {% if mes_res.has_previous %}
+                    <a href="?page={{ mes_res.previous_page_number }}"
+                       class="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30">
+                        <i class="fa fa-chevron-left"></i>
+                    </a>
+                    {% endif %}
+
+                    <span class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                        Page {{ mes_res.number }} / {{ mes_res.paginator.num_pages }}
+                    </span>
+
+                    {% if mes_res.has_next %}
+                    <a href="?page={{ mes_res.next_page_number }}"
+                       class="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30">
+                        <i class="fa fa-chevron-right"></i>
+                    </a>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            {% else %}
+
+            <div class="bg-white/20 backdrop-blur-xl border border-white/30
+                        rounded-xl shadow-lg p-8 text-center text-white">
+                <i class="fa fa-exclamation-circle text-3xl mb-2"></i>
+                <p class="text-lg">Vous n’avez encore fait aucune réservation.</p>
+            </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<!-- CSS Flip -->
+<style>
+.perspective { perspective: 1000px; }
+.backface-hidden { backface-visibility: hidden; }
+.rotate-y-180 { transform: rotateY(180deg); }
+.fade-in { animation: fadeIn 0.8s ease-in-out; }
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+</style>
+
+{% endblock %}

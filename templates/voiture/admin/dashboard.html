@@ -2,84 +2,99 @@
 
 {% block content %}
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                {{ message }}
-                <button class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        {% endfor %}
-    {% endif %}<div class="row mb-4">
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-primary shadow-sm rounded-4 hover-shadow">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-uppercase">Clients</h6>
-                    <p class="display-6 mb-0 text-center fw-bold">{{ utilisateurs_count }}</p>
-                </div>
-                <i class="fa fa-users fa-2x"></i>
-            </div>
-        </div>
+<!-- ================= Messages flash ================= -->
+{% if messages %}
+  <div class="fixed top-20 right-5 space-y-2 z-50">
+    {% for message in messages %}
+      <div id="msg-{{ forloop.counter }}"
+           class="px-4 py-2 rounded shadow-lg text-white
+                  {% if message.tags == 'success' %}bg-green-500
+                  {% elif message.tags == 'error' %}bg-red-500
+                  {% else %}bg-blue-500{% endif %}
+                  animate-fadeOut">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    {% for message in messages %}
+      setTimeout(() => {
+        const msg = document.getElementById('msg-{{ forloop.counter }}');
+        if(msg) msg.remove();
+      }, 2000);
+    {% endfor %}
+  </script>
+{% endif %}
+
+<!-- ================= Statistiques ================= -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+
+  <!-- Clients -->
+  <div class="bg-gradient-to-r from-blue-500 to-blue-700 text-dark rounded-2xl shadow-lg p-4 flex justify-between items-center transform transition hover:-translate-y-1 hover:shadow-2xl">
+    <div>
+      <h6 class="uppercase text-sm">Clients</h6>
+      <p class="text-3xl font-bold text-center">{{ utilisateurs_count }}</p>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-success shadow-sm rounded-4 hover-shadow">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-uppercase">Voitures</h6>
-                    <p class="display-6 mb-0 text-center fw-bold">{{ voitures_count }}</p>
-                </div>
-                <i class="fa fa-car fa-2x"></i>
-            </div>
-        </div>
+    <i class="fa fa-users fa-2x"></i>
+  </div>
+
+  <!-- Voitures -->
+  <div class="bg-gradient-to-r from-green-400 to-green-600 text-dark rounded-2xl shadow-lg p-4 flex justify-between items-center transform transition hover:-translate-y-1 hover:shadow-2xl">
+    <div>
+      <h6 class="uppercase text-sm">Voitures</h6>
+      <p class="text-3xl font-bold text-center">{{ voitures_count }}</p>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-warning shadow-sm rounded-4 hover-shadow">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-uppercase">Réservations</h6>
-                    <p class="display-6 mb-0 text-center fw-bold">{{ reservations_count }}</p>
-                </div>
-                <i class="fa fa-book fa-2x"></i>
-            </div>
-        </div>
+    <i class="fa fa-car fa-2x"></i>
+  </div>
+
+  <!-- Réservations -->
+  <div class="bg-gradient-to-r from-yellow-300 to-yellow-500 text-gray-900 rounded-2xl shadow-lg p-4 flex justify-between items-center transform transition hover:-translate-y-1 hover:shadow-2xl">
+    <div>
+      <h6 class="uppercase text-sm">Réservations</h6>
+      <p class="text-3xl font-bold text-center">{{ reservations_count }}</p>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-info shadow-sm rounded-4 hover-shadow">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-uppercase">Marques</h6>
-                    <p class="display-6 mb-0 text-center fw-bold">{{ marques_count }}</p>
-                </div>
-                <i class="fa fa-tags fa-2x"></i>
-            </div>
-        </div>
+    <i class="fa fa-book fa-2x"></i>
+  </div>
+
+  <!-- Marques -->
+  <div class="bg-gradient-to-r from-teal-400 to-teal-600 text-dark rounded-2xl shadow-lg p-4 flex justify-between items-center transform transition hover:-translate-y-1 hover:shadow-2xl">
+    <div>
+      <h6 class="uppercase text-sm">Marques</h6>
+      <p class="text-3xl font-bold text-center">{{ marques_count }}</p>
     </div>
+    <i class="fa fa-tags fa-2x"></i>
+  </div>
+
 </div>
 
-    <!-- Graphiques -->
-    <div class="row mb-4">
-        <div class="col-md-6 mb-3">
-            <div class="card shadow-sm rounded-4 p-3 hover-shadow">
-                <h6 class="fw-bold">État des voitures</h6>
-                <canvas id="voituresChart"></canvas>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card shadow-sm rounded-4 p-3 hover-shadow">
-                <h6 class="fw-bold">Réservations par jour</h6>
-                <canvas id="reservationsChart"></canvas>
-            </div>
-        </div>
-    </div>
+<!-- ================= Graphiques ================= -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 
+  <!-- État des voitures -->
+  <div class="bg-white rounded-2xl shadow-lg p-4">
+    <h6 class="font-bold mb-2 text-gray-800">État des voitures</h6>
+    <canvas id="voituresChart"></canvas>
+  </div>
 
-<!-- Styles -->
+  <!-- Réservations par jour -->
+  <div class="bg-white rounded-2xl shadow-lg p-4">
+    <h6 class="font-bold mb-2 text-gray-800">Réservations par jour</h6>
+    <canvas id="reservationsChart"></canvas>
+  </div>
+
+</div>
+
+<!-- Animation fade out pour messages -->
 <style>
-    body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .hover-shadow { transition: all 0.3s ease; }
-    .hover-shadow:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-    .card h6 { color: #fff; }
-    .bg-warning h6 { color: #212529; }
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.animate-fadeOut {
+  animation: fadeOut 2s forwards;
+}
 </style>
 
 {% endblock content %}
@@ -91,15 +106,14 @@
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
-    $(document).ready(function(){
-        $('#voituresTable').DataTable({
-            language: {
-                search: "Rechercher:",
-                lengthMenu: "Afficher _MENU_ entrées",
-                info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-                paginate: { first: "Premier", last: "Dernier", next: "Suivant", previous: "Précédent" }
-            }
-        });
+$(document).ready(function(){
+    $('#voituresTable').DataTable({
+        language: {
+            search: "Rechercher:",
+            lengthMenu: "Afficher _MENU_ entrées",
+            info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+            paginate: { first: "Premier", last: "Dernier", next: "Suivant", previous: "Précédent" }
+        }
     });
 
     // Graphique État des voitures
@@ -137,11 +151,6 @@
             scales: { y: { beginAtZero: true } }
         }
     });
-
-
-
-
-
-
+});
 </script>
 {% endblock extra_js %}

@@ -1,77 +1,66 @@
-<!DOCTYPE html>
+{% extends "voiture/user/navUser.html" %}
+{% block content %}
 
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails Voiture</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .img-fluid.rounded {
-            border-radius: 15px;
-            max-height: 400px;
-            object-fit: cover;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            animation: fadeInUp 0.6s ease forwards;
-        }
-        .img-fluid.rounded:hover {
-            transform: scale(1.03);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        h2.text-warning {
-            font-weight: 700;
-            margin-bottom: 1rem;
-            transition: color 0.3s ease;
-        }
-        h2.text-warning:hover { color: #fd7e14; }
-        h4.text-danger { font-weight: 600; margin-bottom: 1rem; }
-        p { font-size: 1rem; line-height: 1.6; }
-        p strong { color: #333; }
-        .btn-lg { border-radius: 50px; transition: all 0.3s ease; }
-        .btn-danger:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(220,53,69,0.4); }
-        .btn-secondary:disabled { opacity: 0.7; cursor: not-allowed; }
-        @keyframes fadeInUp {
-            from { opacity:0; transform: translateY(20px); }
-            to { opacity:1; transform: translateY(0); }
-        }
-        @media (max-width: 768px) {
-            .row { text-align: center; }
-            .col-md-6 { margin-bottom: 1.5rem; }
-        }
-    </style>
-</head>
-<body>
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-6">
+
+{% if messages %}
+<div class="mb-4">
+    {% for message in messages %}
+    <div class="
+        p-3 rounded-lg mb-2 text-white
+        {% if message.tags == 'success' %} bg-green-600 {% endif %}
+        {% if message.tags == 'error' %} bg-red-600 {% endif %}
+    ">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<div class="container mx-auto px-4 py-10">
+    <div class="flex flex-col md:flex-row md:space-x-10 space-y-6 md:space-y-0 items-center">
+
+        <!-- Image voiture -->
+        <div class="w-full md:w-1/2">
             {% if voiture.photo %}
-                <img src="{{ voiture.photo.url }}" class="img-fluid rounded" alt="{{ voiture.modele.nom }}">
+                <img src="{{ voiture.photo.url }}" alt="{{ voiture.modele.nom }}"
+                     class="rounded-2xl shadow-lg w-full h-auto object-cover transition-transform duration-500 hover:scale-105 hover:shadow-2xl">
             {% else %}
-                <img src="" class="img-fluid rounded" alt="Voiture par défaut">
+                <div class="bg-gray-200 rounded-2xl w-full h-64 flex items-center justify-center text-gray-400">
+                    Pas d'image disponible
+                </div>
             {% endif %}
         </div>
-        <div class="col-md-6">
-            <h2 class="text-warning">{{ voiture.modele.nom }}</h2>
-            <h4 class="text-danger">Prix : {{ voiture.prix }} $</h4>
-            <p><strong>Marque :</strong> {{ voiture.marque.nom }}</p>
-            <p><strong>Châssis :</strong> {{ voiture.numero_chassis }}</p>
-            <p><strong>État :</strong> {{ voiture.etat }}</p>
-            <p><strong>Date d'ajout :</strong> {{ voiture.date_ajout }}</p>
-            {% if voiture.etat == "Disponible" %}
-               <a href="{% url 'reserver_voiture' voiture.id %}" class="btn btn-danger btn-lg">Réserver</a>
 
+        <!-- Infos voiture -->
+        <div class="w-full md:w-1/2 space-y-4">
+            <h2 class="text-3xl font-bold text-orange-500 hover:text-orange-600 transition-colors">
+                {{ voiture.modele.nom }}
+            </h2>
+            <h4 class="text-xl font-semibold text-red-600">
+                Prix : {{ voiture.prix }} $
+            </h4>
+
+            <p class="text-gray-700"><span class="font-semibold">Marque :</span> {{ voiture.marque.nom }}</p>
+            <p class="text-gray-700"><span class="font-semibold">Châssis :</span> {{ voiture.numero_chassis }}</p>
+            <p class="text-gray-700"><span class="font-semibold">État :</span> {{ voiture.etat }}</p>
+            <p class="text-gray-700"><span class="font-semibold">Date d'ajout :</span> {{ voiture.date_ajout }}</p>
+
+            {% if voiture.etat == "Disponible" %}
+                <a href="{% url 'reserver_voiture' voiture.id %}"
+                   class="inline-flex items-center px-6 py-3 bg-red-600 text-white font-semibold rounded-full shadow-lg hover:bg-red-700 hover:shadow-xl transition-all duration-300">
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h6v6m2 0h2a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v8a2 2 0 002 2h2" />
+                   </svg>
+                   Réserver
+                </a>
             {% else %}
-                <button class="btn btn-secondary btn-lg" disabled>Non disponible</button>
+                <button class="px-6 py-3 bg-gray-400 text-white font-semibold rounded-full cursor-not-allowed opacity-70">
+                    Non disponible
+                </button>
             {% endif %}
         </div>
     </div>
 </div>
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+{% endblock content %}

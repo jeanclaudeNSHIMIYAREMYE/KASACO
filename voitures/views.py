@@ -5,14 +5,10 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .decorators import role_required
-from .forms import (
-    CustomerLoginForm,
-    CustomUserCreationForm,
-    MarqueForm,
-    ModeleForm,
-    VoitureForm,
-)
-from .models import Commande, CustomUser, Marque, Modele, Reservation, Voiture
+from .forms import (CustomerLoginForm, CustomUserCreationForm, MarqueForm,
+                    ModeleForm, VoitureForm)
+from .models import (Commande, ContactInfo, CustomUser, Marque, Modele,
+                     Reservation, Voiture)
 
 
 # ----------------- Page d'accueil -----------------
@@ -127,22 +123,23 @@ def reserver_voiture(request, voiture_id):
 
 # ----------------- Liste des réservations -----------------
 @role_required("admin")
-def reserver(request):
-    total_voitures = Voiture.objects.count()
-    total_reservees = Voiture.objects.filter(etat="Réservée").count()
-    total_utilisateurs = CustomUser.objects.filter(role="user").count()
+def reserver(request, voiture_id):
+    voiture = get_object_or_404(Voiture, id=voiture_id)
 
-    voitures_reservees = Reservation.objects.select_related(
-        "voiture", "utilisateur"
-    ).all()
+    # Vérifier si la voiture est déjà réservée
+    if Reservation.objects.filter(voiture=voiture).exists():
+        messages.error(request, "❌ Cette voiture est déjà réservée.")
+        return redirect("reserver_admin")  # ou la page de détail
 
-    context = {
-        "total_voitures": total_voitures,
-        "total_reservees": total_reservees,
-        "total_utilisateurs": total_utilisateurs,
-        "voitures_reservees": voitures_reservees,
-    }
-    return render(request, "voiture/admin/reserver.html", context)
+    # Créer la réservation
+    Reservation.objects.create(voiture=voiture, utilisateur=request.user)
+
+    # Mettre à jour l'état de la voiture
+    voiture.etat = "Réservée"
+    voiture.save()
+
+    messages.success(request, "✅ Voiture réservée avec succès !")
+    return redirect("details", myid=voiture.id)
 
 
 # ----------------- Détails d'une voiture -----------------
@@ -299,3 +296,37 @@ def supprimer_voiture(request, id):
     voiture.delete()
     messages.success(request, f"La voiture {voiture} a été supprimée avec succès.")
     return redirect("liste_voitures")
+
+
+def info(request):
+    contact_info = ContactInfo.objects.first()  # récupère le premier enregistrement
+    return render(request, "voiture/info.html", {"contact_info": contact_info})
+
+
+# --- Vue pour afficher contact seul (optionnel) ---
+def contact_view(request):
+    contact_info = ContactInfo.objects.first()
+    return render(request, "voiture/contact.html", {"contact_info": contact_info})
+
+
+@role_required("user")
+def mes_reservations(request):
+    mes_res = Reservation.objects.filter(utilisateur=request.user).select_related(
+        "voiture"
+    )
+
+    # Pagination
+    paginator = Paginator(mes_res, 6)
+    page = request.GET.get("page")
+    mes_res_page = paginator.get_page(page)
+
+    context = {"mes_res": mes_res_page}
+    return render(request, "voiture/user/mes_reservations.html", context)
+
+
+@role_required("user")
+def annuler_reservation(request, id):
+    reservation = get_object_or_404(Reservation, id=id, utilisateur=request.user)
+    reservation.delete()
+    messages.success(request, "Votre réservation a été annulée avec succès.")
+    return redirect("mes_reservations")

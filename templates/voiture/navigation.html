@@ -6,83 +6,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}KASACO{% endblock %}</title>
 
-
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    {% load tailwind_tags %}
+    {% tailwind_css %}
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<link rel="stylesheet" href="{% static 'styles.css' %}">
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
 </head>
-<body>
+<body class="bg-gray-50 font-sans text-gray-800">
 
-<!-- ======== Navbar full-width compacte ======== -->
 <!-- ======== Navbar ======== -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
-    <div class="container">
-        <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center fw-bold text-danger" href="#">
-            <img src="{% static 'images/logo.png' %}" alt="Logo" width="60" class="me-2">
+<nav class="bg-white shadow-md fixed top-0 w-full z-40">
+  <div class="container mx-auto flex items-center justify-between px-4 py-3">
 
-        </a>
+    <!-- Logo -->
+    <a href="#" class="flex items-center text-red-600 font-bold text-xl space-x-2">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-16">
+      <span>KASACO</span>
+    </a>
 
-        <!-- Toggle bouton responsive -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Liens de navigation -->
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav align-items-lg-center">
-                <li class="nav-item"><a class="nav-link px-3" href="#">Chercher des voitures</a></li>
-                <li class="nav-item"><a class="nav-link px-3" href="#">Comment acheter</a></li>
-                <li class="nav-item"><a class="nav-link px-3" href="#">Pourquoi choisir KASACO</a></li>
-                <li class="nav-item"><a class="nav-link px-3" href="#">Support</a></li>
-                <li class="nav-item"><a class="nav-link px-3" href="#">Contact</a></li>
-                <li class="nav-item">
-                    <a class="btn btn-outline-danger btn-sm mx-1" href="{% url 'login' %}">Connexion</a>
-                </li>
-                <li class="nav-item">
-                    <a class="btn btn-danger btn-sm mx-1 text-white" href="{% url 'signup' %}">S’inscrire</a>
-                </li>
-            </ul>
-        </div>
+    <!-- Mobile menu button -->
+    <div class="lg:hidden">
+      <button id="menu-btn" class="text-gray-700 text-3xl focus:outline-none">
+        <i class="bi bi-list"></i>
+      </button>
     </div>
+
+    <!-- Navbar links -->
+    <ul id="menu" class="hidden lg:flex items-center space-x-6 font-medium">
+      <li>
+        <a href="{% url 'user_home' %}" class="flex items-center px-3 py-2 rounded hover:bg-red-100 transition">
+          <i class="bi bi-car-front-fill mr-2"></i> Chercher
+        </a>
+      </li>
+
+      <li>
+        <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-red-100 transition">
+          <i class="bi bi-bag-check-fill mr-2"></i> Acheter
+        </a>
+      </li>
+
+      <li>
+        <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-red-100 transition">
+          <i class="bi bi-check-circle-fill mr-2"></i> Pourquoi KASACO
+        </a>
+      </li>
+
+      <li>
+        <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-red-100 transition">
+          <i class="bi bi-headset mr-2"></i> Support
+        </a>
+      </li>
+
+      <li>
+        <a href="{% url 'info' %}" class="flex items-center px-3 py-2 rounded hover:bg-red-100 transition">
+          <i class="bi bi-envelope-fill mr-2"></i> Contact
+        </a>
+      </li>
+
+      <!-- Login -->
+      <li>
+        <a href="{% url 'login' %}" class="flex items-center px-3 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50 transition">
+          <i class="bi bi-box-arrow-in-right mr-2"></i>
+          Connexion
+        </a>
+      </li>
+
+      <!-- Signup -->
+      <li>
+        <a href="{% url 'signup' %}" class="flex items-center px-3 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50 transition">
+          <i class="bi bi-person-plus-fill mr-2"></i>
+          S'inscrire
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Mobile dropdown menu -->
+  <ul id="mobile-menu" class="lg:hidden hidden bg-white shadow-md border-t">
+    <li><a href="#" class="block px-4 py-3 hover:bg-red-100"><i class="bi bi-car-front-fill mr-2"></i> Chercher</a></li>
+    <li><a href="#" class="block px-4 py-3 hover:bg-red-100"><i class="bi bi-bag-check-fill mr-2"></i> Acheter</a></li>
+    <li><a href="#" class="block px-4 py-3 hover:bg-red-100"><i class="bi bi-check-circle-fill mr-2"></i> Pourquoi KASACO</a></li>
+    <li><a href="#" class="block px-4 py-3 hover:bg-red-100"><i class="bi bi-headset mr-2"></i> Support</a></li>
+    <li><a href="{% url 'info' %}" class="block px-4 py-3 hover:bg-red-100"><i class="bi bi-envelope-fill mr-2"></i> Contact</a></li>
+    <li><a href="{% url 'login' %}" class="block px-4 py-3 hover:bg-red-100"><i class="bi bi-box-arrow-in-right mr-2"></i> Connexion</a></li>
+    <li><a href="{% url 'signup' %}" class="block px-4 py-3 hover:bg-red-100"><i class="bi bi-person-plus-fill mr-2"></i> S'inscrire</a></li>
+  </ul>
 </nav>
 
+<!-- Script menu mobile -->
+<script>
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  menuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+  });
+</script>
 
 <!-- ======== Contenu principal ======== -->
-<main class="container mt-5 pt-5">
-    {% block content %}{% endblock %}
+<main class="container mx-auto mt-24 px-4">
+  {% block content %}{% endblock %}
 </main>
 
-<!-- ======== Footer full-width ======== -->
-<footer class="bg-dark text-white mt-5 w-100 py-3">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-4 mb-2">
-                <h6 class="fw-bold">KARINZI SAB COMPANY "KASACO"</h6>
-                <p class="mb-1 small">* Vente et importation des véhicules locales</p>
-                <p class="mb-1 small">* Vente et importation des véhicules en ligne</p>
-                <p class="mb-0 small">* Garages</p>
-            </div>
-            <div class="col-md-4 mb-2">
-                <h6 class="fw-bold">Contact & Infos Légales</h6>
-                <p class="mb-0 small">Exemple: contact@kasaco.com</p>
-            </div>
-        </div>
-        <div class="text-center mt-2">
-            <p class="mb-0 small">&copy; KASACO 2025-2026. Mr.Django.Z-Pro.</p>
-        </div>
-    </div>
-</footer>
+<!-- ======== Footer ======== -->
+<footer class="bg-gray-900 text-white py-12 mt-12">
+  <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 animate-fadeUp">
 
-<!-- Bootstrap JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bloc 1 : Infos -->
+    <div class="space-y-3 transform transition hover:-translate-y-1 hover:scale-105">
+      <h5 class="font-bold text-lg text-orange-400">KARINZI SAB COMPANY "KASACO"</h5>
+      <ul class="space-y-1 text-gray-300">
+        <li class="flex items-center"><i class="bi bi-shop text-orange-400 mr-2"></i> Vente & importation</li>
+        <li class="flex items-center"><i class="bi bi-globe2 text-orange-400 mr-2"></i> Vente en ligne</li>
+        <li class="flex items-center"><i class="bi bi-car-front-fill text-orange-400 mr-2"></i> Garages</li>
+      </ul>
+    </div>
+
+    <!-- Bloc 2 : Contact -->
+    <div class="space-y-3 transform transition hover:-translate-y-1 hover:scale-105">
+      <h5 class="font-bold text-lg text-orange-400">Contact</h5>
+      <ul class="space-y-1 text-gray-300">
+        <li class="flex items-center"><i class="bi bi-envelope-fill text-orange-400 mr-2"></i> nduwamungudism7@gmail.com</li>
+        <li class="flex items-center"><i class="bi bi-phone-fill text-orange-400 mr-2"></i> +257 69 080 278</li>
+      </ul>
+    </div>
+
+    <!-- Bloc 3 : Réseaux sociaux -->
+    <div class="space-y-3 transform transition hover:-translate-y-1 hover:scale-105">
+      <h5 class="font-bold text-lg text-orange-400">Suivez-nous</h5>
+      <div class="flex space-x-4 text-3xl">
+        <a href="#" class="hover:text-white"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="hover:text-white"><i class="bi bi-twitter"></i></a>
+        <a href="#" class="hover:text-white"><i class="bi bi-instagram"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-8 text-gray-400">&copy; 2025-2026 KASACO — Mr.Django</div>
+
+  <style>
+    @keyframes fadeUp { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
+    .animate-fadeUp { animation: fadeUp 0.8s ease forwards; }
+  </style>
+</footer>
 
 </body>
 </html>

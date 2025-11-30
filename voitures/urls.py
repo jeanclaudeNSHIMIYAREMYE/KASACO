@@ -7,13 +7,13 @@ from . import views
 urlpatterns = [
     # -------------------- Accueil et Auth --------------------
     path("", views.home, name="home"),
-    path("signup/", views.signup_view, name="signup"),
-    path("login/", views.login_view, name="login"),
-    path("logout/", views.logout_view, name="logout"),
+    path("inscrire/", views.signup_view, name="signup"),
+    path("connexion/", views.login_view, name="login"),
+    path("deconnexion/", views.logout_view, name="logout"),
     path("redirect/", views.redirect_by_role, name="redirect_by_role"),
     # -------------------- Dashboards --------------------
-    path("dashboard/admin/", views.admin_dashboard, name="dashboard_admin"),
-    path("user/home/", views.user_home, name="user_home"),
+    path("tableau_de_bord/admin/", views.admin_dashboard, name="dashboard_admin"),
+    path("utilisateur/acceuil/", views.user_home, name="user_home"),
     # -------------------- Gestion utilisateurs --------------------
     path("utilisateurs/", views.utilisateurs_list, name="utilisateurs_list"),
     path(
@@ -28,7 +28,7 @@ urlpatterns = [
     ),
     # -------------------- Gestion marques --------------------
     path("marques/", views.liste_marques, name="liste_marques"),
-    path("mark/add/", views.add_mark, name="add_mark"),
+    path("marque/ajouter/", views.add_mark, name="add_mark"),
     path(
         "marques/supprimer/<int:id>/", views.supprimer_marque, name="supprimer_marque"
     ),
@@ -55,6 +55,9 @@ urlpatterns = [
         name="reserver_voiture",
     ),
     path("reserver/", views.reserver, name="reserver"),
+    path("info", views.info, name="info"),
+    path("contact/", views.contact_view, name="contact"),
+    path("mes-reservations/", views.mes_reservations, name="mes_reservations"),
 ]
 
 # -------------------- Media files --------------------

@@ -46,8 +46,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "crispy_forms",
+    "tailwind",
     "crispy_bootstrap4",
     "voitures",
+    "theme",
+    "widget_tweaks",
 ]
 
 MIDDLEWARE = [
@@ -134,6 +137,12 @@ STATICFILES_DIRS = [
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+TAILWIND_APP_NAME = "theme"
+# settings.py
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
 
 
 # settings.py

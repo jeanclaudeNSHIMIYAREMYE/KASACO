@@ -1,10 +1,19 @@
-<main class="container my-5 pt-5">
-    <!-- Barre de recherche -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <form class="input-group shadow-sm" method="get">
-                <input type="search" name="item_name" class="form-control form-control-borderless" placeholder="Rechercher une voiture...">
-                <button class="btn btn-success" type="submit">Rechercher</button>
-            </form>
-        </div>
-    </div>
+<main class="container mx-auto my-5 pt-5 px-4">
+  <!-- Barre de recherche -->
+  <div class="mb-4">
+    <form method="get" class="flex shadow-sm rounded overflow-hidden">
+      <input
+        type="search"
+        name="item_name"
+        placeholder="Rechercher une voiture..."
+        class="flex-grow px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+      >
+      <button
+        type="submit"
+        class="bg-green-500 text-white px-4 py-2 hover:bg-green-600 transition"
+      >
+        Rechercher
+      </button>
+    </form>
+  </div>
+</main>

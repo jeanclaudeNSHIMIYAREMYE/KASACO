@@ -1,89 +1,203 @@
 {% extends "voiture/admin/dashboard.html" %}
-
 {% block content %}
-<div class="container mt-4">
 
-    <h2 class="mb-4">
-        <i class="fa fa-car me-2 text-primary"></i> Gestion des Voitures
-    </h2>
+<div class="container mx-auto mt-6 px-4">
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
+    <!-- Titre -->
+    <div class="flex items-center mb-6">
+        <i class="fa fa-car text-blue-600 text-2xl mr-2"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Gestion des Voitures</h2>
+    </div>
+
+    <!-- Messages de succès -->
+    <div id="messages-container" class="fixed top-6 right-6 z-50 space-y-2">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-green-100 border border-green-400 text-green-800 px-4 py-2 rounded shadow-lg flex justify-between items-center opacity-0 transform translate-y-4 transition-all duration-500" id="msg{{ forloop.counter }}">
+                    <span><i class="fa fa-check-circle mr-2"></i>{{ message }}</span>
+                    <button type="button" onclick="this.parentElement.remove()" class="text-green-700 font-bold">&times;</button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 
     <!-- Bouton Ajouter -->
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addVoitureModal">
-        <i class="fa fa-plus me-1"></i> Ajouter une voiture
+    <button id="btnAddVoiture" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 flex items-center mb-4 transition transform hover:scale-105">
+        <i class="fa fa-plus mr-2"></i> Ajouter une voiture
     </button>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <table class="table table-bordered table-striped text-center">
-                <thead class="table-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>Marque</th>
-                        <th>Modèle</th>
-                        <th>Numéro Châssis</th>
-                        <th>Numéro Moteur</th>
-                        <th>Année</th>
-                        <th>Prix</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for voiture in voitures %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ voiture.marque.nom }}</td>
-                            <td>{{ voiture.modele.nom }}</td>
-                            <td>{{ voiture.numero_chassis }}</td>
-                            <td>{{ voiture.numero_moteur }}</td>
-                            <td>{{ voiture.annee }}</td>
-                            <td>{{ voiture.prix }}</td>
-                            <td>
-                                <a href="{% url 'supprimer_voiture' voiture.id %}"
-                                   class="btn btn-danger btn-sm"
-                                   onclick="return confirm('Supprimer cette voiture ?')">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="8">Aucune voiture trouvées.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <!-- Formulaire Ajouter Voiture (caché par défaut) -->
+    <div id="formAddVoiture" class="bg-white p-6 rounded-xl shadow-lg mb-6 hidden">
+        <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+            <i class="fa fa-car-side text-blue-500 mr-2"></i> Nouveau véhicule
+        </h3>
+
+        <form method="POST" action="{% url 'ajouter_voiture' %}" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Champs Marque et Modèle -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Marque <span class="text-red-500">*</span></label>
+                    {{ form.marque }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Modèle <span class="text-red-500">*</span></label>
+                    {{ form.modele }}
+                </div>
+            </div>
+
+            <!-- Numéros Châssis et Moteur -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Numéro Châssis</label>
+                    {{ form.numero_chassis }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Numéro Moteur</label>
+                    {{ form.numero_moteur }}
+                </div>
+            </div>
+
+            <!-- Année et Cylindrée -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Année</label>
+                    {{ form.annee }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Cylindrée (CC)</label>
+                    {{ form.cylindree_cc }}
+                </div>
+            </div>
+
+            <!-- Transmission et Kilométrage -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Transmission</label>
+                    {{ form.transmission }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Kilométrage</label>
+                    {{ form.kilometrage }}
+                </div>
+            </div>
+
+            <!-- Couleur et Prix -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Couleur</label>
+                    {{ form.couleur }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Prix</label>
+                    {{ form.prix }}
+                </div>
+            </div>
+
+            <!-- État et Photo -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">État</label>
+                    {{ form.etat }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Photo</label>
+                    {{ form.photo }}
+                </div>
+            </div>
+
+            <!-- Boutons -->
+            <div class="flex justify-end space-x-2">
+                <button type="button" id="btnCancel" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 flex items-center">
+                    <i class="fa fa-times mr-2"></i> Annuler
+                </button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center">
+                    <i class="fa fa-check mr-2"></i> Publier
+                </button>
+            </div>
+        </form>
     </div>
+
+    <!-- Table des voitures -->
+    <div class="bg-white p-4 rounded-xl shadow-lg overflow-x-auto">
+        <table class="min-w-full table-auto border border-gray-200 text-center">
+            <thead class="bg-gray-800 text-white">
+                <tr>
+                    <th class="px-4 py-2">#</th>
+                    <th class="px-4 py-2">Marque</th>
+                    <th class="px-4 py-2">Modèle</th>
+                    <th class="px-4 py-2">Numéro Châssis</th>
+                    <th class="px-4 py-2">Numéro Moteur</th>
+                    <th class="px-4 py-2">Année</th>
+                    <th class="px-4 py-2">Cylindrée</th>
+                    <th class="px-4 py-2">Transmission</th>
+                    <th class="px-4 py-2">Kilométrage</th>
+                    <th class="px-4 py-2">Couleur</th>
+                    <th class="px-4 py-2">Prix</th>
+                    <th class="px-4 py-2">État</th>
+                    <th class="px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for voiture in voitures %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-4 py-2">{{ forloop.counter }}</td>
+                    <td class="px-4 py-2">{{ voiture.marque.nom }}</td>
+                    <td class="px-4 py-2">{{ voiture.modele.nom }}</td>
+                    <td class="px-4 py-2">{{ voiture.numero_chassis }}</td>
+                    <td class="px-4 py-2">{{ voiture.numero_moteur }}</td>
+                    <td class="px-4 py-2">{{ voiture.annee }}</td>
+                    <td class="px-4 py-2">{{ voiture.cylindree_cc }}</td>
+                    <td class="px-4 py-2">{{ voiture.transmission }}</td>
+                    <td class="px-4 py-2">{{ voiture.kilometrage }}</td>
+                    <td class="px-4 py-2">{{ voiture.couleur }}</td>
+                    <td class="px-4 py-2">{{ voiture.prix }}</td>
+                    <td class="px-4 py-2">{{ voiture.etat }}</td>
+                    <td class="px-4 py-2 flex justify-center space-x-2">
+                        <a href="{% url 'supprimer_voiture' voiture.id %}" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded flex items-center" onclick="return confirm('Supprimer cette voiture ?')">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="13" class="py-4">Aucune voiture trouvée.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </div>
 
-<!-- MODAL Ajouter une Voiture -->
-<div class="modal fade" id="addVoitureModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form method="POST" action="{% url 'ajouter_voiture' %}" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">Ajouter une voiture</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    {{ form.as_p }}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Publier</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const btnAdd = document.getElementById('btnAddVoiture');
+    const form = document.getElementById('formAddVoiture');
+    const btnCancel = document.getElementById('btnCancel');
+
+    // Toggle formulaire
+    btnAdd.addEventListener('click', () => form.classList.remove('hidden'));
+    btnCancel.addEventListener('click', () => form.classList.add('hidden'));
+
+    // Messages de succès
+    const messages = document.querySelectorAll('#messages-container div');
+    messages.forEach((msg, index) => {
+        // Apparition avec fade + slide
+        setTimeout(() => {
+            msg.classList.remove('opacity-0', 'translate-y-4');
+            msg.classList.add('opacity-100', 'translate-y-0');
+        }, 100 * index);
+
+        // Disparaît après 2 secondes
+        setTimeout(() => {
+            msg.classList.add('opacity-0', 'translate-y-4');
+            msg.classList.remove('opacity-100', 'translate-y-0');
+            setTimeout(() => msg.remove(), 500);
+        }, 2000);
+    });
+});
+</script>
+
 {% endblock content %}

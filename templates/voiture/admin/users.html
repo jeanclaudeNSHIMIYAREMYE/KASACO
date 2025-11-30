@@ -1,112 +1,123 @@
-{% extends "voiture/admin/dashboard.html" %}
+{% extends "voiture/admin/navbar.html" %}
+
 {% block content %}
 
-<div class="container-fluid mt-4">
+<div class="container mx-auto mt-6 px-4">
 
-    <!-- Title + Action Bar -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">
-            <i class="fa fa-users me-2 text-primary"></i>
-            Gestion des Utilisateurs
-        </h2>
+  <!-- Title -->
+  <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+          <i class="fa fa-users text-blue-600 mr-2"></i>
+          Gestion des Utilisateurs
+      </h2>
+  </div>
+
+  <!-- Users List Card -->
+  <div class="bg-white shadow-lg rounded-2xl border border-gray-200 overflow-hidden">
+
+    <!-- Card Header -->
+    <div class="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 flex justify-between items-center">
+        <h5 class="font-semibold text-lg flex items-center">
+            <i class="fa fa-list mr-2"></i> Liste des utilisateurs
+        </h5>
     </div>
 
-    <!-- Users List Card -->
-    <div class="card shadow rounded-3 border-0">
+    <!-- Messages Flash -->
+    {% if messages %}
+      <div class="my-4">
+        {% for message in messages %}
+          <div class="bg-green-500 text-white px-4 py-2 rounded shadow mb-2 animate-fadeOut">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
 
-        <!-- Card Header -->
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
-            <h5 class="mb-0"><i class="fa fa-list me-2"></i>Liste des utilisateurs</h5>
-        </div>
+    <!-- Card Body -->
+    <div class="p-6 overflow-x-auto">
+      <table id="usersTable" class="min-w-full table-auto border-collapse text-sm">
+        <thead class="bg-gray-100 text-gray-700 uppercase text-xs font-semibold">
+          <tr class="text-center">
+            <th class="px-4 py-2 border">#</th>
+            <th class="px-4 py-2 border">Nom d'utilisateur</th>
+            <th class="px-4 py-2 border">Email</th>
+            <th class="px-4 py-2 border">Rôle</th>
+            <th class="px-4 py-2 border">Date d'inscription</th>
+            <th class="px-4 py-2 border">Actions</th>
+          </tr>
+        </thead>
 
-        <!-- Card Body -->
-        <div class="card-body">
-            <table id="usersTable" class="table table-striped table-hover table-bordered align-middle">
-                <thead class="table-dark text-center">
-                    <tr>
-                        <th>#</th>
-                        <th>Nom d'utilisateur</th>
-                        <th>Email</th>
-                        <th>Rôle</th>
-                        <th>Date d'inscription</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+        <tbody>
+          {% for user in users %}
+          <tr class="text-center border-b hover:bg-gray-50">
+            <td class="px-4 py-2">{{ forloop.counter }}</td>
 
-                <tbody>
-                    {% for user in users %}
-                    <tr class="text-center">
-                        <td>{{ forloop.counter }}</td>
+            <td class="text-left px-4 py-2 flex items-center space-x-2">
+              <i class="fa fa-user-circle text-gray-400"></i>
+              <span class="font-medium">{{ user.username }}</span>
+            </td>
 
-                        <td class="text-start fw-semibold">
-                            <i class="fa fa-user-circle text-secondary me-1"></i>
-                            {{ user.username }}
-                        </td>
+            <td class="text-left px-4 py-2">{{ user.email }}</td>
 
-                        <td class="text-start">{{ user.email }}</td>
+            <td class="px-4 py-2">
+              {% if user.is_staff %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-500 text-white text-xs font-semibold">
+                  <i class="fa fa-shield-alt mr-1"></i> Admin
+                </span>
+              {% else %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-400 text-white text-xs font-semibold">
+                  <i class="fa fa-user mr-1"></i> Utilisateur
+                </span>
+              {% endif %}
+            </td>
 
-                        <td>
-                            {% if user.is_staff %}
-                                <span class="badge bg-success px-3 py-2">
-                                    <i class="fa fa-shield-alt me-1"></i> Admin
-                                </span>
-                            {% else %}
-                                <span class="badge bg-secondary px-3 py-2">
-                                    <i class="fa fa-user me-1"></i> Utilisateur
-                                </span>
-                            {% endif %}
-                        </td>
+            <td class="px-4 py-2">{{ user.date_joined|date:"d/m/Y H:i" }}</td>
 
-                        <td>{{ user.date_joined|date:"d/m/Y H:i" }}</td>
+            <td class="px-4 py-2">
+              <div class="flex justify-center space-x-2">
+                <!-- Change Role -->
+                <a href="{% url 'changer_role' user.id %}"
+                   class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg text-sm flex items-center justify-center"
+                   title="Changer rôle">
+                   <i class="fa fa-exchange-alt"></i>
+                </a>
 
-                        <td>
-                            <div class="btn-group">
-                                <!-- Change Role -->
-                                <a href="{% url 'changer_role' user.id %}"
-                                   class="btn btn-warning btn-sm"
-                                   title="Changer rôle">
-                                    <i class="fa fa-exchange-alt"></i>
-                                </a>
-
-                                <!-- Delete -->
-                                <a href="{% url 'supprimer_utilisateur' user.id %}"
-                                   class="btn btn-danger btn-sm"
-                                   title="Supprimer"
-                                   onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?')">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                <!-- Delete -->
+                <a href="{% url 'supprimer_utilisateur' user.id %}"
+                   class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm flex items-center justify-center"
+                   title="Supprimer"
+                   onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?')">
+                   <i class="fa fa-trash"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+  </div>
 </div>
 
 <!-- DataTables Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.tailwind.min.js"></script>
 
 <script>
-$(document).ready(function() {
-    $('#usersTable').DataTable({
-        language: {
-            search: "Rechercher :",
-            lengthMenu: "Afficher _MENU_ entrées",
-            info: "Affichage de _START_ à _END_ sur _TOTAL_ utilisateurs",
-            paginate: { first: "Premier", last: "Dernier", next: "Suivant", previous: "Précédent" }
-        },
-        responsive: true,
-        pageLength: 10,
-        columnDefs: [
-            { orderable: false, targets: 5 } // Actions non triables
-        ]
-    });
-});
+
 </script>
+
+<!-- Animation fadeOut pour messages flash -->
+<style>
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.animate-fadeOut {
+  animation: fadeOut 2s forwards;
+}
+</style>
 
 {% endblock content %}

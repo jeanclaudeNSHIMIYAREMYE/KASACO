@@ -1,214 +1,143 @@
+{% extends "voiture/user/navUser.html" %}
 {% load static %}
+{% block content %}
 
-<!DOCTYPE html>
-
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}KASACO{% endblock %}</title>
-
-```
-<!-- Bootstrap CSS 5 -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-<!-- CSS personnalisé -->
-<link rel="stylesheet" href="{% static 'styles.css' %}">
-
-<!-- Favicon -->
-<link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
-
-
-
-</head>
-
-<body>
-
-    {% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-      {{ message }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  {% endfor %}
-{% endif %}
-
-<!-- ======== Navbar ======== -->
-
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
-  <div class="container">
-    <a class="navbar-brand fw-bold text-danger d-flex align-items-center" href="#">
-        <img src="{% static 'images/logo.png' %}" alt="Logo" width="70" class="me-2">
-
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-  <ul class="navbar-nav align-items-lg-center">
-    <li class="nav-item"><a class="nav-link" href="#">Chercher des voitures</a></li>
-    <li class="nav-item"><a class="nav-link" href="#">Comment acheter</a></li>
-    <li class="nav-item"><a class="nav-link" href="#">Pourquoi choisir KASACO</a></li>
-    <li class="nav-item"><a class="nav-link" href="#">Support</a></li>
-    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Déconnexion</a></li>
-  </ul>
-</div>
-
-
-  </div>
-</nav>
-
-<!-- ======== Contenu principal ======== -->
-{% include 'voiture/user/chercher.html' %}
-<!-- Cartes voitures -->
-<div class="row">
-    {% for voiture in voitures %}
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-        <div class="card h-100 shadow-sm">
-
-            {% if voiture.photo %}
-                <img src="{{ voiture.photo.url }}" alt="{{ voiture.modele.nom }}" class="card-img-top">
-            {% else %}
-                <img src="{% static 'images/mazda.png' %}" alt="Voiture par défaut" class="card-img-top">
-            {% endif %}
-
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title" id="aa{{ voiture.id }}">
-                    {{ voiture.marque.nom }} - {{ voiture.modele.nom }} ({{ forloop.counter }})
-                </h5>
-
-                <p class="card-text text-warning fw-bold">
-                    Prix : <span id="price{{ voiture.id }}">{{ voiture.prix }}</span> $
-                </p>
-
-
-
-
-                <div class="mt-auto d-flex flex-column gap-1">
-                    <a href="{% url 'details' voiture.id %}" class="btn btn-warning btn-sm">Voir</a>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- ===== Flash Messages ===== -->
+<div id="messages-container" class="fixed top-20 right-4 space-y-2 z-50">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="bg-green-200 text-green-900 px-5 py-3 rounded-lg shadow-lg transform transition-all duration-500 opacity-0 translate-x-10" id="msg{{ forloop.counter }}">
+        {{ message }}
+      </div>
     {% endfor %}
+  {% endif %}
 </div>
-
-<!-- Pagination -->
-<nav>
-    <ul class="pagination justify-content-center">
-        {% if voitures.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ voitures.previous_page_number }}">Précédent</a>
-            </li>
-        {% else %}
-            <li class="page-item disabled"><a class="page-link" href="#">Précédent</a></li>
-        {% endif %}
-
-        {% for num in voitures.paginator.page_range %}
-            <li class="page-item {% if num == voitures.number %}active{% endif %}">
-                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-            </li>
-        {% endfor %}
-
-        {% if voitures.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ voitures.next_page_number }}">Suivant</a>
-            </li>
-        {% else %}
-            <li class="page-item disabled"><a class="page-link" href="#">Suivant</a></li>
-        {% endif %}
-    </ul>
-</nav>
-
-{% block content %}{% endblock %}
-
-
-</main>
-
-<!-- ======== Footer ======== -->
-<!-- ======== Pied de page ======== -->
-<footer class="bg-dark text-white py-4 mt-auto">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold">KARINZI SAB COMPANY "KASACO"</h5>
-                <p>* Vente et importation des véhicules locales</p>
-                <p>* Vente et importation des véhicules en ligne</p>
-                <p>* Garages.</p>
-            </div>
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold">Contact & Infos Légales</h5>
-                <p>Email: nduwamungudism7@gmail.com</p>
-                <p>Téléphone: +257 69 080 278 / +257 62 227 155</p>
-                <p>Adresse: Bujumbura-Burundi, Commune Ntahangwa, Avenue: OUA Maison Saint Pierre, 1er étage D1; D2</p>
-                <p>NIF: 4002477083; RC: 0051659/23</p>
-            </div>
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold">Suivez-nous</h5>
-                <p>
-                    <a href="#" class="text-white me-2">Facebook</a>
-                    <a href="#" class="text-white me-2">Twitter</a>
-                    <a href="#" class="text-white">Instagram</a>
-                </p>
-            </div>
-        </div>
-        <div class="text-center mt-3">
-            <!-- Copyright information kept from the original snippet -->
-            <p class="mb-0">&copy; KASACO 2025-2026. Mr.Django.Z-Pro.</p>
-        </div>
-    </div>
-</footer>
-
-
-
-<!-- Scripts JS -->
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
-    // Popover
-    $(function () { $('[data-toggle="popover"]').popover(); });
+document.addEventListener("DOMContentLoaded", () => {
+  const messages = document.querySelectorAll('#messages-container div');
+  messages.forEach((msg, index) => {
+    setTimeout(() => {
+      msg.classList.remove('opacity-0', 'translate-x-10');
+      msg.classList.add('opacity-100', 'translate-x-0');
+    }, 100 * index);
 
-    // Gestion panier
-    let panier = JSON.parse(localStorage.getItem('panier') || '{}');
-    function afficherPanier() {
-        let contenu = "<h5>Voici votre liste</h5>";
-        let index = 1;
-        for (let id in panier) {
-            contenu += index + ". " + panier[id][1] + " Qte: " + panier[id][0] + "<br>";
-            index++;
-        }
-        contenu += "<a href='/checkout' class='btn btn-primary mt-2'>Checkout</a>";
-        $('#panier').attr('data-content', contenu);
-    }
-    afficherPanier();
-
-    $(document).on('click', '.ted', function() {
-        let item_id = this.id.toString();
-        let prix = parseFloat(document.getElementById("price"+item_id).innerHTML);
-        let nom = document.getElementById("aa"+item_id).innerHTML;
-
-        if (panier[item_id]) {
-            panier[item_id][0] += 1;
-            panier[item_id][2] += prix;
-        } else {
-            panier[item_id] = [1, nom, prix];
-        }
-
-        localStorage.setItem('panier', JSON.stringify(panier));
-        document.getElementById("panier").innerHTML = "Panier(" + Object.keys(panier).length + ")";
-        afficherPanier();
-    });
+    setTimeout(() => {
+      msg.classList.add('opacity-0', 'translate-x-10');
+      msg.classList.remove('opacity-100', 'translate-x-0');
+      setTimeout(() => msg.remove(), 500);
+    }, 3000);
+  });
+});
 </script>
 
-{% block js %}{% endblock %}
+<script>
+const btn = document.getElementById('menu-btn');
+const menu = document.getElementById('menu');
+if(btn && menu) {
+  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+}
+</script>
 
-</body>
-</html>
+<!-- ===== Contenu principal ===== -->
+<main class="container mx-auto mt-28 px-4">
+  {% include 'voiture/user/chercher.html' %}
+
+  <!-- Cartes voitures -->
+  {% if voitures %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+    {% for voiture in voitures %}
+      <div class="bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-xl shadow-lg overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2 animate-fadeIn">
+        <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/mazda.png' %}{% endif %}"
+             alt="{{ voiture.modele.nom }}" class="w-full h-48 object-cover transition-transform duration-500 hover:scale-110">
+        <div class="p-4 flex flex-col h-48 justify-between">
+          <h5 class="font-bold text-lg text-gray-800">{{ voiture.marque.nom }} - {{ voiture.modele.nom }}</h5>
+          <p class="text-red-600 font-bold text-lg">Prix : {{ voiture.prix }} $</p>
+          <a href="{% url 'details' voiture.id %}" class="mt-2 bg-red-600 text-white px-3 py-2 rounded-lg text-center hover:bg-red-700 hover:scale-105 transition transform duration-300 shadow-lg">
+            Voir détails
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="text-center text-gray-500 mt-6 animate-fadeIn">Aucune voiture disponible pour le moment.</p>
+  {% endif %}
+
+  <!-- Pagination -->
+  {% if voitures.has_other_pages %}
+  <div class="mt-6 flex justify-center animate-fadeIn">
+    <ul class="inline-flex -space-x-px">
+      {% if voitures.has_previous %}
+        <li><a href="?page={{ voitures.previous_page_number }}" class="px-3 py-1 bg-gray-200 rounded-l hover:bg-gray-300 transition">« Précédent</a></li>
+      {% endif %}
+      {% for num in voitures.paginator.page_range %}
+        <li>
+          <a href="?page={{ num }}" class="px-3 py-1 {% if num == voitures.number %}bg-red-600 text-white{% else %}bg-gray-200 hover:bg-gray-300{% endif %} transition">{{ num }}</a>
+        </li>
+      {% endfor %}
+      {% if voitures.has_next %}
+        <li><a href="?page={{ voitures.next_page_number }}" class="px-3 py-1 bg-gray-200 rounded-r hover:bg-gray-300 transition">Suivant »</a></li>
+      {% endif %}
+    </ul>
+  </div>
+  {% endif %}
+</main>
+
+<!-- ===== Footer ===== -->
+<footer class="bg-gradient-to-t from-gray-900 via-gray-800 to-gray-900 text-white py-12 mt-12">
+  <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 animate-fadeUp">
+    <!-- Bloc 1 : Infos KASACO -->
+    <div class="space-y-3 transform transition duration-500 hover:-translate-y-1 hover:scale-105">
+      <h5 class="font-bold text-lg mb-2 text-orange-400">KARINZI SAB COMPANY "KASACO"</h5>
+      <ul class="space-y-1 text-gray-300">
+        <li class="hover:text-white transition"><i class="bi bi-car-front-fill mr-2"></i>Vente et importation locales</li>
+        <li class="hover:text-white transition"><i class="bi bi-globe2 mr-2"></i>Vente en ligne</li>
+        <li class="hover:text-white transition"><i class="bi bi-tools mr-2"></i>Garages</li>
+      </ul>
+    </div>
+
+    <!-- Bloc 2 : Contact & infos légales -->
+    <div class="space-y-3 transform transition duration-500 hover:-translate-y-1 hover:scale-105">
+      <h5 class="font-bold text-lg mb-2 text-orange-400">Contact & Infos Légales</h5>
+      <ul class="space-y-1 text-gray-300">
+        <li class="hover:text-white transition"><i class="bi bi-envelope-fill mr-2"></i>Email: nduwamungudism7@gmail.com</li>
+        <li class="hover:text-white transition"><i class="bi bi-telephone-fill mr-2"></i>Téléphone: +257 69 080 278</li>
+      </ul>
+    </div>
+
+    <!-- Bloc 3 : Réseaux sociaux -->
+    <div class="space-y-3 transform transition duration-500 hover:-translate-y-1 hover:scale-105">
+      <h5 class="font-bold text-lg mb-2 text-orange-400">Suivez-nous</h5>
+      <div class="flex space-x-4 text-3xl">
+        <a href="#" class="text-blue-500 hover:text-white transition transform hover:scale-125"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="text-sky-400 hover:text-white transition transform hover:scale-125"><i class="bi bi-twitter"></i></a>
+        <a href="#" class="text-pink-500 hover:text-white transition transform hover:scale-125"><i class="bi bi-instagram"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="text-center mt-8 text-gray-400 animate-fadeUpSmall">&copy; 2025-2026 KASACO. Mr.Django.Z-Pro.</div>
+
+  <!-- ===== Footer Animations ===== -->
+  <style>
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUpSmall {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeUp { animation: fadeUp 0.8s ease forwards; }
+    .animate-fadeUpSmall { animation: fadeUpSmall 0.8s ease forwards; }
+    .animate-fadeIn { animation: fadeIn 0.8s ease forwards; }
+  </style>
+</footer>
+
+{% endblock %}

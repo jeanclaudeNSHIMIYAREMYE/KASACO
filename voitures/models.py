@@ -93,20 +93,14 @@ class Voiture(models.Model):
 
 # --- Reservation ---
 class Reservation(models.Model):
-    utilisateur = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reservations"
-    )
-    voiture = models.OneToOneField(
-        Voiture, on_delete=models.CASCADE, related_name="reservation"
-    )
+    voiture = models.OneToOneField(Voiture, on_delete=models.CASCADE)
+    utilisateur = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     date_reservation = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Réservation"
-        verbose_name_plural = "Réservations"
-
-    def __str__(self):
-        return f"Réservation de {self.voiture} par {self.utilisateur.username}"
+        constraints = [
+            models.UniqueConstraint(fields=["voiture"], name="unique_voiture_active")
+        ]
 
 
 # --- ContactInfo ---

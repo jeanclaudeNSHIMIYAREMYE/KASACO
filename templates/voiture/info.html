@@ -1,0 +1,110 @@
+{% extends "voiture/navigation.html" %}
+{% block content %}
+{% load static %}
+
+<!-- Wrapper full page avec image de fond -->
+<div class="min-h-screen w-full bg-cover bg-center flex flex-col items-center justify-start"
+     style="background-image: url('{% static 'images/honda.jpg' %}');">
+
+    <!-- Espacement en haut -->
+    <div class="w-full h-32"></div>
+
+    <main class="container mx-auto px-6">
+
+        <!-- Titre principal -->
+        <h1 class="text-5xl font-extrabold text-center mb-16 text-gray-900 drop-shadow-lg tracking-tight">
+            Bienvenue chez
+            <span class="text-red-600">KASACO</span>
+        </h1>
+
+        <!-- Section Contact -->
+        <section id="contactSection"
+                 class="py-20 bg-white bg-opacity-90 rounded-3xl shadow-xl border border-gray-200 backdrop-blur-sm">
+
+            <h2 class="text-4xl font-bold mb-14 text-center text-gray-800 tracking-wide">
+                Contactez-nous
+            </h2>
+
+            {% if contact_info %}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center px-6">
+
+                <!-- WhatsApp Card -->
+                <div class="bg-white rounded-3xl p-10 shadow-lg backdrop-blur-sm border border-gray-100
+                            hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                    <div class="flex justify-center mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-16 w-16 text-green-500 drop-shadow-md animate-[bounce_2s_infinite]"
+                             fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.52 3.48A11.92 11.92 0 0012 0C5.37 0 0 5.37 0 12a11.96 11.96 0 001.68 6.04L0 24l5.96-1.68A11.96 11.96 0 0012 24c6.63 0 12-5.37 12-12a11.92 11.92 0 00-3.48-8.52zm-8.52 19a9.92 9.92 0 01-5.14-1.43l-.36-.21-3.53.99.94-3.44-.24-.36A9.92 9.92 0 012 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10zm5.19-7.56c-.28-.14-1.65-.81-1.91-.91-.27-.1-.46-.14-.65.14-.18.27-.72.91-.88 1.1-.16.18-.32 .2-.59 .07-.27-.14-1.13-.42-2.15-1.33-.79-.7-1.32-1.56-1.48-1.83-.16-.27-.02-.42 .12-.55.12-.12 .27-.32 .41-.48 .14-.16 .18-.27 .27-.45 .09-.18 .05-.34-.03-.48-.09-.14-.65-1.57-.89-2.16-.23-.56-.46-.48-.65-.49-.16 0-.34 0-.52 0-.18 0-.48 .07-.73 .34-.27 .27-1.03 1.01-1.03 2.46s1.06 2.86 1.21 3.06c.14.18 2.1 3.2 5.08 4.49.71 .31 1.26 .49 1.69 .63.71 .23 1.36 .2 1.87 .12.57-.1 1.65-.67 1.88-1.32.23-.65 .23-1.2 .16-1.32-.07-.12-.27-.18-.55-.32z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-semibold text-gray-800 mb-3">WhatsApp</h4>
+                    <p class="text-gray-600 text-lg font-medium">
+                        {{ contact_info.telephone_whatsapp }}
+                    </p>
+                </div>
+
+                <!-- Email Card -->
+                <div class="bg-white rounded-3xl p-10 shadow-lg backdrop-blur-sm border border-gray-100
+                            hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                    <div class="flex justify-center mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-16 w-16 text-blue-500 drop-shadow-md animate-pulse"
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 4h16v16H4z M22 6l-10 7L2 6"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-semibold text-gray-800 mb-3">Email</h4>
+                    <p class="text-gray-600 text-lg font-medium">
+                        {{ contact_info.email }}
+                    </p>
+                </div>
+
+                <!-- Adresse Card -->
+                <div class="bg-white rounded-3xl p-10 shadow-lg backdrop-blur-sm border border-gray-100
+                            hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                    <div class="flex justify-center mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-16 w-16 text-red-500 drop-shadow-md animate-[bounce_2s_infinite]"
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 11a3 3 0 100-6 3 3 0 000 6z M12 2a7 7 0 017 7c0 5-7 13-7 13S5 14 5 9a7 7 0 017-7z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-semibold text-gray-800 mb-3">Adresse</h4>
+                    <p class="text-gray-600 text-lg font-medium">
+                        {{ contact_info.adresse }}
+                    </p>
+                </div>
+
+            </div>
+            {% else %}
+                <p class="text-center text-gray-500 mt-6 text-xl">
+                    Informations de contact non disponibles.
+                </p>
+            {% endif %}
+        </section>
+
+        <!-- Bouton Contact rapide -->
+        <div class="flex justify-center mt-16">
+            <a href="#contactSection"
+               class="flex items-center px-8 py-4 text-lg rounded-full bg-blue-600 text-white font-semibold
+                      hover:bg-blue-700 transition hover:shadow-xl hover:-translate-y-1 duration-300 animate-bounce">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-6 w-6 mr-2"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M2 12h20m-6-6l6 6-6 6"/>
+                </svg>
+                Nous contacter
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Espacement en bas -->
+    <div class="w-full h-16"></div>
+
+</div>
+{% endblock content %}
