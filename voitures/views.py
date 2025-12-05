@@ -6,9 +6,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from .decorators import role_required
 from .forms import (CustomerLoginForm, CustomUserCreationForm, MarqueForm,
-                    ModeleForm, VoitureForm)
+                    ModeleForm, VoitureForm ,ImageForm)
 from .models import (Commande, ContactInfo, CustomUser, Marque, Modele,
-                     Reservation, Voiture)
+                     Reservation, Voiture ,Image)
 
 
 # ----------------- Page d'accueil -----------------
@@ -122,67 +122,79 @@ def reserver_voiture(request, voiture_id):
 
 
 # ----------------- Liste des réservations -----------------
-@role_required("admin")
-def reserver(request, voiture_id):
+@role_required("user")
+def reserver_voiture(request, voiture_id):
     voiture = get_object_or_404(Voiture, id=voiture_id)
 
-    # Vérifier si la voiture est déjà réservée
-    if Reservation.objects.filter(voiture=voiture).exists():
-        messages.error(request, "❌ Cette voiture est déjà réservée.")
-        return redirect("reserver_admin")  # ou la page de détail
+    if voiture.etat == "Disponible":
+        Reservation.objects.create(utilisateur=request.user, voiture=voiture)
+        voiture.reserver()  # Assurez-vous que la méthode 'reserver' existe dans le modèle Voiture
+        messages.success(
+            request,
+            f"Vous avez réservé la voiture {voiture.marque.nom} {voiture.modele.nom} avec succès !",
+        )
+    else:
+        messages.warning(request, "Cette voiture est déjà réservée.")
+    return redirect("user_home")
 
-    # Créer la réservation
-    Reservation.objects.create(voiture=voiture, utilisateur=request.user)
 
-    # Mettre à jour l'état de la voiture
-    voiture.etat = "Réservée"
-    voiture.save()
+# ----------------- Liste des réservations -----------------
 
-    messages.success(request, "✅ Voiture réservée avec succès !")
-    return redirect("details", myid=voiture.id)
+
+@role_required("admin")
+def reserver(request):
+    # Récupérer toutes les réservations avec info voiture et utilisateur
+    voitures_reservees = Reservation.objects.select_related(
+        'voiture', 'utilisateur', 'voiture__marque', 'voiture__modele'
+    ).all().order_by('-date_reservation')
+
+    # Statistiques
+    total_voitures = Voiture.objects.count()
+    total_reservees = Reservation.objects.count()
+    total_utilisateurs = CustomUser.objects.count()
+
+    # Pagination (10 réservations par page)
+    paginator = Paginator(voitures_reservees, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "page_obj": page_obj,
+        "voitures_reservees": page_obj,  # Pour itérer dans le template
+        "total_voitures": total_voitures,
+        "total_reservees": total_reservees,
+        "total_utilisateurs": total_utilisateurs,
+    }
+
+    return render(request, "voiture/admin/reserver.html", context)
+
 
 
 # ----------------- Détails d'une voiture -----------------
 def detail(request, myid):
     voiture = get_object_or_404(Voiture, id=myid)
-    return render(request, "voiture/user/details.html", {"voiture": voiture})
+    images_supp = Image.objects.filter(voiture=voiture)
 
-
-# ----------------- Checkout -----------------
-def checkout(request):
-    if request.method == "POST":
-        items = request.POST.get("items")
-        total = request.POST.get("total")
-        nom = request.POST.get("nom")
-        email = request.POST.get("email")
-        address = request.POST.get("address")
-        ville = request.POST.get("ville")
-        pays = request.POST.get("pays")
-        zipcode = request.POST.get("zipcode")
-
-        com = Commande(
-            items=items,
-            total=total,
-            nom=nom,
-            email=email,
-            address=address,
-            ville=ville,
-            pays=pays,
-            zipcode=zipcode,
-        )
-        com.save()
-        messages.success(request, "Commande passée avec succès !")
-
-    return render(request, "voiture/user/checkout.html")
-
+    return render(
+        request,
+        "voiture/user/details.html",
+        {
+            "voiture": voiture,
+            "images_supp": images_supp,
+        }
+    )
 
 # ----------------- Gestion utilisateurs -----------------
 @role_required("admin")
 def utilisateurs_list(request):
-    users = CustomUser.objects.all()
-    return render(request, "voiture/admin/users.html", {"users": users})
+    users = CustomUser.objects.all().order_by('-date_joined')  # Les plus récents d'abord
+    paginator = Paginator(users, 5)  # 5 utilisateurs par page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-
+    return render(request, "voiture/admin/users.html", {
+        'page_obj': page_obj,
+    })
 @role_required("admin")
 def supprimer_utilisateur(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
@@ -204,28 +216,41 @@ def changer_role(request, user_id):
 
 
 # ----------------- Gestion marques -----------------
+
+
 @role_required("admin")
 def liste_marques(request):
-    marques = Marque.objects.all()
+    marques_list = Marque.objects.all().order_by("nom")
+    paginator = Paginator(marques_list, 2)  # 5 marques par page
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     form = MarqueForm()
+
     return render(
-        request, "voiture/admin/marque.html", {"marques": marques, "form": form}
+        request,
+        "voiture/admin/marque.html",
+        {
+            "page_obj": page_obj,
+            "form": form,
+        },
     )
+
+
 
 
 @role_required("admin")
 def add_mark(request):
     if request.method == "POST":
-        form = MarqueForm(request.POST)
+        # On passe request.POST et request.FILES pour gérer l'upload
+        form = MarqueForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, "Marque ajoutée avec succès !")
         else:
             messages.error(request, "Erreur lors de l'ajout de la marque.")
-        return redirect("liste_marques")
-
-    form = MarqueForm()
-    return render(request, "voiture/admin/marque.html", {"form": form})
+    return redirect("liste_marques")
 
 
 @role_required("admin")
@@ -240,9 +265,18 @@ def supprimer_marque(request, id):
 @role_required("admin")
 def liste_modeles(request):
     modeles = Modele.objects.select_related("marque").all().order_by("-id")
+
+    # Pagination : 10 éléments par page
+    paginator = Paginator(modeles, 3)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     form = ModeleForm()
+
     return render(
-        request, "voiture/admin/modele.html", {"modeles": modeles, "form": form}
+        request,
+        "voiture/admin/modele.html",
+        {"page_obj": page_obj, "form": form}
     )
 
 
@@ -270,24 +304,47 @@ def supprimer_modele(request, id):
 @role_required("admin")
 def liste_voitures(request):
     voitures = Voiture.objects.all()
+    paginator = Paginator(voitures, 10)   # 10 véhicules par page
+    page = request.GET.get("page")
+    voitures = paginator.get_page(page)
     form = VoitureForm()
     return render(
         request, "voiture/admin/voiture.html", {"voitures": voitures, "form": form}
     )
 
-
 @role_required("admin")
 def ajouter_voiture(request):
     if request.method == "POST":
-        form = VoitureForm(request.POST, request.FILES)
-        if form.is_valid():
-            voiture = form.save()
+        v_form = VoitureForm(request.POST, request.FILES)
+        img_form = ImageForm(request.POST, request.FILES)
+
+        if v_form.is_valid() and img_form.is_valid():
+            voiture = v_form.save(commit=False)
+            voiture.save()
+
+            # Enregistrer chaque image uploadée
+            images = request.FILES.getlist("images")
+            for f in images:
+                Image.objects.create(voiture=voiture, image=f)
+
             messages.success(
-                request, f"La voiture {voiture} a été publiée avec succès."
+                request,
+                f"La voiture {voiture.marque.nom} {voiture.modele.nom} a été publiée avec succès."
             )
+            return redirect("liste_voitures")
         else:
-            messages.error(request, "Erreur lors de publication de la voiture.")
-    return redirect("liste_voitures")
+            messages.error(request, "Erreur lors de la publication de la voiture.")
+
+    else:
+        v_form = VoitureForm()
+        img_form = ImageForm()
+
+    context = {
+        "v_form": v_form,
+        "img_form": img_form,
+    }
+    return render(request, "voiture/admin/voiture.html", context)
+
 
 
 @role_required("admin")

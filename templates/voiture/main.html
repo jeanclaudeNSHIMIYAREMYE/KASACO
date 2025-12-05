@@ -4,23 +4,86 @@
 
 <main class="container mx-auto mt-5 pt-5 px-4">
 
-    {% include "voiture/user/chercher.html" %}
 
-    <!-- CARROUSEL -->
-    <section class="mt-5 relative">
-        <div class="relative w-full overflow-hidden rounded-lg shadow-2xl">
-            <div class="relative h-96">
-                <img src="{% static 'images/honda.jpg' %}" class="absolute w-full h-full object-cover animate-fadeIn">
-                <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/40 flex flex-col justify-center px-6 text-white">
-                    <h2 class="text-4xl md:text-5xl font-extrabold mb-2 drop-shadow-lg animate-fadeUp">Trouvez la voiture idéale <i class="bi bi-car-front-fill"></i></h2>
-                    <p class="text-lg md:text-xl mb-4 drop-shadow animate-fadeUp delay-200">Des centaines de véhicules disponibles immédiatement.</p>
-                    <a href="#featured" class="self-start bg-red-600 hover:bg-red-700 transition px-6 py-3 rounded-lg font-semibold drop-shadow animate-fadeUp delay-400">
-                        Explorer les voitures
-                    </a>
+    <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Style SBT Japan</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+
+<!-- HERO SECTION -->
+<section class="relative bg-cover bg-center h-[600px]"
+         style="background-image: url('{% static "images/home2.jpg" %}');">
+
+    <!-- Overlay sombre -->
+    <div class="absolute inset-0 bg-black/40"></div>
+
+    <!-- Contenu -->
+    <div class="relative h-full flex items-center">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- LEFT: Search Form -->
+            <div class="bg-white p-6 rounded-xl shadow-lg max-w-md">
+                <h2 class="text-gray-700 text-lg font-bold mb-4">Trouver une voiture</h2>
+
+                <div class="space-y-3">
+                    <select class="w-full p-3 border rounded-lg">
+                        <option>Choisir marque & modèle</option>
+                    </select>
+
+                    <select class="w-full p-3 border rounded-lg">
+                        <option>Choisir type de carrosserie</option>
+                    </select>
+
+                    <select class="w-full p-3 border rounded-lg">
+                        <option>Choisir fourchette de prix</option>
+                    </select>
+
+                    <select class="w-full p-3 border rounded-lg">
+                        <option>Choisir année</option>
+                    </select>
+
+                    <select class="w-full p-3 border rounded-lg">
+                        <option>Kilométrage</option>
+                    </select>
+
+                    <button class="w-full p-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700">
+                        Rechercher
+                    </button>
                 </div>
+            </div>
+
+            <!-- RIGHT: TITLE -->
+            <div class="flex items-center">
+                <h1 class="text-white text-6xl md:text-7xl font-extrabold drop-shadow-2xl">
+                 Conduisez ce qui arrive ensuite
+                </h1>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+
+
             </div>
         </div>
     </section>
+
+</body>
+</html>
+
+
+
 
     <!-- SECTION MARQUES -->
     <section class="mt-8">
@@ -40,6 +103,101 @@
             {% endfor %}
         </div>
     </section>
+    <div class="w-full bg-gray-100 py-10">
+    <div class="max-w-6xl mx-auto px-4">
+
+        <!-- Title -->
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">A vous de choisir</h2>
+
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">
+            Rechercher par marque de voiture
+        </h3>
+
+        <!-- GRID MARQUES -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+            <!-- Exemple d'une carte -->
+            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
+               <img src="{% static 'images/logo23.png' %}" class="h-10 w-auto" alt="">
+
+                <div class="text-right">
+                    <p class="font-semibold text-gray-700">Toyota</p>
+                    <p class="text-xs text-gray-500">(61,532)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
+                <img src="{% static 'images/honda-silver-seeklogo.png' %}" class="h-10 w-auto" alt="">
+                <div class="text-right">
+
+                    <p class="text-xs text-gray-500">(20,335)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
+                <img src="{% static 'images/honda-silver-seeklogo.png' %}" class="h-10 w-auto" alt="">
+                <div class="text-right">
+                    <p class="font-semibold text-gray-700">Nissan</p>
+                    <p class="text-xs text-gray-500">(22,134)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
+                <img src="/static/logos/mazda.png" class="h-10 w-auto" alt="">
+                <div class="text-right">
+                    <p class="font-semibold text-gray-700">Mazda</p>
+                    <p class="text-xs text-gray-500">(8,405)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
+                <img src="/static/logos/suzuki.png" class="h-10 w-auto" alt="">
+                <div class="text-right">
+                    <p class="font-semibold text-gray-700">Suzuki</p>
+                    <p class="text-xs text-gray-500">(19,012)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
+                <img src="/static/logos/mitsubishi.png" class="h-10 w-auto" alt="">
+                <div class="text-right">
+                    <p class="font-semibold text-gray-700">Mitsubishi</p>
+                    <p class="text-xs text-gray-500">(6,022)</p>
+                </div>
+            </div>
+
+            <!-- Ajouter les autres marques ici en copiant la carte -->
+        </div>
+
+        <!-- Section carrosserie -->
+        <h3 class="text-xl font-semibold text-gray-700 mt-10 mb-4">
+            Rechercher par type de carrosserie
+        </h3>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
+                <img src="/static/icons/sedan.png" class="h-10 w-auto" alt="">
+                <div class="text-right">
+                    <p class="font-semibold text-gray-700">Sedan</p>
+                    <p class="text-xs text-gray-500">(44,364)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
+                <img src="/static/icons/coupe.png" class="h-10 w-auto" alt="">
+                <div class="text-right">
+                    <p class="font-semibold text-gray-700">Coupe</p>
+                    <p class="text-xs text-gray-500">(7,497)</p>
+                </div>
+            </div>
+
+            <!-- Ajouter autres types -->
+        </div>
+
+    </div>
+</div>
+
 
     <!-- VOITURES EN VEDETTE -->
     <section id="featured" class="mt-10">

@@ -22,6 +22,7 @@ class CustomUser(AbstractUser):
 # --- Marque ---
 class Marque(models.Model):
     nom = models.CharField(max_length=100, unique=True)
+    logo = models.FileField(upload_to="logos", null=True, blank=True)
 
     class Meta:
         ordering = ["nom"]
@@ -60,12 +61,8 @@ class Voiture(models.Model):
         ("Vendue", "Vendue"),
     ]
 
-    marque = models.ForeignKey(
-        Marque, on_delete=models.CASCADE, related_name="voitures"
-    )
-    modele = models.ForeignKey(
-        Modele, on_delete=models.CASCADE, related_name="voitures"
-    )
+    marque = models.ForeignKey(Marque, on_delete=models.CASCADE, related_name="voitures")
+    modele = models.ForeignKey(Modele, on_delete=models.CASCADE, related_name="voitures")
     numero_chassis = models.CharField(max_length=100, unique=True)
     numero_moteur = models.CharField(max_length=100)
     annee = models.PositiveIntegerField()
@@ -93,14 +90,17 @@ class Voiture(models.Model):
 
 # --- Reservation ---
 class Reservation(models.Model):
-    voiture = models.OneToOneField(Voiture, on_delete=models.CASCADE)
-    utilisateur = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    voiture = models.OneToOneField(Voiture, on_delete=models.CASCADE, related_name="reservation")
+    utilisateur = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="reservations")
     date_reservation = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["voiture"], name="unique_voiture_active")
         ]
+
+    def __str__(self):
+        return f"Réservation de {self.utilisateur.username} pour {self.voiture}"
 
 
 # --- ContactInfo ---
@@ -135,4 +135,17 @@ class Commande(models.Model):
         ordering = ["-date_commande"]
 
     def __str__(self):
-        return f"Commande de {self.nom} ({self.date_commande})"
+        return f"Commande de {self.nom} ({self.date_commande.strftime('%d/%m/%Y %H:%M')})"
+
+
+# --- Images supplémentaires pour Voiture ---
+class Image(models.Model):
+    voiture = models.ForeignKey(Voiture, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to="voitures_supplementaires/")
+
+    class Meta:
+        verbose_name = "Image supplémentaire"
+        verbose_name_plural = "Images supplémentaires"
+
+    def __str__(self):
+        return f"Image {self.id} - {self.voiture.marque.nom} {self.voiture.modele.nom}"

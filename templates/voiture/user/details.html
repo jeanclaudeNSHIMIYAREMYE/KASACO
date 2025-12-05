@@ -1,43 +1,49 @@
 {% extends "voiture/user/navUser.html" %}
 {% block content %}
 
-
+<!-- Messages -->
 {% if messages %}
-<div class="mb-4">
+<div class="mb-6">
     {% for message in messages %}
-    <div class="
-        p-3 rounded-lg mb-2 text-white
+    <div class="p-3 rounded-lg mb-2 text-white
         {% if message.tags == 'success' %} bg-green-600 {% endif %}
         {% if message.tags == 'error' %} bg-red-600 {% endif %}
-    ">
+        shadow-md">
         {{ message }}
     </div>
     {% endfor %}
 </div>
 {% endif %}
 
-
 <div class="container mx-auto px-4 py-10">
-    <div class="flex flex-col md:flex-row md:space-x-10 space-y-6 md:space-y-0 items-center">
+    <div class="flex flex-col md:flex-row md:space-x-10 space-y-6 md:space-y-0 items-start">
 
-        <!-- Image voiture -->
-        <div class="w-full md:w-1/2">
-            {% if voiture.photo %}
-                <img src="{{ voiture.photo.url }}" alt="{{ voiture.modele.nom }}"
-                     class="rounded-2xl shadow-lg w-full h-auto object-cover transition-transform duration-500 hover:scale-105 hover:shadow-2xl">
-            {% else %}
-                <div class="bg-gray-200 rounded-2xl w-full h-64 flex items-center justify-center text-gray-400">
-                    Pas d'image disponible
-                </div>
+        <!-- Côté Images -->
+        <div class="w-full md:w-1/2 space-y-4">
+
+            <!-- Images supplémentaires -->
+            {% if images_supp %}
+            <div class="grid grid-cols-3 sm:grid-cols-4 gap-4 mt-4">
+                {% for img in images_supp %}
+                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-pointer">
+                        <img src="{{ img.image.url }}" alt="Image {{ forloop.counter }}"
+                             class="w-full h-32 sm:h-36 md:h-40 object-cover transition-transform duration-300 hover:scale-105"
+                             onclick="changeMainImage('{{ img.image.url }}')">
+                    </div>
+                {% endfor %}
+            </div>
             {% endif %}
+
         </div>
 
-        <!-- Infos voiture -->
+
+        <!-- Côté Infos -->
         <div class="w-full md:w-1/2 space-y-4">
-            <h2 class="text-3xl font-bold text-orange-500 hover:text-orange-600 transition-colors">
+
+            <h2 class="text-3xl font-bold text-red-600 hover:text-red-700 transition-colors">
                 {{ voiture.modele.nom }}
             </h2>
-            <h4 class="text-xl font-semibold text-red-600">
+            <h4 class="text-xl font-semibold text-orange-500">
                 Prix : {{ voiture.prix }} $
             </h4>
 
@@ -49,9 +55,6 @@
             {% if voiture.etat == "Disponible" %}
                 <a href="{% url 'reserver_voiture' voiture.id %}"
                    class="inline-flex items-center px-6 py-3 bg-red-600 text-white font-semibold rounded-full shadow-lg hover:bg-red-700 hover:shadow-xl transition-all duration-300">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h6v6m2 0h2a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v8a2 2 0 002 2h2" />
-                   </svg>
                    Réserver
                 </a>
             {% else %}
@@ -59,8 +62,25 @@
                     Non disponible
                 </button>
             {% endif %}
+    <a href="{% url 'user_home'%}"
+   class="inline-flex items-center px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 hover:shadow-xl hover:scale-105 transition transform duration-300">
+   Accueil
+</a>
+
+
+
         </div>
     </div>
 </div>
+
+<!-- JS pour changer l'image principale -->
+<script>
+function changeMainImage(url) {
+    const mainImage = document.getElementById('mainImage');
+    if (mainImage) {
+        mainImage.src = url;
+    }
+}
+</script>
 
 {% endblock content %}

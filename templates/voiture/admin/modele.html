@@ -1,117 +1,175 @@
 {% extends "voiture/admin/dashboard.html" %}
 {% block content %}
 
-<div class="container mx-auto mt-6 px-4">
+<!-- BACKGROUND IMAGE -->
+<div class="relative min-h-screen bg-cover bg-center"
+     style="background-image: url('/static/voiture/img/car-bg2.jpg');">
 
-    <!-- Title -->
-    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-        <i class="fa fa-car text-green-600 mr-2"></i> Gestion des Modèles
-    </h2>
+    <!-- Overlay sombre -->
+    <div class="absolute inset-0 bg-black bg-opacity-75"></div>
 
-    <!-- Messages flash -->
-    {% if messages %}
-      <div class="mb-4 space-y-2">
-        {% for message in messages %}
-          <div class="bg-green-500 text-white px-4 py-2 rounded shadow animate-fadeOut">
-            {{ message }}
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
+    <div class="relative container mx-auto mt-10 px-4">
 
-    <!-- Bouton Ajouter -->
-    <button id="addModelBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center mb-4">
-        <i class="fa fa-plus mr-2"></i> Ajouter un modèle
-    </button>
+        <!-- TITRE -->
+        <h2 class="text-3xl font-bold text-white mb-6 flex items-center drop-shadow-xl">
+            <i class="fa fa-car-side text-green-400 mr-3"></i> Gestion des Modèles
+        </h2>
 
-    <!-- Table Modèles -->
-    <div class="bg-white shadow-lg rounded-2xl overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full table-auto border-collapse text-sm text-center">
-                <thead class="bg-gray-800 text-white uppercase text-xs font-semibold">
-                    <tr>
-                        <th class="px-4 py-2 border">#</th>
-                        <th class="px-4 py-2 border">Nom</th>
-                        <th class="px-4 py-2 border">Marque</th>
-                        <th class="px-4 py-2 border">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for m in modeles %}
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="px-4 py-2">{{ forloop.counter }}</td>
-                        <td class="px-4 py-2 flex items-center justify-center">
-                            <i class="fa fa-car-side text-gray-400 mr-2"></i> {{ m.nom }}
-                        </td>
-                        <td class="px-4 py-2">{{ m.marque.nom }}</td>
-                        <td class="px-4 py-2">
-                            <a href="{% url 'supprimer_modele' m.id %}"
-                               class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm flex items-center justify-center"
-                               onclick="return confirm('Supprimer ce modèle ?')">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="px-4 py-2">Aucun modèle trouvé.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- MESSAGES FLASH -->
+        {% if messages %}
+            <div class="mb-4 space-y-2">
+                {% for message in messages %}
+                    <div class="bg-green-600 bg-opacity-80 text-white px-4 py-2 rounded-lg shadow-xl animate-fadeOut">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- BOUTON AJOUTER -->
+        <button id="addModelBtn"
+            class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl flex items-center shadow-lg transition">
+            <i class="fa fa-plus mr-2"></i> Ajouter un modèle
+        </button>
+
+        <!-- TABLE MODELES -->
+        <div class="mt-6 backdrop-blur-xl bg-white bg-opacity-10 rounded-2xl shadow-2xl p-4 text-white border border-white/20">
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto text-sm text-center">
+                    <thead>
+                        <tr class="bg-white bg-opacity-10 text-green-300 uppercase text-xs">
+                            <th class="px-4 py-2 border-white/20 border">#</th>
+                            <th class="px-4 py-2 border-white/20 border">Nom</th>
+                            <th class="px-4 py-2 border-white/20 border">Marque</th>
+                            <th class="px-4 py-2 border-white/20 border">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in page_obj %}
+                        <tr class="border-b border-white/20 hover:bg-white hover:bg-opacity-10 transition">
+                            <td class="px-4 py-2 text-gray-200">{{ forloop.counter }}</td>
+
+                            <td class="px-4 py-2 flex items-center justify-center text-gray-100 space-x-2">
+                                <i class="fa fa-car-side text-gray-400"></i>
+                                <span>{{ m.nom }}</span>
+                            </td>
+
+                            <td class="px-4 py-2 text-gray-100">{{ m.marque.nom }}</td>
+
+                            <td class="px-4 py-2">
+                                <a href="{% url 'supprimer_modele' m.id %}"
+                                   onclick="return confirm('Supprimer ce modèle ?')"
+                                   class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm shadow">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="py-4 text-gray-300">Aucun modèle trouvé.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="mt-6 flex justify-center">
+                    <nav class="inline-flex shadow-sm text-white" aria-label="Pagination">
+
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}"
+                               class="px-3 py-1 bg-white/20 text-white rounded-l hover:bg-white/30">&laquo;</a>
+                        {% else %}
+                            <span class="px-3 py-1 bg-white/10 text-gray-400 rounded-l cursor-not-allowed">&laquo;</span>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <span class="px-3 py-1 bg-green-600 text-white font-bold">{{ num }}</span>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <a href="?page={{ num }}"
+                                   class="px-3 py-1 bg-white/20 text-white hover:bg-white/30">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}"
+                               class="px-3 py-1 bg-white/20 text-white rounded-r hover:bg-white/30">&raquo;</a>
+                        {% else %}
+                            <span class="px-3 py-1 bg-white/10 text-gray-400 rounded-r cursor-not-allowed">&raquo;</span>
+                        {% endif %}
+
+                    </nav>
+                </div>
+
+            </div>
+
         </div>
     </div>
 </div>
 
-<!-- Modal Ajouter un modèle -->
-<div id="addModelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-2xl w-full max-w-md shadow-lg overflow-hidden">
+<!-- MODAL AJOUTER -->
+<div id="addModelModal"
+     class="fixed inset-0 bg-black bg-opacity-60 items-center justify-center hidden z-50">
+
+    <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+
         <form method="POST" action="{% url 'ajouter_modele' %}">
             {% csrf_token %}
-            <!-- Header -->
-            <div class="bg-green-600 text-white px-6 py-3 flex justify-between items-center">
-                <h5 class="font-semibold text-lg">Ajouter un modèle</h5>
+
+            <!-- HEADER -->
+            <div class="bg-green-700 text-white px-6 py-3 flex justify-between items-center">
+                <h5 class="font-semibold text-lg">Ajouter un Modèle</h5>
                 <button type="button" id="closeModal" class="text-white text-xl">&times;</button>
             </div>
-            <!-- Body -->
-            <div class="p-6">
+
+            <!-- BODY -->
+            <div class="p-6 space-y-2">
                 {{ form.as_p }}
             </div>
-            <!-- Footer -->
-            <div class="flex justify-end px-6 py-3 space-x-2 bg-gray-100">
-                <button type="button" id="cancelModal" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg">Annuler</button>
-                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">Enregistrer</button>
+
+            <!-- FOOTER -->
+            <div class="bg-gray-200 px-6 py-3 flex justify-end space-x-2">
+                <button type="button" id="cancelModal"
+                        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+                    Annuler
+                </button>
+                <button type="submit"
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                    Enregistrer
+                </button>
             </div>
+
         </form>
+
     </div>
 </div>
 
-<!-- Scripts Modal & Messages -->
+<!-- SCRIPT JS -->
 <script>
     const addBtn = document.getElementById('addModelBtn');
     const modal = document.getElementById('addModelModal');
     const closeBtn = document.getElementById('closeModal');
     const cancelBtn = document.getElementById('cancelModal');
 
-    addBtn.addEventListener('click', () => modal.classList.remove('hidden'));
-    closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
-    cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    addBtn.onclick = () => { modal.classList.remove('hidden'); modal.classList.add('flex'); };
+    closeBtn.onclick = () => modal.classList.add('hidden');
+    cancelBtn.onclick = () => modal.classList.add('hidden');
 
-    // Fade out messages
-    document.querySelectorAll('.animate-fadeOut').forEach((el) => {
-        setTimeout(() => el.remove(), 2000);
-    });
+    document.querySelectorAll('.animate-fadeOut').forEach(el =>
+        setTimeout(() => el.remove(), 2500)
+    );
 </script>
 
+<!-- ANIMATION -->
 <style>
 @keyframes fadeOut {
   0% { opacity: 1; }
-  80% { opacity: 1; }
+  85% { opacity: 1; }
   100% { opacity: 0; }
 }
-.animate-fadeOut {
-  animation: fadeOut 2s forwards;
-}
+.animate-fadeOut { animation: fadeOut 2.5s forwards; }
 </style>
 
-{% endblock content %}
+{% endblock %}

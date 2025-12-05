@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "voitures",
     "theme",
     "widget_tweaks",
+
 ]
 
 MIDDLEWARE = [
@@ -135,8 +136,7 @@ STATICFILES_DIRS = [
 ]
 
 
-CRISPY_TEMPLATE_PACK = "bootstrap4"
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+
 TAILWIND_APP_NAME = "theme"
 # settings.py
 INTERNAL_IPS = [
@@ -153,3 +153,7 @@ MEDIA_URL = "/media/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]

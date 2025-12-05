@@ -11,51 +11,36 @@ urlpatterns = [
     path("connexion/", views.login_view, name="login"),
     path("deconnexion/", views.logout_view, name="logout"),
     path("redirect/", views.redirect_by_role, name="redirect_by_role"),
+
     # -------------------- Dashboards --------------------
     path("tableau_de_bord/admin/", views.admin_dashboard, name="dashboard_admin"),
     path("utilisateur/acceuil/", views.user_home, name="user_home"),
+
     # -------------------- Gestion utilisateurs --------------------
     path("utilisateurs/", views.utilisateurs_list, name="utilisateurs_list"),
-    path(
-        "utilisateurs/supprimer/<int:user_id>/",
-        views.supprimer_utilisateur,
-        name="supprimer_utilisateur",
-    ),
-    path(
-        "utilisateurs/changer-role/<int:user_id>/",
-        views.changer_role,
-        name="changer_role",
-    ),
+    path("utilisateurs/supprimer/<int:user_id>/", views.supprimer_utilisateur, name="supprimer_utilisateur"),
+    path("utilisateurs/changer-role/<int:user_id>/", views.changer_role, name="changer_role"),
+
     # -------------------- Gestion marques --------------------
     path("marques/", views.liste_marques, name="liste_marques"),
-    path("marque/ajouter/", views.add_mark, name="add_mark"),
-    path(
-        "marques/supprimer/<int:id>/", views.supprimer_marque, name="supprimer_marque"
-    ),
+    path("marques/ajouter/", views.add_mark, name="add_mark"),
+    path("marques/supprimer/<int:id>/", views.supprimer_marque, name="supprimer_marque"),
+
     # -------------------- Gestion modèles --------------------
     path("modeles/", views.liste_modeles, name="liste_modeles"),
     path("modeles/ajouter/", views.ajouter_modele, name="ajouter_modele"),
-    path(
-        "modeles/supprimer/<int:id>/", views.supprimer_modele, name="supprimer_modele"
-    ),
+    path("modeles/supprimer/<int:id>/", views.supprimer_modele, name="supprimer_modele"),
+
     # -------------------- Gestion voitures --------------------
     path("voitures/", views.liste_voitures, name="liste_voitures"),
     path("voitures/ajouter/", views.ajouter_voiture, name="ajouter_voiture"),
-    path(
-        "voitures/supprimer/<int:id>/",
-        views.supprimer_voiture,
-        name="supprimer_voiture",
-    ),
-    # gestion du page D' acceuil de clients des voitures--------
+    path("voitures/supprimer/<int:id>/", views.supprimer_voiture, name="supprimer_voiture"),
+
+    # -------------------- Pages utilisateurs --------------------
     path("detail/<int:myid>/", views.detail, name="details"),
-    path("checkout", views.checkout, name="checkout"),
-    path(
-        "voitures/reserver/<int:voiture_id>/",
-        views.reserver_voiture,
-        name="reserver_voiture",
-    ),
+    path("voitures/reserver/<int:voiture_id>/", views.reserver_voiture, name="reserver_voiture"),
     path("reserver/", views.reserver, name="reserver"),
-    path("info", views.info, name="info"),
+    path("info/", views.info, name="info"),
     path("contact/", views.contact_view, name="contact"),
     path("mes-reservations/", views.mes_reservations, name="mes_reservations"),
 ]

@@ -3,44 +3,35 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 from .models import CustomUser, Marque, Modele, Voiture
 
-
-# ----------------- User -----------------
+# ----------------- User Forms -----------------
 class CustomUserCreationForm(UserCreationForm):
     username = forms.CharField(
         label="Nom d'utilisateur",
-        widget=forms.TextInput(
-            attrs={
-                "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500",
-                "placeholder": "Nom d'utilisateur",
-            }
-        ),
+        widget=forms.TextInput(attrs={
+            "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
+            "placeholder": "Nom d'utilisateur",
+        }),
     )
     email = forms.EmailField(
         label="Email",
-        widget=forms.EmailInput(
-            attrs={
-                "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500",
-                "placeholder": "Email",
-            }
-        ),
+        widget=forms.EmailInput(attrs={
+            "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
+            "placeholder": "Email",
+        }),
     )
     password1 = forms.CharField(
         label="Mot de passe",
-        widget=forms.PasswordInput(
-            attrs={
-                "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500",
-                "placeholder": "Mot de passe",
-            }
-        ),
+        widget=forms.PasswordInput(attrs={
+            "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
+            "placeholder": "Mot de passe",
+        }),
     )
     password2 = forms.CharField(
         label="Confirmer le mot de passe",
-        widget=forms.PasswordInput(
-            attrs={
-                "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500",
-                "placeholder": "Confirmer le mot de passe",
-            }
-        ),
+        widget=forms.PasswordInput(attrs={
+            "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
+            "placeholder": "Confirmer le mot de passe",
+        }),
     )
 
     class Meta:
@@ -49,116 +40,138 @@ class CustomUserCreationForm(UserCreationForm):
         help_texts = {field: "" for field in fields}
 
 
-# ----------------- Login -----------------
 class CustomerLoginForm(AuthenticationForm):
     username = forms.CharField(
         label="Nom d'utilisateur",
-        widget=forms.TextInput(
-            attrs={
-                "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-            }
-        ),
+        widget=forms.TextInput(attrs={
+            "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
+            "placeholder": "Nom d'utilisateur",
+        }),
     )
     password = forms.CharField(
         label="Mot de passe",
-        widget=forms.PasswordInput(
-            attrs={
-                "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-            }
-        ),
+        widget=forms.PasswordInput(attrs={
+            "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
+            "placeholder": "Votre mot de passe",
+        }),
     )
 
 
-# ----------------- Marque -----------------
+# ----------------- Marque Form -----------------
 class MarqueForm(forms.ModelForm):
     class Meta:
         model = Marque
-        fields = ["nom"]
+        fields = ["nom", "logo"]
         widgets = {
-            "nom": forms.TextInput(
-                attrs={
-                    "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500",
-                    "placeholder": "Nom de la marque",
-                }
-            ),
+            "nom": forms.TextInput(attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500", "placeholder": "Nom de la marque"}),
+            "logo": forms.ClearableFileInput(attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-red-500"}),
         }
 
 
-# ----------------- Modele -----------------
+# ----------------- Modele Form -----------------
 class ModeleForm(forms.ModelForm):
     class Meta:
         model = Modele
         fields = ["nom", "marque"]
         widgets = {
-            "nom": forms.TextInput(
-                attrs={
-                    "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500",
-                    "placeholder": "Nom du modèle/voiture",
-                }
-            ),
-            "marque": forms.Select(
-                attrs={
-                    "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                }
-            ),
+            "nom": forms.TextInput(attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500", "placeholder": "Nom du modèle"}),
+            "marque": forms.Select(attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500"}),
         }
 
 
-# ----------------- Voiture -----------------
+# ----------------- Voiture Form -----------------
 class VoitureForm(forms.ModelForm):
     class Meta:
         model = Voiture
         fields = [
-            "marque",
-            "modele",
-            "numero_chassis",
-            "numero_moteur",
-            "annee",
-            "transmission",
-            "kilometrage",
-            "couleur",
-            "cylindree_cc",
-            "prix",
-            "photo",
-            "etat",
+            "marque", "modele", "numero_chassis", "numero_moteur",
+            "annee", "transmission", "kilometrage", "couleur",
+            "cylindree_cc", "prix", "photo", "etat",
         ]
+
         widgets = {
-            "marque": forms.Select(
-                attrs={
-                    "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                }
-            ),
-            "modele": forms.Select(
-                attrs={
-                    "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                }
-            ),
-            "numero_chassis": forms.TextInput(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2"}
-            ),
-            "numero_moteur": forms.TextInput(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2"}
-            ),
-            "annee": forms.NumberInput(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2"}
-            ),
-            "transmission": forms.Select(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2"}
-            ),
-            "kilometrage": forms.NumberInput(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2"}
-            ),
-            "couleur": forms.TextInput(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2"}
-            ),
-            "cylindree_cc": forms.NumberInput(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2"}
-            ),
-            "prix": forms.NumberInput(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2"}
-            ),
-            "photo": forms.ClearableFileInput(attrs={"class": "w-full text-gray-700"}),
-            "etat": forms.Select(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2"}
-            ),
+            # --- SELECTS --- #
+            "marque": forms.Select(attrs={
+                "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm "
+                         "focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            }),
+            "modele": forms.Select(attrs={
+                "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm "
+                         "focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            }),
+            "transmission": forms.Select(attrs={
+                "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm "
+                         "focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            }),
+            "etat": forms.Select(attrs={
+                "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm "
+                         "focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            }),
+
+            # --- TEXT INPUTS --- #
+            "numero_chassis": forms.TextInput(attrs={
+                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm "
+                         "focus:ring-2 focus:ring-blue-500"
+            }),
+            "numero_moteur": forms.TextInput(attrs={
+                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm "
+                         "focus:ring-2 focus:ring-blue-500"
+            }),
+            "couleur": forms.TextInput(attrs={
+                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm "
+                         "focus:ring-2 focus:ring-blue-500"
+            }),
+
+            # --- NUMBER INPUTS --- #
+            "annee": forms.NumberInput(attrs={
+                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm "
+                         "focus:ring-2 focus:ring-blue-500"
+            }),
+            "kilometrage": forms.NumberInput(attrs={
+                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm "
+                         "focus:ring-2 focus:ring-blue-500"
+            }),
+            "cylindree_cc": forms.NumberInput(attrs={
+                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm "
+                         "focus:ring-2 focus:ring-blue-500"
+            }),
+            "prix": forms.NumberInput(attrs={
+                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm "
+                         "focus:ring-2 focus:ring-blue-500"
+            }),
+
+            # --- FILE INPUT --- #
+            "photo": forms.FileInput(attrs={
+                "class": "w-full text-gray-700 bg-white border border-gray-300 rounded-lg cursor-pointer "
+                         "file:bg-blue-600 file:text-white file:px-4 file:py-2 file:rounded-md "
+                         "file:border-none hover:file:bg-blue-700 shadow-sm"
+            }),
         }
+
+
+# ----------------- Multiple images -----------------
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+    def __init__(self, attrs=None):
+        attrs = attrs or {}
+        attrs.update({
+            "multiple": True,
+            "accept": "image/*",
+            "class": "w-full px-4 py-3 border border-gray-300 rounded-lg bg-white cursor-pointer shadow-sm file:bg-green-600 file:text-white file:border-none file:px-4 file:py-2 file:rounded-lg hover:file:bg-green-700 focus:ring-2 focus:ring-green-500"
+        })
+        super().__init__(attrs)
+
+
+class MultipleFileField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultipleFileInput())
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        if isinstance(data, (list, tuple)):
+            return [super(MultipleFileField, self).clean(d, initial) for d in data]
+        return super().clean(data, initial)
+
+
+class ImageForm(forms.Form):
+    images = MultipleFileField(label="Télécharger plusieurs images", required=False)

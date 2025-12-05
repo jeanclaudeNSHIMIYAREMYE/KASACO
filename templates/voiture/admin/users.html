@@ -1,123 +1,195 @@
 {% extends "voiture/admin/navbar.html" %}
-
 {% block content %}
 
-<div class="container mx-auto mt-6 px-4">
+<!-- BACKGROUND PREMIUM -->
+<div class="relative min-h-screen bg-cover bg-center"
+     style="background-image: url('/static/voiture/img/admin-bg.jpg');">
 
-  <!-- Title -->
-  <div class="flex flex-col md:flex-row justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-          <i class="fa fa-users text-blue-600 mr-2"></i>
-          Gestion des Utilisateurs
-      </h2>
-  </div>
+    <!-- Overlay sombre -->
+    <div class="absolute inset-0 bg-black bg-opacity-80"></div>
 
-  <!-- Users List Card -->
-  <div class="bg-white shadow-lg rounded-2xl border border-gray-200 overflow-hidden">
+    <div class="relative container mx-auto mt-10 px-4">
 
-    <!-- Card Header -->
-    <div class="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 flex justify-between items-center">
-        <h5 class="font-semibold text-lg flex items-center">
-            <i class="fa fa-list mr-2"></i> Liste des utilisateurs
-        </h5>
+        <!-- Titre -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-white tracking-wide flex items-center drop-shadow-lg">
+                <i class="fa fa-users text-purple-400 mr-3"></i>
+                Gestion des Utilisateurs
+            </h2>
+        </div>
+
+        <!-- CARD -->
+        <div class="backdrop-blur-xl bg-white bg-opacity-10 border border-white/20 rounded-3xl shadow-2xl overflow-hidden">
+
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white px-6 py-4 flex justify-between items-center shadow-md">
+                <h5 class="font-semibold text-lg tracking-wide flex items-center">
+                    <i class="fa fa-list mr-2"></i>
+                    Liste des utilisateurs
+                </h5>
+            </div>
+
+            <!-- Messages Flash -->
+            {% if messages %}
+            <div class="my-4 px-6">
+                {% for message in messages %}
+                <div class="px-4 py-2 rounded-lg shadow-lg mb-2 animate-fadeOut
+                    {% if message.tags == 'error' %}
+                        bg-red-600 bg-opacity-80 text-white
+                    {% else %}
+                        bg-green-600 bg-opacity-80 text-white
+                    {% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- TABLE -->
+            <div class="p-6 overflow-x-auto text-white">
+
+                <table class="min-w-full table-auto border-collapse text-sm">
+                    <thead>
+                        <tr class="text-center bg-white bg-opacity-10 text-purple-300 uppercase text-xs border-white/20 border-b">
+                            <th class="px-4 py-3 border-white/10 border">#</th>
+                            <th class="px-4 py-3 border-white/10 border">Nom</th>
+                            <th class="px-4 py-3 border-white/10 border">Email</th>
+                            <th class="px-4 py-3 border-white/10 border">Rôle</th>
+                            <th class="px-4 py-3 border-white/10 border">Inscription</th>
+                            <th class="px-4 py-3 border-white/10 border">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for user in page_obj %}
+                        <tr class="border-b border-white/10 hover:bg-white hover:bg-opacity-10 transition">
+
+                            <!-- COUNT -->
+                            <td class="px-4 py-3 text-gray-200 text-center">
+                                {{ forloop.counter }}
+                            </td>
+
+                            <!-- USERNAME -->
+                            <td class="px-4 py-3 flex items-center space-x-2 text-gray-100">
+                                <i class="fa fa-user-circle text-purple-300 text-lg"></i>
+                                <span class="font-medium">{{ user.username }}</span>
+                            </td>
+
+                            <!-- EMAIL -->
+                            <td class="px-4 py-3 text-gray-300">
+                                {{ user.email }}
+                            </td>
+
+                            <!-- ROLE BADGES -->
+                            <td class="px-4 py-3 text-center">
+                                {% if user.is_superuser %}
+                                <span class="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded-full">
+                                    <i class="fa fa-crown mr-1"></i> Super Admin
+                                </span>
+
+                                {% elif user.role == 'admin' %}
+                                <span class="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded-full">
+                                    <i class="fa fa-shield-alt mr-1"></i> Admin
+                                </span>
+
+                                {% else %}
+                                <span class="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-xs rounded-full">
+                                    <i class="fa fa-user mr-1"></i> Utilisateur
+                                </span>
+                                {% endif %}
+                            </td>
+
+                            <!-- DATE -->
+                            <td class="px-4 py-3 text-gray-300">
+                                {{ user.date_joined|date:"d/m/Y H:i" }}
+                            </td>
+
+                            <!-- ACTIONS -->
+                            <td class="px-4 py-3">
+                                <div class="flex justify-center space-x-2">
+
+                                    <!-- Changer rôle -->
+                                    <a href="{% url 'changer_role' user.id %}"
+                                       class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm shadow transition"
+                                       title="Changer rôle">
+                                        <i class="fa fa-exchange-alt"></i>
+                                    </a>
+
+                                    <!-- Supprimer -->
+                                    <a href="{% url 'supprimer_utilisateur' user.id %}"
+                                       onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?')"
+                                       class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm shadow transition"
+                                       title="Supprimer">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="px-4 py-5 text-center text-gray-300 text-lg">
+                                Aucun utilisateur trouvé.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+                <!-- PAGINATION -->
+                <div class="mt-6 flex justify-center">
+                    <nav class="inline-flex shadow-xl rounded-lg overflow-hidden">
+
+                        {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}"
+                           class="px-4 py-2 bg-white/10 text-white hover:bg-white/20 transition">
+                            &laquo;
+                        </a>
+                        {% else %}
+                        <span class="px-4 py-2 bg-white/5 text-white/40">&laquo;</span>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                            <span class="px-4 py-2 bg-purple-600 text-white font-bold">{{ num }}</span>
+
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <a href="?page={{ num }}"
+                               class="px-4 py-2 bg-white/10 text-white hover:bg-white/20 transition">
+                               {{ num }}
+                            </a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}"
+                           class="px-4 py-2 bg-white/10 text-white hover:bg-white/20 transition">
+                            &raquo;
+                        </a>
+                        {% else %}
+                        <span class="px-4 py-2 bg-white/5 text-white/40">&raquo;</span>
+                        {% endif %}
+
+                    </nav>
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
-
-    <!-- Messages Flash -->
-    {% if messages %}
-      <div class="my-4">
-        {% for message in messages %}
-          <div class="bg-green-500 text-white px-4 py-2 rounded shadow mb-2 animate-fadeOut">
-            {{ message }}
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    <!-- Card Body -->
-    <div class="p-6 overflow-x-auto">
-      <table id="usersTable" class="min-w-full table-auto border-collapse text-sm">
-        <thead class="bg-gray-100 text-gray-700 uppercase text-xs font-semibold">
-          <tr class="text-center">
-            <th class="px-4 py-2 border">#</th>
-            <th class="px-4 py-2 border">Nom d'utilisateur</th>
-            <th class="px-4 py-2 border">Email</th>
-            <th class="px-4 py-2 border">Rôle</th>
-            <th class="px-4 py-2 border">Date d'inscription</th>
-            <th class="px-4 py-2 border">Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {% for user in users %}
-          <tr class="text-center border-b hover:bg-gray-50">
-            <td class="px-4 py-2">{{ forloop.counter }}</td>
-
-            <td class="text-left px-4 py-2 flex items-center space-x-2">
-              <i class="fa fa-user-circle text-gray-400"></i>
-              <span class="font-medium">{{ user.username }}</span>
-            </td>
-
-            <td class="text-left px-4 py-2">{{ user.email }}</td>
-
-            <td class="px-4 py-2">
-              {% if user.is_staff %}
-                <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-500 text-white text-xs font-semibold">
-                  <i class="fa fa-shield-alt mr-1"></i> Admin
-                </span>
-              {% else %}
-                <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-400 text-white text-xs font-semibold">
-                  <i class="fa fa-user mr-1"></i> Utilisateur
-                </span>
-              {% endif %}
-            </td>
-
-            <td class="px-4 py-2">{{ user.date_joined|date:"d/m/Y H:i" }}</td>
-
-            <td class="px-4 py-2">
-              <div class="flex justify-center space-x-2">
-                <!-- Change Role -->
-                <a href="{% url 'changer_role' user.id %}"
-                   class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg text-sm flex items-center justify-center"
-                   title="Changer rôle">
-                   <i class="fa fa-exchange-alt"></i>
-                </a>
-
-                <!-- Delete -->
-                <a href="{% url 'supprimer_utilisateur' user.id %}"
-                   class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm flex items-center justify-center"
-                   title="Supprimer"
-                   onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?')">
-                   <i class="fa fa-trash"></i>
-                </a>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
 </div>
 
-<!-- DataTables Scripts -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.tailwind.min.js"></script>
-
-<script>
-
-</script>
-
-<!-- Animation fadeOut pour messages flash -->
+<!-- Animation -->
 <style>
 @keyframes fadeOut {
-  0% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0; }
+    0% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; }
 }
-.animate-fadeOut {
-  animation: fadeOut 2s forwards;
-}
+.animate-fadeOut { animation: fadeOut 2.4s forwards; }
 </style>
 
-{% endblock content %}
+{% endblock %}
