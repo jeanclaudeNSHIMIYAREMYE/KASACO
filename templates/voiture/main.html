@@ -2,221 +2,79 @@
 {% load static %}
 {% block content %}
 
-<main class="container mx-auto mt-5 pt-5 px-4">
+<main class="container mx-auto mt-5 px-4">
 
+    <!-- HERO SECTION -->
+    <section class="relative h-[600px] rounded-xl overflow-hidden"
+             style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{% static "images/home2.jpg" %}'); background-size: cover; background-position: center;">
 
-    <!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Style SBT Japan</title>
+        <div class="relative h-full flex items-center">
+            <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
 
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<body class="bg-gray-100">
-
-
-<!-- HERO SECTION -->
-<section class="relative bg-cover bg-center h-[600px]"
-         style="background-image: url('{% static "images/home2.jpg" %}');">
-
-    <!-- Overlay sombre -->
-    <div class="absolute inset-0 bg-black/40"></div>
-
-    <!-- Contenu -->
-    <div class="relative h-full flex items-center">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            <!-- LEFT: Search Form -->
-            <div class="bg-white p-6 rounded-xl shadow-lg max-w-md">
-                <h2 class="text-gray-700 text-lg font-bold mb-4">Trouver une voiture</h2>
-
-                <div class="space-y-3">
-                    <select class="w-full p-3 border rounded-lg">
-                        <option>Choisir marque & modèle</option>
-                    </select>
-
-                    <select class="w-full p-3 border rounded-lg">
-                        <option>Choisir type de carrosserie</option>
-                    </select>
-
-                    <select class="w-full p-3 border rounded-lg">
-                        <option>Choisir fourchette de prix</option>
-                    </select>
-
-                    <select class="w-full p-3 border rounded-lg">
-                        <option>Choisir année</option>
-                    </select>
-
-                    <select class="w-full p-3 border rounded-lg">
-                        <option>Kilométrage</option>
-                    </select>
-
-                    <button class="w-full p-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700">
-                        Rechercher
-                    </button>
+                <!-- LEFT: Search Form -->
+                <div class="bg-white p-6 rounded-xl shadow-lg max-w-md">
+                    <h2 class="text-gray-700 text-lg font-bold mb-4">Trouver une voiture</h2>
+                    <div class="space-y-3">
+                        <select class="w-full p-3 border rounded-lg">
+                            <option>Choisir marque & modèle</option>
+                        </select>
+                        <select class="w-full p-3 border rounded-lg">
+                            <option>Choisir type de carrosserie</option>
+                        </select>
+                        <select class="w-full p-3 border rounded-lg">
+                            <option>Choisir fourchette de prix</option>
+                        </select>
+                        <select class="w-full p-3 border rounded-lg">
+                            <option>Choisir année</option>
+                        </select>
+                        <select class="w-full p-3 border rounded-lg">
+                            <option>Kilométrage</option>
+                        </select>
+                        <button class="w-full p-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition">
+                            Rechercher
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <!-- RIGHT: TITLE -->
-            <div class="flex items-center">
-                <h1 class="text-white text-6xl md:text-7xl font-extrabold drop-shadow-2xl">
-                 Conduisez ce qui arrive ensuite
-                </h1>
-            </div>
+                <!-- RIGHT: HERO TITLE -->
+                <div class="flex items-center justify-center md:justify-end">
+                    <h1 class="text-white text-5xl md:text-6xl font-extrabold drop-shadow-2xl leading-tight">
+                        Conduisez ce qui arrive ensuite
+                    </h1>
+                </div>
 
+            </div>
         </div>
+    </section>
+
+    <!-- SECTION MARQUES -->
+<section class="mt-4 mb-6 bg-gradient-to-r from-red-50 via-yellow-50 to-green-50 p-3 rounded-lg">
+    <h2 class="text-lg font-bold mb-2 animate-fadeUp text-gray-800">À vous de choisir</h2>
+    <div class="flex justify-between items-center mb-2 animate-fadeUp delay-100">
+        <h5 class="font-semibold text-xs text-gray-700">Rechercher par marque de voiture</h5>
+        <a href="#" class="text-red-600 font-semibold text-xs hover:underline transition">Voir toutes</a>
     </div>
 
+    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-12 animate-fadeUp delay-200">
+        {% for marque in marques %}
+        <a href="#" class="brand-card flex flex-col items-center transition-transform transform hover:scale-110 animate-fadeIn">
+            <div class="rounded-full p-1 hover:shadow-lg transition duration-300" style="background: linear-gradient(45deg, #FF6B6B, #FFD93D, #6BCB77);">
+                <img src="{{ marque.logo.url }}" class="w-10 h-10 object-contain">
+            </div>
+            <span class="font-bold text-[10px] mt-1 text-gray-800">{{ marque.nom }}</span>
+        </a>
+        {% empty %}
+        <p class="text-gray-500 text-xs">Aucune marque trouvée.</p>
+        {% endfor %}
+    </div>
 </section>
 
 
 
-            </div>
-        </div>
-    </section>
 
-</body>
-</html>
+    <!-- SECTION CARROSSERIE -->
 
 
-
-
-    <!-- SECTION MARQUES -->
-    <section class="mt-8">
-        <h2 class="text-2xl md:text-3xl font-bold mb-4 animate-fadeUp">À vous de choisir <i class="bi bi-stars"></i></h2>
-        <div class="flex justify-between items-center mb-3 animate-fadeUp delay-100">
-            <h5 class="font-semibold text-lg">Rechercher par marque de voiture</h5>
-            <a href="#" class="text-red-600 font-semibold hover:underline transition">Voir toutes les voitures</a>
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 animate-fadeUp delay-200">
-            {% comment %} Exemple → boucle Django possible {% endcomment %}
-            {% for marque in marques %}
-            <a href="#" class="brand-card bg-white rounded-xl p-4 flex flex-col items-center transition-transform transform hover:scale-105 hover:shadow-2xl hover:-translate-y-1 animate-fadeIn">
-                <img src="{{ marque.logo.url }}" class="brand-logo mb-2 w-20 h-20 object-contain">
-                <span class="font-bold">{{ marque.nom }}</span>
-                <span class="text-gray-500 text-sm">({{ marque.nb_voitures }})</span>
-            </a>
-            {% endfor %}
-        </div>
-    </section>
-    <div class="w-full bg-gray-100 py-10">
-    <div class="max-w-6xl mx-auto px-4">
-
-        <!-- Title -->
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">A vous de choisir</h2>
-
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">
-            Rechercher par marque de voiture
-        </h3>
-
-        <!-- GRID MARQUES -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-
-            <!-- Exemple d'une carte -->
-            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
-               <img src="{% static 'images/logo23.png' %}" class="h-10 w-auto" alt="">
-
-                <div class="text-right">
-                    <p class="font-semibold text-gray-700">Toyota</p>
-                    <p class="text-xs text-gray-500">(61,532)</p>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
-                <img src="{% static 'images/honda-silver-seeklogo.png' %}" class="h-10 w-auto" alt="">
-                <div class="text-right">
-
-                    <p class="text-xs text-gray-500">(20,335)</p>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
-                <img src="{% static 'images/honda-silver-seeklogo.png' %}" class="h-10 w-auto" alt="">
-                <div class="text-right">
-                    <p class="font-semibold text-gray-700">Nissan</p>
-                    <p class="text-xs text-gray-500">(22,134)</p>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
-                <img src="/static/logos/mazda.png" class="h-10 w-auto" alt="">
-                <div class="text-right">
-                    <p class="font-semibold text-gray-700">Mazda</p>
-                    <p class="text-xs text-gray-500">(8,405)</p>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
-                <img src="/static/logos/suzuki.png" class="h-10 w-auto" alt="">
-                <div class="text-right">
-                    <p class="font-semibold text-gray-700">Suzuki</p>
-                    <p class="text-xs text-gray-500">(19,012)</p>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
-                <img src="/static/logos/mitsubishi.png" class="h-10 w-auto" alt="">
-                <div class="text-right">
-                    <p class="font-semibold text-gray-700">Mitsubishi</p>
-                    <p class="text-xs text-gray-500">(6,022)</p>
-                </div>
-            </div>
-
-            <!-- Ajouter les autres marques ici en copiant la carte -->
-        </div>
-
-        <!-- Section carrosserie -->
-        <h3 class="text-xl font-semibold text-gray-700 mt-10 mb-4">
-            Rechercher par type de carrosserie
-        </h3>
-
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-
-            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
-                <img src="/static/icons/sedan.png" class="h-10 w-auto" alt="">
-                <div class="text-right">
-                    <p class="font-semibold text-gray-700">Sedan</p>
-                    <p class="text-xs text-gray-500">(44,364)</p>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between bg-white border rounded-xl px-4 py-3 hover:shadow-lg transition cursor-pointer">
-                <img src="/static/icons/coupe.png" class="h-10 w-auto" alt="">
-                <div class="text-right">
-                    <p class="font-semibold text-gray-700">Coupe</p>
-                    <p class="text-xs text-gray-500">(7,497)</p>
-                </div>
-            </div>
-
-            <!-- Ajouter autres types -->
-        </div>
-
-    </div>
-</div>
-
-
-    <!-- VOITURES EN VEDETTE -->
-    <section id="featured" class="mt-10">
-        <h3 class="text-2xl md:text-3xl font-bold mb-4 animate-fadeUp">Voitures en vedette <i class="bi bi-star-fill text-yellow-400"></i></h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {% for voiture in voitures %}
-            <div class="car-card bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-1 animate-fadeIn">
-                <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/mazda.png' %}{% endif %}" class="car-card-img w-full h-48 object-cover transition-transform duration-500 hover:scale-110">
-                <div class="p-4 flex flex-col h-48 justify-between">
-                    <h5 class="font-bold text-lg mb-1 text-gray-800">{{ voiture.marque.nom }} {{ voiture.modele.nom }}</h5>
-                    <p class="text-red-600 font-semibold mb-2 text-lg">{{ voiture.prix }} € <i class="bi bi-currency-euro"></i></p>
-                    <a href="{% url 'details' voiture.id %}" class="block w-full text-center bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition transform hover:scale-105 shadow-md">
-                        <i class="bi bi-eye"></i> Voir détails
-                    </a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
 
 </main>
 
@@ -233,7 +91,7 @@
 .animate-fadeUp { animation: fadeUp 0.8s ease forwards; }
 .animate-fadeUp.delay-100 { animation-delay: 0.1s; }
 .animate-fadeUp.delay-200 { animation-delay: 0.2s; }
-.animate-fadeUp.delay-400 { animation-delay: 0.4s; }
 .animate-fadeIn { animation: fadeIn 0.8s ease forwards; }
 </style>
+
 {% endblock content %}

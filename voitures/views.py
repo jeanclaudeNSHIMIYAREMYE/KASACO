@@ -13,7 +13,11 @@ from .models import (Commande, ContactInfo, CustomUser, Marque, Modele,
 
 # ----------------- Page d'accueil -----------------
 def home(request):
-    return render(request, "voiture/main.html")
+    marques = Marque.objects.all()
+
+     # récupère toutes les marques
+    return render(request, "voiture/main.html", {"marques": marques})
+
 
 
 # ----------------- Inscription -----------------
