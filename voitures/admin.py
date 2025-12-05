@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 
 from .models import (
-    Commande, ContactInfo, CustomUser, Marque, Modele, Image,
+     ContactInfo, CustomUser, Marque, Modele, Image,
     Reservation, Voiture
 )
 
@@ -40,7 +40,7 @@ class CustomUserAdmin(UserAdmin):
 # ----------------- Marque Admin -----------------
 @admin.register(Marque)
 class AdminMarque(admin.ModelAdmin):
-    list_display = ["nom"]
+    list_display = ["nom","logo"]
     search_fields = ["nom"]
     ordering = ["nom"]
 
@@ -110,11 +110,7 @@ class AdminContactInfo(admin.ModelAdmin):
 
 
 # ----------------- Commande Admin -----------------
-@admin.register(Commande)
-class AdminCommande(admin.ModelAdmin):
-    list_display = ["nom", "pays", "items", "total", "date_commande"]
-    ordering = ["-date_commande"]
-    search_fields = ["nom", "email", "ville", "pays"]
+
 
 
 # ----------------- Image Admin -----------------

@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .decorators import role_required
 from .forms import (CustomerLoginForm, CustomUserCreationForm, MarqueForm,
                     ModeleForm, VoitureForm ,ImageForm)
-from .models import (Commande, ContactInfo, CustomUser, Marque, Modele,
+from .models import (ContactInfo, CustomUser, Marque, Modele,
                      Reservation, Voiture ,Image)
 
 

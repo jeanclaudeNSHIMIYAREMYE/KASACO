@@ -119,24 +119,6 @@ class ContactInfo(models.Model):
         return "Informations de contact de KASACO"
 
 
-# --- Commande ---
-class Commande(models.Model):
-    items = models.CharField(max_length=150)
-    total = models.CharField(max_length=300)
-    nom = models.CharField(max_length=340)
-    email = models.EmailField()
-    address = models.CharField(max_length=300)
-    ville = models.CharField(max_length=200)
-    pays = models.CharField(max_length=100)
-    zipcode = models.CharField(max_length=200)
-    date_commande = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ["-date_commande"]
-
-    def __str__(self):
-        return f"Commande de {self.nom} ({self.date_commande.strftime('%d/%m/%Y %H:%M')})"
-
 
 # --- Images supplémentaires pour Voiture ---
 class Image(models.Model):
