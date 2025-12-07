@@ -16,33 +16,63 @@
 {% endif %}
 
 <div class="container mx-auto px-4 py-10">
+
     <div class="flex flex-col md:flex-row md:space-x-10 space-y-6 md:space-y-0 items-start">
 
-        <!-- Côté Images -->
+        <!-- ======================= CÔTÉ IMAGE ======================= -->
         <div class="w-full md:w-1/2 space-y-4">
 
-            <!-- Images supplémentaires -->
+            <!-- =========== IMAGE PRINCIPALE AVEC FLÈCHES =========== -->
+            <div class="relative w-full h-72 sm:h-80 md:h-96 border rounded-xl overflow-hidden shadow-lg">
+
+                <!-- Image principale -->
+                <img id="mainImage"
+                     src="{{ images_supp.0.image.url }}"
+                     class="w-full h-full object-cover transition duration-300">
+
+                <!-- Bouton précédent -->
+                <button onclick="prevImage()"
+                        class="absolute top-1/2 -translate-y-1/2 left-3 bg-black/40 text-white p-3 rounded-full hover:bg-black/70 transition">
+                    <!-- HeroIcon Left -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                         stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M15.75 19.5L8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+
+                <!-- Bouton suivant -->
+                <button onclick="nextImage()"
+                        class="absolute top-1/2 -translate-y-1/2 right-3 bg-black/40 text-white p-3 rounded-full hover:bg-black/70 transition">
+                    <!-- HeroIcon Right -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                         stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
+
+            </div>
+
+
+            <!-- =========== SLIDER MINIATURES =========== -->
             {% if images_supp %}
-            <div class="grid grid-cols-3 sm:grid-cols-4 gap-4 mt-4">
+            <div class="flex space-x-4 overflow-x-auto p-2 bg-gray-50 rounded-xl shadow-inner" id="thumbs">
                 {% for img in images_supp %}
-                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-pointer">
-                        <img src="{{ img.image.url }}" alt="Image {{ forloop.counter }}"
-                             class="w-full h-32 sm:h-36 md:h-40 object-cover transition-transform duration-300 hover:scale-105"
-                             onclick="changeMainImage('{{ img.image.url }}')">
-                    </div>
+                    <img src="{{ img.image.url }}"
+                         class="thumb min-w-[110px] h-24 rounded-lg cursor-pointer object-cover border-2 border-transparent hover:border-red-500 transition-all"
+                         onclick="selectImage({{ forloop.counter0 }})">
                 {% endfor %}
             </div>
             {% endif %}
 
         </div>
 
-
-        <!-- Côté Infos -->
+        <!-- ======================= CÔTÉ INFOS ======================= -->
         <div class="w-full md:w-1/2 space-y-4">
 
-            <h2 class="text-3xl font-bold text-red-600 hover:text-red-700 transition-colors">
-                {{ voiture.modele.nom }}
-            </h2>
+            <h2 class="text-3xl font-bold text-red-600">{{ voiture.modele.nom }}</h2>
+
             <h4 class="text-xl font-semibold text-orange-500">
                 Prix : {{ voiture.prix }} $
             </h4>
@@ -54,32 +84,69 @@
 
             {% if voiture.etat == "Disponible" %}
                 <a href="{% url 'reserver_voiture' voiture.id %}"
-                   class="inline-flex items-center px-6 py-3 bg-red-600 text-white font-semibold rounded-full shadow-lg hover:bg-red-700 hover:shadow-xl transition-all duration-300">
+                   class="inline-flex items-center px-6 py-3 bg-red-600 text-white font-semibold rounded-full shadow-lg hover:bg-red-700 hover:shadow-xl transition">
                    Réserver
                 </a>
             {% else %}
-                <button class="px-6 py-3 bg-gray-400 text-white font-semibold rounded-full cursor-not-allowed opacity-70">
+                <button class="px-6 py-3 bg-gray-400 text-white font-semibold rounded-full cursor-not-allowed">
                     Non disponible
                 </button>
             {% endif %}
-    <a href="{% url 'user_home'%}"
-   class="inline-flex items-center px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 hover:shadow-xl hover:scale-105 transition transform duration-300">
-   Accueil
-</a>
 
-
+            <a href="{% url 'user_home' %}"
+               class="inline-flex items-center px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 hover:shadow-xl hover:scale-105 transition">
+               Accueil
+            </a>
 
         </div>
+
     </div>
 </div>
 
-<!-- JS pour changer l'image principale -->
+<!-- ======================= JAVASCRIPT ======================= -->
 <script>
-function changeMainImage(url) {
-    const mainImage = document.getElementById('mainImage');
-    if (mainImage) {
-        mainImage.src = url;
-    }
+let images = [
+    {% for img in images_supp %}
+        "{{ img.image.url }}",
+    {% endfor %}
+];
+
+let index = 0;
+const mainImage = document.getElementById("mainImage");
+
+// Sélection d'une image par miniature
+function selectImage(i) {
+    index = i;
+    updateImage();
+}
+
+// Image suivante
+function nextImage() {
+    index = (index + 1) % images.length;
+    updateImage();
+}
+
+// Image précédente
+function prevImage() {
+    index = (index - 1 + images.length) % images.length;
+    updateImage();
+}
+
+// Mise à jour de l’image + highlight miniature
+function updateImage() {
+    mainImage.classList.add("opacity-0");
+
+    setTimeout(() => {
+        mainImage.src = images[index];
+        mainImage.classList.remove("opacity-0");
+        mainImage.classList.add("opacity-100");
+    }, 200);
+
+    // Miniature active
+    document.querySelectorAll(".thumb").forEach((t, i) => {
+        t.classList.remove("border-red-500");
+        if (i === index) t.classList.add("border-red-500");
+    });
 }
 </script>
 
