@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-
+from .models import Reservation
 from .models import CustomUser, Marque, Modele, Voiture
 
 # ----------------- User Forms -----------------
@@ -175,3 +175,25 @@ class MultipleFileField(forms.FileField):
 
 class ImageForm(forms.Form):
     images = MultipleFileField(label="Télécharger plusieurs images", required=False)
+
+
+class ReservationForm(forms.ModelForm):
+    class Meta:
+        model = Reservation
+        fields = ["utilisateur"]
+
+        # Ajouter des classes Tailwind aux champs
+        widgets = {
+            "utilisateur": forms.Select(
+                attrs={
+                    "class": (
+                        "block w-full px-4 py-2 border border-gray-300 rounded-lg "
+                        "bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 "
+                        "focus:border-blue-500"
+                    )
+                }
+            ),
+        }
+        labels = {
+            "utilisateur": "Sélectionnez l'utilisateur",
+        }

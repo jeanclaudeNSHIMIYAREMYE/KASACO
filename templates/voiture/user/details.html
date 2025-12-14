@@ -1,109 +1,114 @@
 {% extends "voiture/user/navUser.html" %}
 {% block content %}
 
-<!-- Messages -->
-{% if messages %}
-<div class="mb-6">
-    {% for message in messages %}
-    <div class="p-3 rounded-lg mb-2 text-white
-        {% if message.tags == 'success' %} bg-green-600 {% endif %}
-        {% if message.tags == 'error' %} bg-red-600 {% endif %}
-        shadow-md">
-        {{ message }}
+<div class="relative min-h-screen bg-gradient-to-br from-red-50 via-white to-red-100 overflow-hidden">
+
+    <!-- ===== Messages Flash ===== -->
+    {% if messages %}
+    <div class="absolute top-24 right-4 z-50 space-y-2">
+        {% for message in messages %}
+        <div class="p-3 rounded-lg shadow-md text-white
+            {% if message.tags == 'success' %} bg-green-600 {% endif %}
+            {% if message.tags == 'error' %} bg-red-600 {% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
-{% endif %}
+    {% endif %}
 
-<div class="container mx-auto px-4 py-10">
+    <div class="container mx-auto px-4 py-12 relative z-10">
 
-    <div class="flex flex-col md:flex-row md:space-x-10 space-y-6 md:space-y-0 items-start">
+        <div class="flex flex-col md:flex-row md:space-x-12 space-y-8 md:space-y-0 items-start">
 
-        <!-- ======================= CÔTÉ IMAGE ======================= -->
-        <div class="w-full md:w-1/2 space-y-4">
+            <!-- ======================= CÔTÉ IMAGE ======================= -->
+            <div class="w-full md:w-1/2 space-y-4">
+                <div class="relative w-full h-80 md:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+                    <img id="mainImage"
+                         src="{{ images_supp.0.image.url }}"
+                         class="w-full h-full object-cover transition duration-500 ease-in-out transform hover:scale-105">
 
-            <!-- =========== IMAGE PRINCIPALE AVEC FLÈCHES =========== -->
-            <div class="relative w-full h-72 sm:h-80 md:h-96 border rounded-xl overflow-hidden shadow-lg">
+                    <button onclick="prevImage()"
+                            class="absolute top-1/2 -translate-y-1/2 left-4 bg-black/40 text-white p-3 rounded-full hover:bg-black/70 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
 
-                <!-- Image principale -->
-                <img id="mainImage"
-                     src="{{ images_supp.0.image.url }}"
-                     class="w-full h-full object-cover transition duration-300">
+                    <button onclick="nextImage()"
+                            class="absolute top-1/2 -translate-y-1/2 right-4 bg-black/40 text-white p-3 rounded-full hover:bg-black/70 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </button>
+                </div>
 
-                <!-- Bouton précédent -->
-                <button onclick="prevImage()"
-                        class="absolute top-1/2 -translate-y-1/2 left-3 bg-black/40 text-white p-3 rounded-full hover:bg-black/70 transition">
-                    <!-- HeroIcon Left -->
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                         stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M15.75 19.5L8.25 12l7.5-7.5" />
-                    </svg>
-                </button>
-
-                <!-- Bouton suivant -->
-                <button onclick="nextImage()"
-                        class="absolute top-1/2 -translate-y-1/2 right-3 bg-black/40 text-white p-3 rounded-full hover:bg-black/70 transition">
-                    <!-- HeroIcon Right -->
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                         stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                    </svg>
-                </button>
-
+                <!-- Miniatures -->
+                {% if images_supp %}
+                <div class="flex space-x-4 overflow-x-auto p-2 bg-white/50 backdrop-blur-md rounded-2xl shadow-inner">
+                    {% for img in images_supp %}
+                        <img src="{{ img.image.url }}"
+                             class="thumb min-w-[100px] h-24 rounded-lg cursor-pointer object-cover border-2 border-transparent hover:border-red-500 transition-all"
+                             onclick="selectImage({{ forloop.counter0 }})">
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
 
+            <!-- ======================= CÔTÉ INFOS ======================= -->
+            <div class="w-full md:w-1/2 relative">
+                <div class="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-6 flex flex-col space-y-4">
 
-            <!-- =========== SLIDER MINIATURES =========== -->
-            {% if images_supp %}
-            <div class="flex space-x-4 overflow-x-auto p-2 bg-gray-50 rounded-xl shadow-inner" id="thumbs">
-                {% for img in images_supp %}
-                    <img src="{{ img.image.url }}"
-                         class="thumb min-w-[110px] h-24 rounded-lg cursor-pointer object-cover border-2 border-transparent hover:border-red-500 transition-all"
-                         onclick="selectImage({{ forloop.counter0 }})">
-                {% endfor %}
+                    <h2 class="text-4xl font-extrabold text-red-600">{{ voiture.marque.nom }} {{ voiture.modele.nom }}</h2>
+
+                    <h4 class="text-2xl font-bold text-orange-500">Prix : {{ voiture.prix }} $</h4>
+
+                    <div class="grid grid-cols-2 gap-4 text-gray-700">
+                        <p><span class="font-semibold">Châssis :</span> {{ voiture.numero_chassis }}</p>
+                        <p><span class="font-semibold">Moteur :</span> {{ voiture.numero_moteur }}</p>
+                        <p><span class="font-semibold">Année :</span> {{ voiture.annee }}</p>
+                        <p><span class="font-semibold">Transmission :</span> {{ voiture.transmission }}</p>
+                        <p><span class="font-semibold">Kilométrage :</span> {{ voiture.kilometrage }} km</p>
+                        <p><span class="font-semibold">Couleur :</span> {{ voiture.couleur }}</p>
+                        <p><span class="font-semibold">Cylindrée :</span> {{ voiture.cylindree_cc }} cc</p>
+                    </div>
+
+                    <p class="mt-2">
+                        <span class="font-semibold">État :</span>
+                        <span class="px-3 py-1 rounded-full font-semibold
+                            {% if voiture.etat == 'Disponible' %} bg-green-100 text-green-800
+                            {% elif voiture.etat == 'Réservée' %} bg-orange-100 text-orange-700
+                            {% else %} bg-red-100 text-red-700 {% endif %}">
+                            {{ voiture.etat }}
+                        </span>
+                    </p>
+
+                    <p class="text-gray-600"><span class="font-semibold">Date d'ajout :</span> {{ voiture.date_ajout|date:"d/m/Y H:i" }}</p>
+
+                    <div class="flex space-x-4 mt-4">
+                        <a href="{% url 'user_home' %}"
+                           class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg hover:bg-indigo-700 hover:shadow-xl hover:scale-105 transition">
+                           Accueil
+                        </a>
+
+                        {% if voiture.etat == 'Disponible' %}
+                        <a href="{% url 'reserver_voiture' voiture.id %}"
+                           class="inline-flex items-center px-6 py-3 bg-red-600 text-white font-bold rounded-2xl shadow-lg hover:bg-red-700 hover:shadow-xl hover:scale-105 transition">
+                           Réserver
+                        </a>
+                        {% endif %}
+                    </div>
+
+                </div>
             </div>
-            {% endif %}
 
         </div>
-
-        <!-- ======================= CÔTÉ INFOS ======================= -->
-        <div class="w-full md:w-1/2 space-y-4">
-
-            <h2 class="text-3xl font-bold text-red-600">{{ voiture.modele.nom }}</h2>
-
-            <h4 class="text-xl font-semibold text-orange-500">
-                Prix : {{ voiture.prix }} $
-            </h4>
-
-            <p class="text-gray-700"><span class="font-semibold">Marque :</span> {{ voiture.marque.nom }}</p>
-            <p class="text-gray-700"><span class="font-semibold">Châssis :</span> {{ voiture.numero_chassis }}</p>
-            <p class="text-gray-700"><span class="font-semibold">État :</span> {{ voiture.etat }}</p>
-            <p class="text-gray-700"><span class="font-semibold">Date d'ajout :</span> {{ voiture.date_ajout }}</p>
-
-            {% if voiture.etat == "Disponible" %}
-                <a href="{% url 'reserver_voiture' voiture.id %}"
-                   class="inline-flex items-center px-6 py-3 bg-red-600 text-white font-semibold rounded-full shadow-lg hover:bg-red-700 hover:shadow-xl transition">
-                   Réserver
-                </a>
-            {% else %}
-                <button class="px-6 py-3 bg-gray-400 text-white font-semibold rounded-full cursor-not-allowed">
-                    Non disponible
-                </button>
-            {% endif %}
-
-            <a href="{% url 'user_home' %}"
-               class="inline-flex items-center px-8 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 hover:shadow-xl hover:scale-105 transition">
-               Accueil
-            </a>
-
-        </div>
-
     </div>
+
 </div>
 
-<!-- ======================= JAVASCRIPT ======================= -->
+<!-- ======================= JAVASCRIPT SLIDER ======================= -->
 <script>
 let images = [
     {% for img in images_supp %}
@@ -114,35 +119,29 @@ let images = [
 let index = 0;
 const mainImage = document.getElementById("mainImage");
 
-// Sélection d'une image par miniature
 function selectImage(i) {
     index = i;
     updateImage();
 }
 
-// Image suivante
 function nextImage() {
     index = (index + 1) % images.length;
     updateImage();
 }
 
-// Image précédente
 function prevImage() {
     index = (index - 1 + images.length) % images.length;
     updateImage();
 }
 
-// Mise à jour de l’image + highlight miniature
 function updateImage() {
     mainImage.classList.add("opacity-0");
-
     setTimeout(() => {
         mainImage.src = images[index];
         mainImage.classList.remove("opacity-0");
         mainImage.classList.add("opacity-100");
     }, 200);
 
-    // Miniature active
     document.querySelectorAll(".thumb").forEach((t, i) => {
         t.classList.remove("border-red-500");
         if (i === index) t.classList.add("border-red-500");

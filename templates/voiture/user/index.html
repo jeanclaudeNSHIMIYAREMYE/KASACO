@@ -1,5 +1,6 @@
 {% extends "voiture/user/navUser.html" %}
 {% load static %}
+
 {% block content %}
 
 <!-- ===== Flash Messages ===== -->
@@ -48,12 +49,39 @@ if(btn && menu) {
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
     {% for voiture in voitures %}
       <div class="bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-xl shadow-lg overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2 animate-fadeIn">
-        <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/mazda.png' %}{% endif %}"
-             alt="{{ voiture.modele.nom }}" class="w-full h-48 object-cover transition-transform duration-500 hover:scale-110">
+
+        <!-- Image voiture -->
+        <div class="relative w-full h-48 overflow-hidden">
+          <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/mazda.png' %}{% endif %}"
+               alt="{{ voiture.modele.nom }}"
+               class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+
+          <!-- Badge état -->
+          <span class="absolute top-2 right-2 px-3 py-1 rounded-full text-sm font-semibold
+            {% if voiture.etat == 'Disponible' %}bg-green-500 text-white
+            {% elif voiture.etat == 'Réservée' %}bg-orange-500 text-white
+            {% else %}bg-red-600 text-white{% endif %}">
+            {{ voiture.etat }}
+          </span>
+        </div>
+
+        <!-- Infos voiture -->
         <div class="p-4 flex flex-col h-48 justify-between">
-          <h5 class="font-bold text-lg text-gray-800">{{ voiture.marque.nom }} - {{ voiture.modele.nom }}</h5>
-          <p class="text-red-600 font-bold text-lg">Prix : {{ voiture.prix }} $</p>
-          <a href="{% url 'details' voiture.id %}" class="mt-2 bg-red-600 text-white px-3 py-2 rounded-lg text-center hover:bg-red-700 hover:scale-105 transition transform duration-300 shadow-lg">
+          <div class="space-y-1">
+            <h5 class="font-bold text-lg text-gray-800 flex items-center gap-2">
+              <img src="{% static 'images/car-icon.png' %}" alt="Marque" class="w-5 h-5">
+              {{ voiture.marque.nom }} - {{ voiture.modele.nom }}
+            </h5>
+            <p class="text-red-600 font-bold text-lg flex items-center gap-2">
+              <i class="bi bi-currency-dollar"></i>
+              {{ voiture.prix }} $
+            </p>
+          </div>
+
+          <!-- Bouton détails -->
+          <a href="{% url 'details' voiture.id %}"
+             class="mt-2 bg-red-600 text-white px-3 py-2 rounded-lg text-center hover:bg-red-700 hover:scale-105 transition transform duration-300 shadow-lg flex items-center justify-center gap-2">
+            <i class="bi bi-eye-fill"></i>
             Voir détails
           </a>
         </div>
@@ -122,18 +150,9 @@ if(btn && menu) {
 
   <!-- ===== Footer Animations ===== -->
   <style>
-    @keyframes fadeUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeUpSmall {
-      0% { opacity: 0; transform: translateY(10px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(15px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeUpSmall { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
     .animate-fadeUp { animation: fadeUp 0.8s ease forwards; }
     .animate-fadeUpSmall { animation: fadeUpSmall 0.8s ease forwards; }
     .animate-fadeIn { animation: fadeIn 0.8s ease forwards; }

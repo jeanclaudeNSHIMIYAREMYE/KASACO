@@ -2,11 +2,12 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .decorators import role_required
 from .forms import (CustomerLoginForm, CustomUserCreationForm, MarqueForm,
-                    ModeleForm, VoitureForm ,ImageForm)
+                    ModeleForm, VoitureForm ,ImageForm , ReservationForm)
 from .models import (ContactInfo, CustomUser, Marque, Modele,
                      Reservation, Voiture ,Image)
 
@@ -372,16 +373,17 @@ def contact_view(request):
 
 @role_required("user")
 def mes_reservations(request):
-    mes_res = Reservation.objects.filter(utilisateur=request.user).select_related(
-        "voiture"
-    )
+    """
+    Affiche les réservations de l'utilisateur connecté
+    """
+    reservations = Reservation.objects.select_related('voiture').filter(
+        utilisateur=request.user
+    ).order_by('-date_reservation')
 
-    # Pagination
-    paginator = Paginator(mes_res, 6)
-    page = request.GET.get("page")
-    mes_res_page = paginator.get_page(page)
+    context = {
+        "reservations": reservations
+    }
 
-    context = {"mes_res": mes_res_page}
     return render(request, "voiture/user/mes_reservations.html", context)
 
 
@@ -391,3 +393,54 @@ def annuler_reservation(request, id):
     reservation.delete()
     messages.success(request, "Votre réservation a été annulée avec succès.")
     return redirect("mes_reservations")
+
+@staff_member_required
+def disponible_liste_voitures(request):
+    voitures = Voiture.objects.filter(etat="Disponible")
+    reservations = Reservation.objects.select_related('voiture', 'utilisateur').all().order_by('-date_reservation')
+
+    context = {
+        "voitures": voitures,
+        "reservations": reservations
+    }
+
+    return render(request, "voiture/admin/disponible_liste_voiture.html", context)
+
+
+@staff_member_required
+def reserver_voiture(request, voiture_id):
+    voiture = get_object_or_404(Voiture, id=voiture_id)
+
+    if voiture.etat != "Disponible":
+        messages.error(request, "Cette voiture n'est plus disponible.")
+        return redirect("reserver_liste_voitures")
+
+    if request.method == "POST":
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            reservation = form.save(commit=False)
+            reservation.voiture = voiture
+            reservation.save()
+
+            voiture.reserver()
+
+            messages.success(request, "Voiture réservée avec succès.")
+            return redirect("liste_voitures")
+    else:
+        form = ReservationForm()
+
+    return render(request, "voiture/admin/reserver.html", {
+        "voiture": voiture,
+        "form": form
+    })
+
+
+def reservations_admin(request):
+    """
+    Affiche toutes les réservations pour l'admin
+    """
+    reservations = Reservation.objects.select_related('voiture', 'utilisateur').all().order_by('-date_reservation')
+    context = {
+        "reservations": reservations
+    }
+    return render(request, "voitures/reserves_admin.html", context)

@@ -39,10 +39,13 @@ urlpatterns = [
     # -------------------- Pages utilisateurs --------------------
     path("detail/<int:myid>/", views.detail, name="details"),
     path("voitures/reserver/<int:voiture_id>/", views.reserver_voiture, name="reserver_voiture"),
-    path("reserver/", views.reserver, name="reserver"),
+
     path("info/", views.info, name="info"),
     path("contact/", views.contact_view, name="contact"),
     path("mes-reservations/", views.mes_reservations, name="mes_reservations"),
+
+    path("reserver/voitures/", views.disponible_liste_voitures, name="reserver_liste_voitures"),
+    path("voiture/<int:voiture_id>/reserver/", views.reserver_voiture, name="reserver_voiture"),
 ]
 
 # -------------------- Media files --------------------
