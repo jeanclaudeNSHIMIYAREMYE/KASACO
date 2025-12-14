@@ -15,26 +15,11 @@ admin.site.index_title = "VENDEUR"
 
 # ----------------- CustomUser Admin -----------------
 @admin.register(CustomUser)
-class CustomUserAdmin(UserAdmin):
-    model = CustomUser
-    list_display = ("username", "email", "first_name", "last_name", "role", "is_staff")
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ("email", "username", "role", "is_staff", "is_active")
     list_filter = ("role", "is_staff", "is_active")
-    ordering = ("username",)
-    search_fields = ("username", "email")
-
-    fieldsets = (
-        (None, {"fields": ("username", "password")}),
-        ("Informations personnelles", {"fields": ("first_name", "last_name", "email")}),
-        ("Permissions", {"fields": ("role", "is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
-        ("Dates importantes", {"fields": ("last_login", "date_joined")}),
-    )
-
-    add_fieldsets = (
-        (None, {
-            "classes": ("wide",),
-            "fields": ("username", "email", "password1", "password2", "role", "is_staff", "is_active"),
-        }),
-    )
+    search_fields = ("email", "username")
+    ordering = ("email",)
 
 
 # ----------------- Marque Admin -----------------

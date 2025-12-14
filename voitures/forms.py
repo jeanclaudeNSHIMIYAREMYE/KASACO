@@ -41,17 +41,20 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomerLoginForm(AuthenticationForm):
-    username = forms.CharField(
-        label="Nom d'utilisateur",
-        widget=forms.TextInput(attrs={
-            "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
-            "placeholder": "Nom d'utilisateur",
+    username = forms.EmailField(
+        label="Adresse email",
+        widget=forms.EmailInput(attrs={
+            "class": "w-full border border-gray-300 rounded-lg px-4 py-2 "
+                     "focus:ring-2 focus:ring-red-500 focus:border-red-500 transition",
+            "placeholder": "exemple@gmail.com",
         }),
     )
+
     password = forms.CharField(
         label="Mot de passe",
         widget=forms.PasswordInput(attrs={
-            "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
+            "class": "w-full border border-gray-300 rounded-lg px-4 py-2 "
+                     "focus:ring-2 focus:ring-red-500 focus:border-red-500 transition",
             "placeholder": "Votre mot de passe",
         }),
     )
