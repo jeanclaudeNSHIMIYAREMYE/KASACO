@@ -157,3 +157,20 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+
+# =========================
+# EMAIL CONFIGURATION
+# =========================
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = "nshimiyaremyejeanclaude1@gmail.com"
+EMAIL_HOST_PASSWORD = "emkhwonmgoywrvgn"
+  # mot de passe d’application (16 caractères)
+
+DEFAULT_FROM_EMAIL = "KASACO <nshimiyaremyejeanclaude1@gmail.com>"

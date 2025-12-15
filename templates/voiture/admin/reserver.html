@@ -21,16 +21,21 @@
 
 
         <!-- Formulaire -->
-        <form method="post" class="space-y-4">
-            {% csrf_token %}
-            {{ form.as_p }}
+       <form method="post" class="space-y-4">
+    {% csrf_token %}
 
-            <button type="submit"
-                    class="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg
-                           hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500">
-                Confirmer la réservation
-            </button>
-        </form>
+    <!-- Afficher le username -->
+
+
+    {{ form.as_p }}
+
+    <button type="submit"
+            class="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg
+                   hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Confirmer la réservation
+    </button>
+</form>
+
 
         <!-- Lien retour -->
         <div class="mt-4 text-center">

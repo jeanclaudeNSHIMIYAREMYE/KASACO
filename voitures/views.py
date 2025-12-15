@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.core.mail import send_mail
 from .decorators import role_required
 from .forms import (CustomerLoginForm, CustomUserCreationForm, MarqueForm,
                     ModeleForm, VoitureForm ,ImageForm , ReservationForm)
@@ -50,7 +50,7 @@ def login_view(request):
             messages.success(request, "Connexion réussie !")
             return redirect("redirect_by_role")
         else:
-            messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
+            messages.error(request, "email ou mot de passe incorrect.")
     else:
         form = CustomerLoginForm()
     return render(request, "voiture/auth/login.html", {"form": form})
@@ -352,6 +352,8 @@ def ajouter_voiture(request):
 
 
 
+
+
 @role_required("admin")
 def supprimer_voiture(request, id):
     voiture = get_object_or_404(Voiture, id=id)
@@ -406,6 +408,15 @@ def disponible_liste_voitures(request):
 
     return render(request, "voiture/admin/disponible_liste_voiture.html", context)
 
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.admin.views.decorators import staff_member_required
+from django.conf import settings
+
+from .models import Voiture
+from .forms import ReservationForm
+
 
 @staff_member_required
 def reserver_voiture(request, voiture_id):
@@ -417,22 +428,61 @@ def reserver_voiture(request, voiture_id):
 
     if request.method == "POST":
         form = ReservationForm(request.POST)
+
         if form.is_valid():
             reservation = form.save(commit=False)
             reservation.voiture = voiture
             reservation.save()
 
+            # Mettre la voiture en état réservé
             voiture.reserver()
 
-            messages.success(request, "Voiture réservée avec succès.")
+            # =========================
+            # 📧 ENVOI EMAIL
+            # =========================
+            sujet = "Confirmation de réservation - KASACO 🚗"
+
+            message = f"""
+Bonjour {reservation.utilisateur.username},
+
+Votre réservation a été effectuée avec succès.
+
+📌 Détails de la réservation :
+- Voiture : {voiture}
+- Prix : {voiture.prix} $
+- Date : {reservation.date_reservation.strftime('%d/%m/%Y %H:%M')}
+
+Merci de faire confiance à KASACO.
+
+Cordialement,
+L’équipe KASACO 🚀
+"""
+
+            destinataire = [reservation.utilisateur.email]
+
+            send_mail(
+                subject=sujet,
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=destinataire,
+                fail_silently=False,
+            )
+
+            messages.success(request, "Voiture réservée avec succès. Un email de confirmation a été envoyé.")
             return redirect("liste_voitures")
+
     else:
         form = ReservationForm()
 
-    return render(request, "voiture/admin/reserver.html", {
-        "voiture": voiture,
-        "form": form
-    })
+    return render(
+        request,
+        "voiture/admin/reserver.html",
+        {
+            "voiture": voiture,
+            "form": form,
+        },
+    )
+
 
 
 def reservations_admin(request):

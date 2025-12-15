@@ -183,9 +183,8 @@ class ImageForm(forms.Form):
 class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
-        fields = ["utilisateur"]
+        fields = ["utilisateur"]  # ou "utilisateur" selon ton modèle
 
-        # Ajouter des classes Tailwind aux champs
         widgets = {
             "utilisateur": forms.Select(
                 attrs={
@@ -200,3 +199,9 @@ class ReservationForm(forms.ModelForm):
         labels = {
             "utilisateur": "Sélectionnez l'utilisateur",
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Afficher le username au lieu de l'email
+        self.fields["utilisateur"].queryset = CustomUser.objects.all()
+        self.fields["utilisateur"].label_from_instance = lambda obj: obj.username

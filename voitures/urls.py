@@ -31,6 +31,7 @@ urlpatterns = [
     path("modeles/ajouter/", views.ajouter_modele, name="ajouter_modele"),
     path("modeles/supprimer/<int:id>/", views.supprimer_modele, name="supprimer_modele"),
 
+
     # -------------------- Gestion voitures --------------------
     path("voitures/", views.liste_voitures, name="liste_voitures"),
     path("voitures/ajouter/", views.ajouter_voiture, name="ajouter_voiture"),
