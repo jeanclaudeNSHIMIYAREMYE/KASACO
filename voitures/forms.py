@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from .models import Reservation
 from .models import CustomUser, Marque, Modele, Voiture
+from .validators import validate_strong_password
+from django.core.exceptions import ValidationError
 
 # ----------------- User Forms -----------------
 class CustomUserCreationForm(UserCreationForm):
@@ -21,6 +23,7 @@ class CustomUserCreationForm(UserCreationForm):
     )
     password1 = forms.CharField(
         label="Mot de passe",
+        validators=[validate_strong_password],
         widget=forms.PasswordInput(attrs={
             "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
             "placeholder": "Mot de passe",
@@ -58,6 +61,42 @@ class CustomerLoginForm(AuthenticationForm):
             "placeholder": "Votre mot de passe",
         }),
     )
+class meta:
+   model= CustomUser
+   fields=("uusername","email")
+
+   def clean_email(self):
+     email=self.cleaned_data.get("email")
+
+     if CustomUser.objects.filter(email=email).exists():
+              raise ValidationError("Cette adresse email est déjà utilisée.")
+     return email
+   def clean(self):
+       cleaned_data=super().clean()
+       password1=cleaned_data.get("password1")
+       password2=cleaned_data.get("password2")
+
+       if password1 and password2 and password1 != password2:
+           raise ValidationError(
+               "Les mots de passe ne correspondent pas."
+
+           )
+       return cleaned_data
+
+   def save(self, commit=False):
+
+       CustomUser=super().save(commit=False)
+       CustomUser.username=self.cleaned_data("email")
+       CustomUser.email = self.cleaned_data["email"]
+       CustomUser.set_password(self.cleaned_data["password1"])
+       if commit:
+                CustomUser.save()
+       return CustomUser
+
+
+
+
+
 
 
 # ----------------- Marque Form -----------------

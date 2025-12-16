@@ -9,18 +9,44 @@
      style="background-image: url('{% static 'images/honda.jpg' %}');">
 
     <!-- Formulaire centré -->
-    <div class="bg-white bg-opacity-90 p-10 rounded-3xl shadow-xl w-full max-w-md">
-        <h3 class="text-center text-3xl font-bold mb-8 text-gray-800 tracking-wide">
-            Connexion
-        </h3>
+    <div class="bg-white bg-opacity-90 p-10 rounded-3xl shadow-2xl w-full max-w-md mx-auto">
+    <h3 class="text-center text-3xl font-bold mb-8 text-gray-800 tracking-wide">
+        Inscription
+    </h3>
 
-        <form method="POST" novalidate class="space-y-5">
+        <form method="POST" novalidate class="space-y-6">
             {% csrf_token %}
 
             {% for field in form %}
-            <div class="flex flex-col">
-                <label class="mb-1 font-medium text-gray-700">{{ field.label }}</label>
-                {{ field|add_class:"border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" }}
+            <div class="flex flex-col relative">
+                <label class="mb-2 font-medium text-gray-700">{{ field.label }}</label>
+
+                <!-- Icones par type de champ -->
+                {% if field.name == "username" %}
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                    {{ field|add_class:"pl-10 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition shadow-sm w-full" }}
+                </div>
+                {% elif field.name == "email" %}
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <i class="fa-solid fa-envelope"></i>
+                    </span>
+                    {{ field|add_class:"pl-10 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition shadow-sm w-full" }}
+                </div>
+                {% elif field.name == "password" %}
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <i class="fa-solid fa-lock"></i>
+                    </span>
+                    {{ field|add_class:"pl-10 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none transition shadow-sm w-full" }}
+                </div>
+                {% else %}
+                    {{ field|add_class:"border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition shadow-sm w-full" }}
+                {% endif %}
+
                 {% if field.errors %}
                     <p class="text-red-600 text-sm mt-1">{{ field.errors|striptags }}</p>
                 {% endif %}
@@ -28,16 +54,17 @@
             {% endfor %}
 
             <button type="submit"
-                class="w-full bg-blue-600 text-white px-4 py-3 rounded-xl shadow-lg
-                       hover:bg-blue-700 hover:scale-105 transition transform duration-200 font-semibold">
-                Se connecter
+                class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-3 rounded-xl shadow-lg
+                       hover:from-blue-600 hover:to-indigo-700 hover:scale-105 transition transform duration-200 font-semibold">
+                S'inscrire
             </button>
         </form>
 
         <div class="text-center mt-6 text-gray-600">
-            <span>Pas encore de compte ? </span>
-            <a href="{% url 'signup' %}" class="text-blue-600 font-medium hover:underline">Créer un compte</a>
+            <span>Déjà un compte ? </span>
+            <a href="{% url 'login' %}" class="text-indigo-600 font-medium hover:underline">Se connecter</a>
         </div>
     </div>
 </div>
+
 {% endblock %}
