@@ -49,6 +49,16 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ["username", "email", "password1", "password2"]
         help_texts = {field: "" for field in fields}
 
+
+    def clean_username(self):
+        username=self.cleaned_data.get("username")
+        if CustomUser.objects.filter(username=username).exists():
+            raise ValidationError(
+                "Cette nom d'utilisateur est déjà utilisée."
+
+            )
+        return username
+
     def clean_email(self):
         email = self.cleaned_data.get("email")
         if CustomUser.objects.filter(email=email).exists():
