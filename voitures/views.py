@@ -10,6 +10,9 @@ from .forms import (CustomerLoginForm, CustomUserCreationForm, MarqueForm,
                     ModeleForm, VoitureForm ,ImageForm , ReservationForm)
 from .models import (ContactInfo, CustomUser, Marque, Modele,
                      Reservation, Voiture ,Image)
+from django.core.mail import send_mail
+
+from django.conf import settings
 
 
 # ----------------- Page d'accueil -----------------
@@ -18,6 +21,38 @@ def home(request):
 
      # récupère toutes les marques
     return render(request, "voiture/main.html", {"marques": marques})
+
+
+# voiture/views.py
+from django.shortcuts import render
+
+def pourquoi_kasaco(request):
+    """
+    Page expliquant pourquoi choisir KASACO.
+    """
+    context = {
+        'title': "Pourquoi KASACO ?",
+        'features': [
+            {
+                'icon': 'bi bi-building text-red-500',
+                'title': 'Vente et importation des véhicules locales',
+                'description': 'Nous proposons un large choix de véhicules locaux de qualité soigneusement inspectés et certifiés.',
+            },
+            {
+                'icon': 'bi bi-globe2 text-blue-500',
+                'title': 'Vente et importation des véhicules en ligne',
+                'description': 'Achetez facilement votre véhicule en ligne avec livraison rapide et sécurisée partout au Burundi.',
+            },
+            {
+                'icon': 'bi bi-car-front-fill text-green-500',
+                'title': 'Garage',
+                'description': 'Nos garages sont équipés pour l’entretien, la réparation et le service après-vente de votre véhicule.',
+            },
+        ]
+    }
+    return render(request, 'voiture/pourquoi_kasaco.html', context)
+
+
 
 
 
@@ -309,7 +344,7 @@ def supprimer_modele(request, id):
 @role_required("admin")
 def liste_voitures(request):
     voitures = Voiture.objects.all()
-    paginator = Paginator(voitures, 10)   # 10 véhicules par page
+    paginator = Paginator(voitures, 2)   # 10 véhicules par page
     page = request.GET.get("page")
     voitures = paginator.get_page(page)
     form = VoitureForm()
@@ -389,16 +424,17 @@ def mes_reservations(request):
     return render(request, "voiture/user/mes_reservations.html", context)
 
 
-@role_required("user")
-def annuler_reservation(request, id):
-    reservation = get_object_or_404(Reservation, id=id, utilisateur=request.user)
-    reservation.delete()
-    messages.success(request, "Votre réservation a été annulée avec succès.")
-    return redirect("mes_reservations")
+
 
 @staff_member_required
 def disponible_liste_voitures(request):
-    voitures = Voiture.objects.filter(etat="Disponible")
+    voitures_list = Voiture.objects.filter(etat="Disponible").order_by('-id')  # ordonner par ID décroissant
+
+    # Pagination
+    paginator = Paginator(voitures_list, 2)  # 10 voitures par page
+    page_number = request.GET.get('page')
+    voitures = paginator.get_page(page_number)
+
     reservations = Reservation.objects.select_related('voiture', 'utilisateur').all().order_by('-date_reservation')
 
     context = {
@@ -408,14 +444,7 @@ def disponible_liste_voitures(request):
 
     return render(request, "voiture/admin/disponible_liste_voiture.html", context)
 
-from django.contrib import messages
-from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.admin.views.decorators import staff_member_required
-from django.conf import settings
 
-from .models import Voiture
-from .forms import ReservationForm
 
 
 @staff_member_required
@@ -482,15 +511,3 @@ L’équipe KASACO 🚀
             "form": form,
         },
     )
-
-
-
-def reservations_admin(request):
-    """
-    Affiche toutes les réservations pour l'admin
-    """
-    reservations = Reservation.objects.select_related('voiture', 'utilisateur').all().order_by('-date_reservation')
-    context = {
-        "reservations": reservations
-    }
-    return render(request, "voitures/reserves_admin.html", context)

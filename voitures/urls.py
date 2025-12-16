@@ -11,6 +11,7 @@ urlpatterns = [
     path("connexion/", views.login_view, name="login"),
     path("deconnexion/", views.logout_view, name="logout"),
     path("redirect/", views.redirect_by_role, name="redirect_by_role"),
+    path('pourquoi-kasaco/', views.pourquoi_kasaco, name='pourquoi_kasaco'),
 
     # -------------------- Dashboards --------------------
     path("tableau_de_bord/admin/", views.admin_dashboard, name="dashboard_admin"),

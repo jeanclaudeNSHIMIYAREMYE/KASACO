@@ -3,11 +3,17 @@
 
 {% block content %}
 
-<!-- ===== Flash Messages ===== -->
-<div id="messages-container" class="fixed top-20 right-4 space-y-2 z-50">
+<!-- ================= FLASH MESSAGES ================= -->
+<div id="messages-container" class="fixed top-20 right-6 space-y-3 z-50">
   {% if messages %}
     {% for message in messages %}
-      <div class="bg-green-200 text-green-900 px-5 py-3 rounded-lg shadow-lg transform transition-all duration-500 opacity-0 translate-x-10" id="msg{{ forloop.counter }}">
+      <div
+        class="px-5 py-3 rounded-xl shadow-xl text-sm font-medium
+               bg-gradient-to-r from-green-400 via-green-300 to-emerald-400
+               text-green-900 backdrop-blur-lg
+               transform transition-all duration-500 opacity-0 translate-x-10"
+        id="msg{{ forloop.counter }}">
+        <i class="bi bi-check-circle-fill mr-2"></i>
         {{ message }}
       </div>
     {% endfor %}
@@ -20,143 +26,185 @@ document.addEventListener("DOMContentLoaded", () => {
   messages.forEach((msg, index) => {
     setTimeout(() => {
       msg.classList.remove('opacity-0', 'translate-x-10');
-      msg.classList.add('opacity-100', 'translate-x-0');
-    }, 100 * index);
+    }, 150 * index);
 
     setTimeout(() => {
       msg.classList.add('opacity-0', 'translate-x-10');
-      msg.classList.remove('opacity-100', 'translate-x-0');
       setTimeout(() => msg.remove(), 500);
-    }, 3000);
+    }, 3500);
   });
 });
 </script>
 
-<script>
-const btn = document.getElementById('menu-btn');
-const menu = document.getElementById('menu');
-if(btn && menu) {
-  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
-}
-</script>
-
-<!-- ===== Contenu principal ===== -->
+<!-- ================= MAIN ================= -->
 <main class="container mx-auto mt-28 px-4">
-  {% include 'voiture/user/chercher.html' %}
 
-  <!-- Cartes voitures -->
+  <!-- Recherche -->
+  <div class="mb-8">
+    {% include 'voiture/user/chercher.html' %}
+  </div>
+
+  <!-- ================= CARTES VOITURES ================= -->
   {% if voitures %}
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
     {% for voiture in voitures %}
-      <div class="bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-xl shadow-lg overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2 animate-fadeIn">
+    <div
+      class="relative bg-white/70 backdrop-blur-xl
+             rounded-2xl shadow-lg overflow-hidden
+             border border-gray-200
+             transition-all duration-500
+             hover:-translate-y-3 hover:shadow-2xl hover:scale-[1.02]">
 
-        <!-- Image voiture -->
-        <div class="relative w-full h-48 overflow-hidden">
-          <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/mazda.png' %}{% endif %}"
-               alt="{{ voiture.modele.nom }}"
-               class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+      <!-- Image -->
+      <div class="relative h-48 overflow-hidden">
+        <img
+          src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/mazda.png' %}{% endif %}"
+          alt="{{ voiture.modele.nom }}"
+          class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
 
-          <!-- Badge état -->
-          <span class="absolute top-2 right-2 px-3 py-1 rounded-full text-sm font-semibold
-            {% if voiture.etat == 'Disponible' %}bg-green-500 text-white
-            {% elif voiture.etat == 'Réservée' %}bg-orange-500 text-white
-            {% else %}bg-red-600 text-white{% endif %}">
-            {{ voiture.etat }}
-          </span>
-        </div>
-
-        <!-- Infos voiture -->
-        <div class="p-4 flex flex-col h-48 justify-between">
-          <div class="space-y-1">
-            <h5 class="font-bold text-lg text-gray-800 flex items-center gap-2">
-              <img src="{% static 'images/car-icon.png' %}" alt="Marque" class="w-5 h-5">
-              {{ voiture.marque.nom }} - {{ voiture.modele.nom }}
-            </h5>
-            <p class="text-red-600 font-bold text-lg flex items-center gap-2">
-              <i class="bi bi-currency-dollar"></i>
-              {{ voiture.prix }} $
-            </p>
-          </div>
-
-          <!-- Bouton détails -->
-          <a href="{% url 'details' voiture.id %}"
-             class="mt-2 bg-red-600 text-white px-3 py-2 rounded-lg text-center hover:bg-red-700 hover:scale-105 transition transform duration-300 shadow-lg flex items-center justify-center gap-2">
-            <i class="bi bi-eye-fill"></i>
-            Voir détails
-          </a>
-        </div>
+        <!-- Badge état -->
+        <span class="absolute top-3 right-3 px-4 py-1 rounded-full text-xs font-bold tracking-wide
+          {% if voiture.etat == 'Disponible' %}
+            bg-gradient-to-r from-green-400 to-emerald-500 text-white
+          {% elif voiture.etat == 'Réservée' %}
+            bg-gradient-to-r from-orange-400 to-yellow-500 text-white
+          {% else %}
+            bg-gradient-to-r from-red-500 to-rose-600 text-white
+          {% endif %}">
+          {{ voiture.etat }}
+        </span>
       </div>
+
+      <!-- Contenu -->
+      <div class="p-5 flex flex-col justify-between h-48">
+
+        <div>
+          <h5 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+            <i class="bi bi-car-front-fill text-red-500"></i>
+          {{ voiture.marque.nom }} {{ voiture.modele.nom }} <span class="text-green-500">({{ voiture.id }})</span>
+
+          </h5>
+
+          <p class="mt-2 text-xl font-extrabold
+                    bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500
+                    bg-clip-text text-transparent">
+            {{ voiture.prix }} $
+          </p>
+        </div>
+
+        <!-- Bouton -->
+        <a href="{% url 'details' voiture.id %}"
+           class="mt-4 inline-flex items-center justify-center gap-2
+                  bg-gradient-to-r from-red-600 to-red-700
+                  text-white px-4 py-2 rounded-xl font-semibold
+                  shadow-lg hover:shadow-red-500/40
+                  hover:scale-105 transition">
+          <i class="bi bi-eye-fill"></i>
+          Voir détails
+        </a>
+
+      </div>
+    </div>
     {% endfor %}
   </div>
+
   {% else %}
-    <p class="text-center text-gray-500 mt-6 animate-fadeIn">Aucune voiture disponible pour le moment.</p>
+    <p class="text-center text-gray-500 text-lg mt-12">
+      Aucune voiture disponible pour le moment.
+    </p>
   {% endif %}
 
-  <!-- Pagination -->
+  <!-- ================= PAGINATION ================= -->
   {% if voitures.has_other_pages %}
-  <div class="mt-6 flex justify-center animate-fadeIn">
-    <ul class="inline-flex -space-x-px">
+  <div class="mt-12 flex justify-center">
+    <ul class="flex items-center space-x-1">
+
       {% if voitures.has_previous %}
-        <li><a href="?page={{ voitures.previous_page_number }}" class="px-3 py-1 bg-gray-200 rounded-l hover:bg-gray-300 transition">« Précédent</a></li>
+      <li>
+        <a href="?page={{ voitures.previous_page_number }}"
+           class="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 transition">
+          «
+        </a>
+      </li>
       {% endif %}
+
       {% for num in voitures.paginator.page_range %}
-        <li>
-          <a href="?page={{ num }}" class="px-3 py-1 {% if num == voitures.number %}bg-red-600 text-white{% else %}bg-gray-200 hover:bg-gray-300{% endif %} transition">{{ num }}</a>
-        </li>
+      <li>
+        <a href="?page={{ num }}"
+           class="px-3 py-1 rounded-lg font-semibold
+           {% if num == voitures.number %}
+             bg-gradient-to-r from-red-600 to-red-700 text-white
+           {% else %}
+             bg-gray-200 hover:bg-gray-300
+           {% endif %}">
+          {{ num }}
+        </a>
+      </li>
       {% endfor %}
+
       {% if voitures.has_next %}
-        <li><a href="?page={{ voitures.next_page_number }}" class="px-3 py-1 bg-gray-200 rounded-r hover:bg-gray-300 transition">Suivant »</a></li>
+      <li>
+        <a href="?page={{ voitures.next_page_number }}"
+           class="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 transition">
+          »
+        </a>
+      </li>
       {% endif %}
+
     </ul>
   </div>
   {% endif %}
 </main>
 
-<!-- ===== Footer ===== -->
-<footer class="bg-gradient-to-t from-gray-900 via-gray-800 to-gray-900 text-white py-12 mt-12">
-  <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 animate-fadeUp">
-    <!-- Bloc 1 : Infos KASACO -->
-    <div class="space-y-3 transform transition duration-500 hover:-translate-y-1 hover:scale-105">
-      <h5 class="font-bold text-lg mb-2 text-orange-400">KARINZI SAB COMPANY "KASACO"</h5>
-      <ul class="space-y-1 text-gray-300">
-        <li class="hover:text-white transition"><i class="bi bi-car-front-fill mr-2"></i>Vente et importation locales</li>
-        <li class="hover:text-white transition"><i class="bi bi-globe2 mr-2"></i>Vente en ligne</li>
-        <li class="hover:text-white transition"><i class="bi bi-tools mr-2"></i>Garages</li>
+<!-- ================= FOOTER ================= -->
+<footer class="mt-20 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white py-14">
+  <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 px-6">
+
+    <!-- Infos -->
+    <div>
+      <h5 class="font-bold text-xl mb-4
+                 bg-gradient-to-r from-orange-400 to-yellow-500
+                 bg-clip-text text-transparent">
+        KARINZI SAB COMPANY (KASACO)
+      </h5>
+      <ul class="space-y-3 text-gray-300">
+        <li><i class="bi bi-shop mr-2 text-orange-400"></i> Vente & importation locale</li>
+        <li><i class="bi bi-globe2 mr-2 text-orange-400"></i> Vente & importation en ligne</li>
+        <li><i class="bi bi-tools mr-2 text-orange-400"></i> Garage professionnel</li>
       </ul>
     </div>
 
-    <!-- Bloc 2 : Contact & infos légales -->
-    <div class="space-y-3 transform transition duration-500 hover:-translate-y-1 hover:scale-105">
-      <h5 class="font-bold text-lg mb-2 text-orange-400">Contact & Infos Légales</h5>
-      <ul class="space-y-1 text-gray-300">
-        <li class="hover:text-white transition"><i class="bi bi-envelope-fill mr-2"></i>Email: nduwamungudism7@gmail.com</li>
-        <li class="hover:text-white transition"><i class="bi bi-telephone-fill mr-2"></i>Téléphone: +257 69 080 278</li>
+    <!-- Contact -->
+    <div>
+      <h5 class="font-bold text-xl mb-4 text-orange-400">Contact</h5>
+      <ul class="space-y-3 text-gray-300">
+        <li><i class="bi bi-envelope-fill mr-2 text-orange-400"></i> nduwamungudism7@gmail.com</li>
+        <li>
+          <i class="bi bi-whatsapp mr-2 text-green-500"></i>
+          <a href="https://wa.me/25769080278" class="hover:text-green-400 transition">
+            +257 69 080 278
+          </a>
+        </li>
+        <li><i class="bi bi-telephone-fill mr-2 text-blue-400"></i> +257 75 123 456</li>
       </ul>
     </div>
 
-    <!-- Bloc 3 : Réseaux sociaux -->
-    <div class="space-y-3 transform transition duration-500 hover:-translate-y-1 hover:scale-105">
-      <h5 class="font-bold text-lg mb-2 text-orange-400">Suivez-nous</h5>
-      <div class="flex space-x-4 text-3xl">
-        <a href="#" class="text-blue-500 hover:text-white transition transform hover:scale-125"><i class="bi bi-facebook"></i></a>
-        <a href="#" class="text-sky-400 hover:text-white transition transform hover:scale-125"><i class="bi bi-twitter"></i></a>
-        <a href="#" class="text-pink-500 hover:text-white transition transform hover:scale-125"><i class="bi bi-instagram"></i></a>
+    <!-- Réseaux -->
+    <div>
+      <h5 class="font-bold text-xl mb-4 text-orange-400">Suivez-nous</h5>
+      <div class="flex space-x-5 text-3xl">
+        <a class="hover:text-blue-500 transition"><i class="bi bi-facebook"></i></a>
+        <a class="hover:text-sky-400 transition"><i class="bi bi-twitter"></i></a>
+        <a class="hover:text-pink-500 transition"><i class="bi bi-instagram"></i></a>
+        <a class="hover:text-green-500 transition"><i class="bi bi-whatsapp"></i></a>
       </div>
     </div>
   </div>
 
-  <!-- Copyright -->
-  <div class="text-center mt-8 text-gray-400 animate-fadeUpSmall">&copy; 2025-2026 KASACO. Mr.Django.Z-Pro.</div>
-
-  <!-- ===== Footer Animations ===== -->
-  <style>
-    @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeUpSmall { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
-    .animate-fadeUp { animation: fadeUp 0.8s ease forwards; }
-    .animate-fadeUpSmall { animation: fadeUpSmall 0.8s ease forwards; }
-    .animate-fadeIn { animation: fadeIn 0.8s ease forwards; }
-  </style>
+  <div class="text-center text-gray-400 text-sm mt-10">
+    © 2025–2026 KASACO — Mr.Django
+  </div>
 </footer>
 
 {% endblock %}
