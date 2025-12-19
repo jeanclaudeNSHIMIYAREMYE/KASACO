@@ -113,7 +113,7 @@
     </div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL --><!-- MODAL -->
 <div id="addMarqueModal"
      class="fixed inset-0 bg-black bg-opacity-60 items-center justify-center hidden z-50">
 
@@ -128,14 +128,42 @@
             </div>
 
             <div class="p-6 space-y-4">
+
+                <!-- Erreurs globales -->
+                {% if form.non_field_errors %}
+                    <div class="text-red-600 mb-4">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Nom -->
                 <div>
                     <label class="block text-gray-700 font-semibold mb-1">Nom</label>
                     {{ form.nom }}
+                    {% if form.nom.errors %}
+                        <div class="text-red-600 mt-1 text-sm">
+                            {% for error in form.nom.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
+
+                <!-- Logo -->
                 <div>
                     <label class="block text-gray-700 font-semibold mb-1">Logo</label>
                     {{ form.logo }}
+                    {% if form.logo.errors %}
+                        <div class="text-red-600 mt-1 text-sm">
+                            {% for error in form.logo.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
+
             </div>
 
             <div class="bg-gray-200 px-6 py-3 flex justify-end space-x-2">
@@ -152,6 +180,7 @@
 
     </div>
 </div>
+
 
 <!-- JS -->
 <script>

@@ -109,19 +109,36 @@ class CustomerLoginForm(AuthenticationForm):
 
 
 # ----------------- Marque Form -----------------
+
+
 class MarqueForm(forms.ModelForm):
     class Meta:
         model = Marque
         fields = ["nom", "logo"]
         widgets = {
             "nom": forms.TextInput(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
-                       "placeholder": "Nom de la marque"}
+                attrs={
+                    "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
+                    "placeholder": "Nom de la marque"
+                }
             ),
             "logo": forms.ClearableFileInput(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-red-500"}
+                attrs={
+                    "class": "w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-red-500"
+                }
             ),
         }
+
+def clean_nom(self):
+    nom = self.cleaned_data.get("nom")
+    qs = Marque.objects.filter(nom__iexact=nom)
+    if self.instance.pk:
+        qs = qs.exclude(pk=self.instance.pk)
+    if qs.exists():
+        raise ValidationError("Cette marque existe déjà.")
+    return nom
+
+
 
 
 # ----------------- Modele Form -----------------

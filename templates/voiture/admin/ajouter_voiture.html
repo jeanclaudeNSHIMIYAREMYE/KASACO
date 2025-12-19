@@ -2,24 +2,24 @@
 {% load static %}
 
 {% block content %}
-
+{% load widget_tweaks %}
 <div class="relative min-h-screen">
 
-    <!-- Background -->
+    <!-- IMAGE DE FOND + OVERLAY -->
     <div class="absolute inset-0 bg-cover bg-center"
-         style="background-image: url('/static/img/car-bg.jpg');"></div>
+         style="background-image: url('{% static 'img/car-bg.jpg' %}');"></div>
     <div class="absolute inset-0 backdrop-blur-md bg-black/60"></div>
 
-    <!-- Contenu -->
+    <!-- CONTENU -->
     <div class="relative z-10 container mx-auto p-6 max-w-5xl">
 
-        <!-- Titre -->
+        <!-- HEADER FORMULAIRE -->
         <div class="flex items-center mb-8 text-white">
-            <i class="fa fa-car text-blue-400 text-3xl mr-3"></i>
+            <i class="fa-solid fa-car text-blue-400 text-3xl mr-3"></i>
             <h2 class="text-3xl font-bold">Ajouter une Voiture</h2>
         </div>
 
-        <!-- Messages Django -->
+        <!-- MESSAGES DJANGO -->
         {% if messages %}
         <div class="fixed top-6 right-6 z-50 space-y-3">
             {% for message in messages %}
@@ -29,13 +29,14 @@
                             {% else %}
                                 bg-red-100/90 border border-red-400 text-red-900
                             {% endif %}">
+                    <i class="fa-solid fa-circle-info mr-2"></i>
                     {{ message }}
                 </div>
             {% endfor %}
         </div>
         {% endif %}
 
-        <!-- Carte -->
+        <!-- CARD FORMULAIRE -->
         <div class="bg-white/90 backdrop-blur-xl p-8 rounded-2xl shadow-2xl">
 
             <form method="POST" enctype="multipart/form-data" class="space-y-10">
@@ -63,7 +64,7 @@
                                     {% endif %}
                                 </label>
 
-                                {{ field }}
+                                {{ field|add_class:"border rounded-lg p-2 focus:ring-2 focus:ring-blue-400" }}
 
                                 {% if field.help_text %}
                                     <small class="text-gray-500">
@@ -98,7 +99,7 @@
                                     {{ field.label }}
                                 </label>
 
-                                {{ field }}
+                                {{ field|add_class:"border rounded-lg p-2 focus:ring-2 focus:ring-blue-400" }}
 
                                 {% if field.errors %}
                                     <p class="text-red-600 text-sm mt-1">
@@ -108,9 +109,9 @@
                             </div>
                         {% endfor %}
                     </div>
+                </div>
 
-
-                <!-- Boutons -->
+                <!-- BOUTONS -->
                 <div class="flex justify-end gap-4 pt-6">
                     <a href="{% url 'liste_voitures' %}"
                        class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg
