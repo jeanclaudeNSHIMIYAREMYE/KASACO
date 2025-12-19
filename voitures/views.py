@@ -261,7 +261,7 @@ def changer_role(request, user_id):
 @role_required("admin")
 def liste_marques(request):
     marques_list = Marque.objects.all().order_by("nom")
-    paginator = Paginator(marques_list, 2)  # 5 marques par page
+    paginator = Paginator(marques_list, 5)  # 5 marques par page
 
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -344,7 +344,7 @@ def supprimer_modele(request, id):
 @role_required("admin")
 def liste_voitures(request):
     voitures = Voiture.objects.all()
-    paginator = Paginator(voitures, 2)   # 10 véhicules par page
+    paginator = Paginator(voitures, 5)   # 10 véhicules par page
     page = request.GET.get("page")
     voitures = paginator.get_page(page)
     form = VoitureForm()
@@ -383,7 +383,7 @@ def ajouter_voiture(request):
         "v_form": v_form,
         "img_form": img_form,
     }
-    return render(request, "voiture/admin/voiture.html", context)
+    return render(request, "voiture/admin/ajouter_voiture.html", context)
 
 
 
@@ -431,7 +431,7 @@ def disponible_liste_voitures(request):
     voitures_list = Voiture.objects.filter(etat="Disponible").order_by('-id')  # ordonner par ID décroissant
 
     # Pagination
-    paginator = Paginator(voitures_list, 2)  # 10 voitures par page
+    paginator = Paginator(voitures_list, 5)  # 10 voitures par page
     page_number = request.GET.get('page')
     voitures = paginator.get_page(page_number)
 

@@ -1,250 +1,158 @@
 {% extends "voiture/admin/navbar.html" %}
+{% load static %}
 {% block content %}
 
-<!-- Background avec flou + overlay -->
-<div class="relative">
+<div class="relative min-h-screen">
 
-    <!-- Image -->
+    <!-- Background -->
     <div class="absolute inset-0 bg-cover bg-center"
          style="background-image: url('/static/img/car-bg.jpg');"></div>
-
-    <!-- Flou + fondu sombre -->
-    <div class="absolute inset-0 backdrop-blur-md bg-black/50"></div>
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
 
     <!-- Contenu -->
-    <div class="relative z-10 p-6">
+    <div class="relative z-10 container mx-auto px-6 py-8">
 
-        <div class="container mx-auto">
-
-            <!-- Titre -->
-            <div class="flex items-center mb-6 text-white">
-                <i class="fa fa-car text-blue-400 text-3xl mr-3"></i>
-                <h2 class="text-3xl font-bold">Gestion des Voitures</h2>
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div class="flex items-center text-white">
+                <div class="bg-blue-600 p-3 rounded-xl shadow-lg mr-4">
+                    <i class="fa fa-car text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold">Gestion des Voitures</h1>
+                    <p class="text-gray-300 text-sm">Administration du parc automobile</p>
+                </div>
             </div>
 
-            <!-- Messages -->
-            <div id="messages-container" class="fixed top-6 right-6 z-50 space-y-3">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="bg-green-100/90 border border-green-400 text-green-900
-                                    px-4 py-2 rounded-xl shadow-lg flex items-center justify-between
-                                    opacity-0 translate-y-3 transition-all duration-500"
-                             id="msg{{ forloop.counter }}">
-                            <span><i class="fa fa-check-circle mr-2"></i>{{ message }}</span>
-                            <button onclick="this.parentElement.remove()" class="font-bold text-green-700">&times;</button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+            <a href="{% url 'ajouter_voiture' %}"
+               class="inline-flex items-center gap-2 bg-blue-600 text-white
+                      px-5 py-3 rounded-xl shadow-lg hover:bg-blue-700
+                      transition transform hover:-translate-y-0.5">
+                <i class="fa fa-plus"></i>
+                <span>Nouvelle voiture</span>
+            </a>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="fixed top-6 right-6 z-50 space-y-3">
+            {% for message in messages %}
+                <div class="flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg
+                            {% if message.tags == 'success' %}
+                                bg-green-100 text-green-800 border border-green-300
+                            {% else %}
+                                bg-red-100 text-red-800 border border-red-300
+                            {% endif %}">
+                    <i class="fa fa-check-circle"></i>
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Table Card -->
+        <div class="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden">
+
+            <!-- Table Header -->
+            <div class="px-6 py-4 border-b">
+                <h2 class="text-lg font-semibold text-gray-700">
+                    Liste des véhicules
+                </h2>
             </div>
 
-            <!-- Bouton Ajouter -->
-            <button id="btnAddVoiture"
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700
-                       mb-4 flex items-center transition transform hover:scale-105">
-                <i class="fa fa-plus mr-2"></i> Ajouter une voiture
-            </button>
-
-            <!-- Formulaire -->
-            <div id="formAddVoiture" class="bg-white/90 backdrop-blur-xl p-6 rounded-2xl shadow-xl mb-6 hidden">
-                <h3 class="text-xl font-semibold mb-4 text-gray-700 flex items-center">
-                    <i class="fa fa-car-side mr-2 text-blue-500"></i> Nouveau véhicule
-                </h3>
-
-                <form method="POST" action="{% url 'ajouter_voiture' %}" enctype="multipart/form-data" class="space-y-4">
-                    {% csrf_token %}
-
-                    <!-- Ligne 1 -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="font-medium">Marque *</label>
-                            {{ form.marque }}
-                        </div>
-                        <div>
-                            <label class="font-medium">Modèle *</label>
-                            {{ form.modele }}
-                        </div>
-                    </div>
-
-                    <!-- Ligne 2 -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label>Numéro Châssis</label>
-                            {{ form.numero_chassis }}
-                        </div>
-                        <div>
-                            <label>Numéro Moteur</label>
-                            {{ form.numero_moteur }}
-                        </div>
-                    </div>
-
-                    <!-- Ligne 3 -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label>Année</label>
-                            {{ form.annee }}
-                        </div>
-                        <div>
-                            <label>Cylindrée (CC)</label>
-                            {{ form.cylindree_cc }}
-                        </div>
-                    </div>
-
-                    <!-- Ligne 4 -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label>Transmission</label>
-                            {{ form.transmission }}
-                        </div>
-                        <div>
-                            <label>Kilométrage</label>
-                            {{ form.kilometrage }}
-                        </div>
-                    </div>
-
-                    <!-- Ligne 5 -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label>Couleur</label>
-                            {{ form.couleur }}
-                        </div>
-                        <div>
-                            <label>Prix</label>
-                            {{ form.prix }}
-                        </div>
-                    </div>
-
-                    <!-- Ligne 6 -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label>État</label>
-                            {{ form.etat }}
-                        </div>
-                        <div>
-                            <label>Photo principale</label>
-                            {{ form.photo }}
-                        </div>
-                    </div>
-
-                    <!-- Multi images -->
-                    <div>
-                        <label>Autres photos</label>
-                        <input type="file" name="images" multiple
-                               class="w-full border border-gray-300 rounded-lg p-2 bg-white shadow-sm">
-                    </div>
-
-                    <!-- Boutons -->
-                    <div class="flex justify-end space-x-2">
-                        <button type="button" id="btnCancel"
-                                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
-                            <i class="fa fa-times mr-1"></i> Annuler
-                        </button>
-                        <button type="submit"
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                            <i class="fa fa-check mr-1"></i> Publier
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-
-            <!-- Tableau -->
-            <div class="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-x-auto p-4">
-                <table class="min-w-full text-center">
-                    <thead class="bg-gray-900 text-white">
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm text-gray-700">
+                    <thead class="bg-gray-100 text-gray-800 uppercase text-xs">
                         <tr>
-                            <th class="px-3 py-2">#</th>
-                            <th class="px-3 py-2">Marque</th>
-                            <th class="px-3 py-2">Modèle</th>
-                            <th class="px-3 py-2">Châssis</th>
-                            <th class="px-3 py-2">Moteur</th>
-                            <th class="px-3 py-2">Année</th>
-                            <th class="px-3 py-2">CC</th>
-                            <th class="px-3 py-2">Transmission</th>
-                            <th class="px-3 py-2">KM</th>
-                            <th class="px-3 py-2">Couleur</th>
-                            <th class="px-3 py-2">Prix</th>
-                            <th class="px-3 py-2">État</th>
-                            <th class="px-3 py-2">Actions</th>
+                            <th class="px-4 py-3 text-left">#</th>
+                            <th class="px-4 py-3">Marque</th>
+                            <th class="px-4 py-3">Modèle</th>
+                            <th class="px-4 py-3">Châssis</th>
+                            <th class="px-4 py-3">Moteur</th>
+                            <th class="px-4 py-3">Année</th>
+                            <th class="px-4 py-3">CC</th>
+                            <th class="px-4 py-3">Transmission</th>
+                            <th class="px-4 py-3">KM</th>
+                            <th class="px-4 py-3">Couleur</th>
+                            <th class="px-4 py-3">Prix</th>
+                            <th class="px-4 py-3">État</th>
+                            <th class="px-4 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+
+                    <tbody class="divide-y">
                         {% for voiture in voitures %}
-                        <tr class="border-b hover:bg-gray-100 transition">
-                            <td class="px-3 py-2">{{ forloop.counter }}</td>
-                            <td class="px-3 py-2">{{ voiture.marque.nom }}</td>
-                            <td class="px-3 py-2">{{ voiture.modele.nom }}</td>
-                            <td class="px-3 py-2">{{ voiture.numero_chassis }}</td>
-                            <td class="px-3 py-2">{{ voiture.numero_moteur }}</td>
-                            <td class="px-3 py-2">{{ voiture.annee }}</td>
-                            <td class="px-3 py-2">{{ voiture.cylindree_cc }}</td>
-                            <td class="px-3 py-2">{{ voiture.transmission }}</td>
-                            <td class="px-3 py-2">{{ voiture.kilometrage }}</td>
-                            <td class="px-3 py-2">{{ voiture.couleur }}</td>
-                            <td class="px-3 py-2">{{ voiture.prix }}</td>
-                            <td class="px-3 py-2">{{ voiture.etat }}</td>
-                            <td class="px-3 py-2">
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-3 font-semibold">{{ forloop.counter }}</td>
+                            <td class="px-4 py-3">{{ voiture.marque.nom }}</td>
+                            <td class="px-4 py-3">{{ voiture.modele.nom }}</td>
+                            <td class="px-4 py-3">{{ voiture.numero_chassis }}</td>
+                            <td class="px-4 py-3">{{ voiture.numero_moteur }}</td>
+                            <td class="px-4 py-3">{{ voiture.annee }}</td>
+                            <td class="px-4 py-3">{{ voiture.cylindree_cc }}</td>
+                            <td class="px-4 py-3">{{ voiture.transmission }}</td>
+                            <td class="px-4 py-3">{{ voiture.kilometrage }}</td>
+                            <td class="px-4 py-3">{{ voiture.couleur }}</td>
+                            <td class="px-4 py-3 font-semibold text-blue-700">
+                                {{ voiture.prix }}
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                    {% if voiture.etat == 'Disponible' %}
+                                        bg-green-100 text-green-700
+                                    {% else %}
+                                        bg-red-100 text-red-700
+                                    {% endif %}">
+                                    {{ voiture.etat }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
                                 <a href="{% url 'supprimer_voiture' voiture.id %}"
-                                   onclick="return confirm('Supprimer ?')"
-                                   class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg">
+                                   onclick="return confirm('Supprimer cette voiture ?')"
+                                   class="inline-flex items-center justify-center
+                                          bg-red-600 text-white p-2 rounded-lg
+                                          hover:bg-red-700 transition">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="13" class="py-4 text-gray-600">Aucune voiture trouvée.</td>
+                            <td colspan="13" class="py-10 text-center text-gray-500">
+                                Aucune voiture enregistrée
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+        </div>
 
-            <!-- Pagination -->
-            <div class="flex justify-center mt-6">
-                <nav class="inline-flex items-center space-x-2">
+        <!-- Pagination -->
+        <div class="flex justify-center mt-8">
+            <nav class="inline-flex items-center gap-2 bg-white/90 px-4 py-2 rounded-xl shadow">
+                {% if voitures.has_previous %}
+                    <a href="?page={{ voitures.previous_page_number }}"
+                       class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-black">
+                        ← Précédent
+                    </a>
+                {% endif %}
 
-                    {% if voitures.has_previous %}
-                        <a href="?page={{ voitures.previous_page_number }}"
-                           class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-black">
-                            ← Précédent
-                        </a>
-                    {% endif %}
+                <span class="px-4 py-2 text-gray-700 font-medium">
+                    Page {{ voitures.number }} / {{ voitures.paginator.num_pages }}
+                </span>
 
-                    <span class="px-4 py-2 bg-white/90 rounded-lg shadow">
-                        Page {{ voitures.number }} / {{ voitures.paginator.num_pages }}
-                    </span>
-
-                    {% if voitures.has_next %}
-                        <a href="?page={{ voitures.next_page_number }}"
-                           class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-black">
-                            Suivant →
-                        </a>
-                    {% endif %}
-
-                </nav>
-            </div>
-
+                {% if voitures.has_next %}
+                    <a href="?page={{ voitures.next_page_number }}"
+                       class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-black">
+                        Suivant →
+                    </a>
+                {% endif %}
+            </nav>
         </div>
 
     </div>
 </div>
-
-<!-- JS animation messages -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('formAddVoiture');
-    document.getElementById('btnAddVoiture').onclick = () => form.classList.remove('hidden');
-    document.getElementById('btnCancel').onclick = () => form.classList.add('hidden');
-
-    const msgs = document.querySelectorAll('#messages-container div');
-    msgs.forEach((m, i) => {
-        setTimeout(() => m.classList.remove('opacity-0', 'translate-y-3'), 150 * i);
-        setTimeout(() => {
-            m.classList.add('opacity-0', 'translate-y-3');
-            setTimeout(() => m.remove(), 500);
-        }, 2500);
-    });
-});
-</script>
 
 {% endblock content %}

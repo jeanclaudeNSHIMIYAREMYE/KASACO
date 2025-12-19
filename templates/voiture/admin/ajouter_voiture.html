@@ -1,0 +1,134 @@
+{% extends "voiture/admin/navbar.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="relative min-h-screen">
+
+    <!-- Background -->
+    <div class="absolute inset-0 bg-cover bg-center"
+         style="background-image: url('/static/img/car-bg.jpg');"></div>
+    <div class="absolute inset-0 backdrop-blur-md bg-black/60"></div>
+
+    <!-- Contenu -->
+    <div class="relative z-10 container mx-auto p-6 max-w-5xl">
+
+        <!-- Titre -->
+        <div class="flex items-center mb-8 text-white">
+            <i class="fa fa-car text-blue-400 text-3xl mr-3"></i>
+            <h2 class="text-3xl font-bold">Ajouter une Voiture</h2>
+        </div>
+
+        <!-- Messages Django -->
+        {% if messages %}
+        <div class="fixed top-6 right-6 z-50 space-y-3">
+            {% for message in messages %}
+                <div class="px-4 py-3 rounded-xl shadow-lg
+                            {% if message.tags == 'success' %}
+                                bg-green-100/90 border border-green-400 text-green-900
+                            {% else %}
+                                bg-red-100/90 border border-red-400 text-red-900
+                            {% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Carte -->
+        <div class="bg-white/90 backdrop-blur-xl p-8 rounded-2xl shadow-2xl">
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-10">
+                {% csrf_token %}
+
+                <!-- ================= VOITURE FORM ================= -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700">
+                        Informations du véhicule
+                    </h3>
+
+                    <!-- Champs cachés -->
+                    {% for hidden in v_form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+
+                    <!-- Champs visibles -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {% for field in v_form.visible_fields %}
+                            <div class="flex flex-col">
+                                <label class="text-sm font-medium text-gray-700 mb-1">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                        <span class="text-red-500">*</span>
+                                    {% endif %}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                    <small class="text-gray-500">
+                                        {{ field.help_text }}
+                                    </small>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <p class="text-red-600 text-sm mt-1">
+                                        {{ field.errors|striptags }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- ================= IMAGES FORM ================= -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700">
+                        Images du véhicule
+                    </h3>
+
+                    {% for hidden in img_form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {% for field in img_form.visible_fields %}
+                            <div class="flex flex-col">
+                                <label class="text-sm font-medium text-gray-700 mb-1">
+                                    {{ field.label }}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.errors %}
+                                    <p class="text-red-600 text-sm mt-1">
+                                        {{ field.errors|striptags }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+
+                <!-- Boutons -->
+                <div class="flex justify-end gap-4 pt-6">
+                    <a href="{% url 'liste_voitures' %}"
+                       class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg
+                              hover:bg-gray-400 transition">
+                        Annuler
+                    </a>
+
+                    <button type="submit"
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg
+                                   hover:bg-blue-700 transition shadow">
+                        Publier
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}

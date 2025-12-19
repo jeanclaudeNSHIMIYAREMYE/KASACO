@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from .models import CustomUser, Marque, Modele, Voiture, Reservation
-from .validators import validate_strong_password
+from .validators import validate_strong_password,validate_voiture_form
 
 # ----------------- User Forms -----------------
 class CustomUserCreationForm(UserCreationForm):
@@ -190,6 +190,22 @@ class VoitureForm(forms.ModelForm):
                          "file:border-none hover:file:bg-blue-700 shadow-sm"
             }),
         }
+
+         # Validation champ spécifique
+    def clean_numero_chassis(self):
+        numero_chassis = self.cleaned_data.get('numero_chassis')
+        if Voiture.objects.filter(numero_chassis=numero_chassis).exists():
+            raise forms.ValidationError("Ce numéro de châssis est déjà utilisé.")
+        return numero_chassis
+
+    # Validation globale via validators.py
+    def clean(self):
+        cleaned_data = super().clean()
+        try:
+            validate_voiture_form(cleaned_data)  # Appel de ton validator global
+        except forms.ValidationError as e:
+            raise forms.ValidationError(e)
+        return cleaned_data
 
 
 # ----------------- Multiple images -----------------

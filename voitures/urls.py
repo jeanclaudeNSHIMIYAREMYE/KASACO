@@ -35,7 +35,7 @@ urlpatterns = [
 
     # -------------------- Gestion voitures --------------------
     path("voitures/", views.liste_voitures, name="liste_voitures"),
-    path("voitures/ajouter/", views.ajouter_voiture, name="ajouter_voiture"),
+    path('voitures/ajouter/', views.ajouter_voiture, name='ajouter_voiture'),
     path("voitures/supprimer/<int:id>/", views.supprimer_voiture, name="supprimer_voiture"),
 
     # -------------------- Pages utilisateurs --------------------
