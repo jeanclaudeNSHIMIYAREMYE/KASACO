@@ -16,6 +16,12 @@
     <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
     <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
 </head>
 <body class="bg-gray-50 font-sans text-gray-800">
@@ -112,67 +118,104 @@
   {% block content %}{% endblock %}
 </main>
 <!-- ======== Footer ======== -->
-<footer class="bg-gray-900 text-white py-12 mt-12">
-  <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 animate-fadeUp">
+<!-- ================= FOOTER ================= -->
+<footer class="bg-gradient-to-br from-[#0B1220] via-[#0E1A2F] to-[#0B1220] text-gray-300 mt-20">
 
-    <!-- Bloc 1 : Infos -->
+  <div class="max-w-7xl mx-auto px-6 py-20
+              grid grid-cols-1 md:grid-cols-3 gap-12 animate-fadeUp">
+
+    <!-- Bloc 1 : Infos KASACO -->
     <div class="space-y-4 transform transition hover:-translate-y-1 hover:scale-105">
-      <h5 class="font-bold text-lg text-orange-400 uppercase tracking-wider">KARINZI SAB COMPANY "KASACO"</h5>
-      <ul class="space-y-2 text-gray-300">
+      <h5 class="font-bold text-lg text-orange-400 uppercase tracking-wider">
+        KARINZI SAB COMPANY "KASACO"
+      </h5>
+      <ul class="space-y-2 text-sm">
         <li class="flex items-center">
-          <i class="bi bi-shop text-orange-400 mr-3 text-xl"></i> Vente & importation
+          <i class="bi bi-shop text-orange-400 mr-3 text-xl"></i>
+          Vente & importation
         </li>
         <li class="flex items-center">
-          <i class="bi bi-globe2 text-orange-400 mr-3 text-xl"></i> Vente en ligne
+          <i class="bi bi-globe2 text-orange-400 mr-3 text-xl"></i>
+          Vente en ligne
         </li>
         <li class="flex items-center">
-          <i class="bi bi-car-front-fill text-orange-400 mr-3 text-xl"></i> Garages
+          <i class="bi bi-car-front-fill text-orange-400 mr-3 text-xl"></i>
+          Garages
         </li>
       </ul>
     </div>
 
     <!-- Bloc 2 : Contact -->
     <div class="space-y-4 transform transition hover:-translate-y-1 hover:scale-105">
-      <h5 class="font-bold text-lg text-orange-400 uppercase tracking-wider">Contact</h5>
-      <ul class="space-y-2 text-gray-300">
+      <h5 class="font-bold text-lg text-orange-400 uppercase tracking-wider">
+        Contact
+      </h5>
+      <ul class="space-y-2 text-sm">
         <li class="flex items-center">
-          <i class="bi bi-envelope-fill text-orange-400 mr-3 text-xl"></i> nduwamungudism7@gmail.com
+          <i class="bi bi-envelope-fill text-orange-400 mr-3 text-xl"></i>
+          nduwamungudism7@gmail.com
         </li>
         <li class="flex items-center">
           <i class="bi bi-whatsapp text-green-500 mr-3 text-xl"></i>
-          <a href="https://wa.me/25769080278" target="_blank" class="hover:underline hover:text-green-400 transition">
+          <a href="https://wa.me/25769080278" target="_blank"
+             class="hover:text-green-400 transition">
             +257 69 080 278
           </a>
         </li>
         <li class="flex items-center">
-          <i class="bi bi-telephone-fill text-blue-400 mr-3 text-xl"></i> +257 75 123 456
+          <i class="bi bi-telephone-fill text-blue-400 mr-3 text-xl"></i>
+          +257 75 123 456
         </li>
       </ul>
     </div>
 
     <!-- Bloc 3 : Réseaux sociaux -->
     <div class="space-y-4 transform transition hover:-translate-y-1 hover:scale-105">
-      <h5 class="font-bold text-lg text-orange-400 uppercase tracking-wider">Suivez-nous</h5>
-      <div class="flex space-x-4 text-3xl">
-        <a href="#" class="text-blue-600 hover:text-blue-400 transition"><i class="bi bi-facebook"></i></a>
-        <a href="#" class="text-sky-400 hover:text-sky-300 transition"><i class="bi bi-twitter"></i></a>
-        <a href="#" class="text-pink-500 hover:text-pink-400 transition"><i class="bi bi-instagram"></i></a>
-        <a href="#" class="text-green-500 hover:text-green-400 transition"><i class="bi bi-whatsapp"></i></a>
+      <h5 class="font-bold text-lg text-orange-400 uppercase tracking-wider">
+        Suivez-nous
+      </h5>
+      <div class="flex space-x-5 text-3xl">
+        <a href="#" class="text-blue-600 hover:text-blue-400 transition">
+          <i class="bi bi-facebook"></i>
+        </a>
+        <a href="#" class="text-sky-400 hover:text-sky-300 transition">
+          <i class="bi bi-twitter"></i>
+        </a>
+        <a href="#" class="text-pink-500 hover:text-pink-400 transition">
+          <i class="bi bi-instagram"></i>
+        </a>
+        <a href="#" class="text-green-500 hover:text-green-400 transition">
+          <i class="bi bi-whatsapp"></i>
+        </a>
       </div>
     </div>
+
   </div>
+
+  <!-- Divider -->
+  <div class="border-t border-white/10"></div>
 
   <!-- Copyright -->
-  <div class="text-center mt-10 text-gray-400 text-sm">
-    &copy; 2025-2026 KASACO — Mr.Django
+  <div class="text-center py-6 text-sm text-gray-400">
+    © 2025–2026 <span class="text-white font-semibold">KASACO</span>/Par — Programmeur-Passionne
   </div>
 
-  <!-- Animation fade-up -->
-  <style>
-    @keyframes fadeUp {
-      from {opacity:0; transform: translateY(20px);}
-      to {opacity:1; transform: translateY(0);}
-    }
-    .animate-fadeUp { animation: fadeUp 0.8s ease forwards; }
-  </style>
 </footer>
+
+<!-- Animation fade-up -->
+<style>
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeUp {
+  animation: fadeUp 0.8s ease forwards;
+}
+</style>
+

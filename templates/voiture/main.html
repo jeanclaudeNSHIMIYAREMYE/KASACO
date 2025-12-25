@@ -4,50 +4,74 @@
 
 <main class="container mx-auto mt-5 px-4">
 
-    <!-- HERO SECTION -->
-    <section class="relative h-[600px] rounded-xl overflow-hidden"
-             style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{% static "images/home2.jpg" %}'); background-size: cover; background-position: center;">
+<!-- HERO SECTION -->
+<section class="relative h-[600px] rounded-xl overflow-hidden"
+         style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{% static "images/home2.jpg" %}'); background-size: cover; background-position: center;">
+    <div class="relative h-full flex items-center">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <div class="relative h-full flex items-center">
-            <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- LEFT: Search Form -->
+            <div class="bg-white p-6 rounded-xl shadow-lg max-w-md">
+                <h2 class="text-gray-700 text-lg font-bold mb-4">Trouver une voiture</h2>
+                <form method="get" action="{% url 'home' %}" class="space-y-3">
+                    <select name="modele" class="w-full p-3 border rounded-lg">
+                        <option value="">Choisir marque & modèle</option>
+                        {% for marque in marques %}
+                            <optgroup label="{{ marque.nom }}">
+                                {% for modele in marque.modeles.all %}
+                                    <option value="{{ modele.id }}">{{ modele.nom }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endfor %}
+                    </select>
 
-                <!-- LEFT: Search Form -->
-                <div class="bg-white p-6 rounded-xl shadow-lg max-w-md">
-                    <h2 class="text-gray-700 text-lg font-bold mb-4">Trouver une voiture</h2>
-                    <div class="space-y-3">
-                        <select class="w-full p-3 border rounded-lg">
-                            <option>Choisir marque & modèle</option>
-                        </select>
-                        <select class="w-full p-3 border rounded-lg">
-                            <option>Choisir type de carrosserie</option>
-                        </select>
-                        <select class="w-full p-3 border rounded-lg">
-                            <option>Choisir fourchette de prix</option>
-                        </select>
-                        <select class="w-full p-3 border rounded-lg">
-                            <option>Choisir année</option>
-                        </select>
-                        <select class="w-full p-3 border rounded-lg">
-                            <option>Kilométrage</option>
-                        </select>
-                        <button class="w-full p-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition">
-                            Rechercher
-                        </button>
-                    </div>
-                </div>
+                    <select name="transmission" class="w-full p-3 border rounded-lg">
+                        <option value="">Type de transmission</option>
+                        <option value="Manuelle">Manuelle</option>
+                        <option value="Automatique">Automatique</option>
+                        <option value="Autre">Autre</option>
+                    </select>
 
-                <!-- RIGHT: HERO TITLE -->
-                <div class="flex items-center justify-center md:justify-end">
-                    <h1 class="text-white text-5xl md:text-6xl font-extrabold drop-shadow-2xl leading-tight">
-                        Conduisez ce qui arrive ensuite
-                    </h1>
-                </div>
+                    <select name="annee" class="w-full p-3 border rounded-lg">
+                        <option value="">Choisir année</option>
+                        {% for voiture in voitures_populaires %}
+                            <option value="{{ voiture.annee }}">{{ voiture.annee }}</option>
+                        {% endfor %}
+                    </select>
 
+                    <select name="prix" class="w-full p-3 border rounded-lg">
+                        <option value=""> prix</option>
+                        <option value="0-10000">0 - 10 000$</option>
+                        <option value="10000-20000">10 000 - 20 000$</option>
+                        <option value="20000-50000">20 000 - 50 000$</option>
+                        <option value="50000+">50 000$+</option>
+                    </select>
+
+                    <select name="kilometrage" class="w-full p-3 border rounded-lg">
+                        <option value="">Kilométrage</option>
+                        <option value="0-5000">0 - 5 000 km</option>
+                        <option value="5000-20000">5 000 - 20 000 km</option>
+                        <option value="20000+">20 000+ km</option>
+                    </select>
+
+                    <button type="submit" class="w-full p-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition">
+                        Rechercher
+                    </button>
+                </form>
             </div>
-        </div>
-    </section>
 
-    <!-- SECTION MARQUES -->
+            <!-- RIGHT: HERO TITLE -->
+            <div class="flex items-center justify-center md:justify-end">
+                <h5 class="text-white text-5xl md:text-6xl font-extrabold drop-shadow-2xl leading-tight">
+                    Conduisez ce qui arrive ensuite
+                </h5>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- SECTION MARQUES -->
 <section class="mt-4 mb-6 bg-gradient-to-r from-red-50 via-yellow-50 to-green-50 p-3 rounded-lg">
     <h2 class="text-lg font-bold mb-2 animate-fadeUp text-gray-800">À vous de choisir</h2>
     <div class="flex justify-between items-center mb-2 animate-fadeUp delay-100">
@@ -59,7 +83,11 @@
         {% for marque in marques %}
         <a href="#" class="brand-card flex flex-col items-center transition-transform transform hover:scale-110 animate-fadeIn">
             <div class="rounded-full p-1 hover:shadow-lg transition duration-300" style="background: linear-gradient(45deg, #FF6B6B, #FFD93D, #6BCB77);">
-                <img src="{{ marque.logo.url }}" class="w-10 h-10 object-contain">
+                {% if marque.logo %}
+                    <img src="{{ marque.logo.url }}" class="w-10 h-10 object-contain">
+                {% else %}
+                    <img src="{% static 'images/default-logo.png' %}" class="w-10 h-10 object-contain">
+                {% endif %}
             </div>
             <span class="font-bold text-[10px] mt-1 text-gray-800">{{ marque.nom }}</span>
         </a>
@@ -69,25 +97,67 @@
     </div>
 </section>
 
+<!-- CATEGORIES / MODELES -->
+<section class="max-w-7xl mx-auto px-6 py-20">
+  <div class="text-center mb-14">
+    <h2 class="text-4xl font-bold mb-4">Parcourir par modèle de voiture</h2>
+    <p class="text-gray-500 max-w-2xl mx-auto">
+        Découvrez notre large sélection de véhicules classés par modèles.
+    </p>
+  </div>
 
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    {% for modele in modeles %}
+      <div class="relative group rounded-2xl overflow-hidden shadow-lg">
+        <img src="{% if modele.voitures.first.photo %}{{ modele.voitures.first.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}" class="w-full h-80 object-cover group-hover:scale-110 transition duration-500">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="absolute bottom-6 left-6 text-white">
+          <h3 class="text-2xl font-bold">{{ modele.nom }}</h3>
+          <p class="text-sm mt-1">
+            {% if modele.voitures.first %}À partir de {{ modele.voitures.first.prix }}$ {% else %}Prix non disponible{% endif %}
+          </p>
+        </div>
+      </div>
+    {% empty %}
+      <p>Aucun modèle trouvé.</p>
+    {% endfor %}
+  </div>
+</section>
 
+<!-- VOITURES POPULAIRES -->
+<section class="max-w-7xl mx-auto px-6 py-20">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
+    <div>
+      <h2 class="text-4xl font-bold mb-3">Voitures les plus populaires</h2>
+      <p class="text-gray-500">Nos véhicules les plus récents et disponibles.</p>
+    </div>
+    <a href="#" class="mt-6 md:mt-0 inline-flex items-center gap-2 text-green-500 font-semibold hover:underline">
+      Voir toutes
+      <span>→</span>
+    </a>
+  </div>
 
-    <!-- SECTION CARROSSERIE -->
-
-
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    {% for voiture in voitures_populaires %}
+      <div class="bg-white rounded-2xl shadow hover:shadow-xl transition overflow-hidden">
+        <div class="relative">
+          <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}" class="w-full h-64 object-cover">
+          <span class="absolute top-4 right-4 {% if voiture.etat == 'Disponible' %}bg-green-500{% else %}bg-red-500{% endif %} text-white text-sm px-4 py-1 rounded-full">
+            {{ voiture.etat }}
+          </span>
+        </div>
+      </div>
+    {% empty %}
+      <p>Aucune voiture disponible.</p>
+    {% endfor %}
+  </div>
+</section>
 
 </main>
 
-<!-- ===== Animations CSS ===== -->
 <style>
-@keyframes fadeUp {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-  0% { opacity: 0; transform: scale(0.95); }
-  100% { opacity: 1; transform: scale(1); }
-}
+@keyframes fadeUp {0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn {0%{opacity:0;transform:scale(0.95);}100%{opacity:1;transform:scale(1);}}
 .animate-fadeUp { animation: fadeUp 0.8s ease forwards; }
 .animate-fadeUp.delay-100 { animation-delay: 0.1s; }
 .animate-fadeUp.delay-200 { animation-delay: 0.2s; }

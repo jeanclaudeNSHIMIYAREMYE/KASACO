@@ -16,11 +16,24 @@ from django.conf import settings
 
 
 # ----------------- Page d'accueil -----------------
-def home(request):
-    marques = Marque.objects.all()
 
-     # récupère toutes les marques
-    return render(request, "voiture/main.html", {"marques": marques})
+
+def home(request):
+    # Toutes les marques pour la section et le formulaire
+    marques = Marque.objects.all()
+    
+    # Tous les modèles
+    modeles = Modele.objects.all()[:5]
+    
+    # Voitures populaires : ici, on prend les 6 voitures les plus récentes disponibles
+    voitures_populaires = Voiture.objects.filter(etat="Disponible")[:6]
+
+    return render(request, "voiture/main.html", {
+        "marques": marques,
+        "modeles": modeles,
+        "voitures_populaires": voitures_populaires
+    })
+
 
 
 # voiture/views.py
