@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "voitures",
     "theme",
     "widget_tweaks",
+    'django.contrib.staticfiles',
 
 ]
 
