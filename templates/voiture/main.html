@@ -2,79 +2,79 @@
 {% load static %}
 {% block content %}
 
-<main class="container mt-5 pt-5">
+<main class="container mx-auto mt-5 px-4">
 
     <!-- HERO SECTION -->
-    <section class="position-relative rounded overflow-hidden" style="
-        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
-                    url('{% static "images/home2.jpg" %}') center/cover no-repeat;
-        height: 600px;">
-        
-        <div class="h-100 d-flex align-items-center">
-            <div class="container">
-                <div class="row">
-                    
-                    <!-- LEFT: Search Form -->
-                    <div class="col-md-5 bg-white p-4 rounded shadow-lg">
-                        <h2 class="text-dark font-weight-bold mb-4">Trouver une voiture</h2>
-                        <form class="d-flex flex-column">
-                            <select class="form-control mb-2">
-                                <option>Choisir marque & modèle</option>
-                            </select>
-                            <select class="form-control mb-2">
-                                <option>Choisir type de carrosserie</option>
-                            </select>
-                            <select class="form-control mb-2">
-                                <option>Choisir fourchette de prix</option>
-                            </select>
-                            <select class="form-control mb-2">
-                                <option>Choisir année</option>
-                            </select>
-                            <select class="form-control mb-3">
-                                <option>Kilométrage</option>
-                            </select>
-                            <button class="btn btn-danger btn-block font-weight-bold" type="submit">
-                                Rechercher
-                            </button>
-                        </form>
-                    </div>
+    <section class="relative h-[600px] rounded-xl overflow-hidden"
+             style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{% static "images/home2.jpg" %}'); background-size: cover; background-position: center;">
 
-                    <!-- RIGHT: HERO TITLE -->
-                    <div class="col-md-7 d-flex align-items-center justify-content-center justify-content-md-end text-center text-md-left">
-                        <h1 class="text-white font-weight-bold display-4 display-md-3 shadow-lg">
-                            Conduisez ce qui arrive ensuite
-                        </h1>
-                    </div>
+        <div class="relative h-full flex items-center">
+            <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
 
+                <!-- LEFT: Search Form -->
+                <div class="bg-white p-6 rounded-xl shadow-lg max-w-md">
+                    <h2 class="text-gray-700 text-lg font-bold mb-4">Trouver une voiture</h2>
+                    <div class="space-y-3">
+                        <select class="w-full p-3 border rounded-lg">
+                            <option>Choisir marque & modèle</option>
+                        </select>
+                        <select class="w-full p-3 border rounded-lg">
+                            <option>Choisir type de carrosserie</option>
+                        </select>
+                        <select class="w-full p-3 border rounded-lg">
+                            <option>Choisir fourchette de prix</option>
+                        </select>
+                        <select class="w-full p-3 border rounded-lg">
+                            <option>Choisir année</option>
+                        </select>
+                        <select class="w-full p-3 border rounded-lg">
+                            <option>Kilométrage</option>
+                        </select>
+                        <button class="w-full p-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition">
+                            Rechercher
+                        </button>
+                    </div>
                 </div>
+
+                <!-- RIGHT: HERO TITLE -->
+                <div class="flex items-center justify-center md:justify-end">
+                    <h1 class="text-white text-5xl md:text-6xl font-extrabold drop-shadow-2xl leading-tight">
+                        Conduisez ce qui arrive ensuite
+                    </h1>
+                </div>
+
             </div>
         </div>
-
     </section>
 
     <!-- SECTION MARQUES -->
-    <section class="mt-4 mb-6 p-3 rounded bg-light">
-        <h2 class="h5 font-weight-bold text-dark mb-2 animate-fadeUp">À vous de choisir</h2>
-        <div class="d-flex justify-content-between align-items-center mb-2 animate-fadeUp delay-100">
-            <h5 class="font-weight-semibold text-muted small mb-0">Rechercher par marque de voiture</h5>
-            <a href="#" class="text-danger font-weight-bold small">Voir toutes</a>
-        </div>
+<section class="mt-4 mb-6 bg-gradient-to-r from-red-50 via-yellow-50 to-green-50 p-3 rounded-lg">
+    <h2 class="text-lg font-bold mb-2 animate-fadeUp text-gray-800">À vous de choisir</h2>
+    <div class="flex justify-between items-center mb-2 animate-fadeUp delay-100">
+        <h5 class="font-semibold text-xs text-gray-700">Rechercher par marque de voiture</h5>
+        <a href="#" class="text-red-600 font-semibold text-xs hover:underline transition">Voir toutes</a>
+    </div>
 
-        <div class="row">
-            {% for marque in marques %}
-            <div class="col-4 col-sm-3 col-md-2 text-center mb-4 animate-fadeIn">
-                <a href="#" class="d-flex flex-column align-items-center text-decoration-none text-dark">
-                    <div class="rounded-circle p-2 mb-2" style="background: linear-gradient(45deg, #FF6B6B, #FFD93D, #6BCB77);">
-                        <img src="{{ marque.logo.url }}" class="img-fluid" style="width:40px; height:40px; object-fit: contain;">
-                    </div>
-                    <span class="font-weight-bold small">{{ marque.nom }}</span>
-                </a>
+    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-12 animate-fadeUp delay-200">
+        {% for marque in marques %}
+        <a href="#" class="brand-card flex flex-col items-center transition-transform transform hover:scale-110 animate-fadeIn">
+            <div class="rounded-full p-1 hover:shadow-lg transition duration-300" style="background: linear-gradient(45deg, #FF6B6B, #FFD93D, #6BCB77);">
+                <img src="{{ marque.logo.url }}" class="w-10 h-10 object-contain">
             </div>
-            {% empty %}
-            <p class="text-muted small">Aucune marque trouvée.</p>
-            {% endfor %}
-        </div>
-    </section>
+            <span class="font-bold text-[10px] mt-1 text-gray-800">{{ marque.nom }}</span>
+        </a>
+        {% empty %}
+        <p class="text-gray-500 text-xs">Aucune marque trouvée.</p>
+        {% endfor %}
+    </div>
+</section>
+
+
+
+
+    <!-- SECTION CARROSSERIE -->
+
+
 
 </main>
 
