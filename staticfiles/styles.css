@@ -1,0 +1,117 @@
+/* ======= Corps ======= */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa; /* gris clair */
+    color: #212529;
+    margin: 0;
+    padding-top: 80px; /* espace pour navbar fixe */
+}
+
+/* ======= Navbar ======= */
+.navbar {
+    background-color: #fff;
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar .nav-link {
+    color: #212529;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar .nav-link:hover {
+    color: #dc3545; /* rouge bootstrap */
+}
+
+.navbar .btn {
+    font-weight: 600;
+    border-radius: 0.35rem;
+    transition: all 0.3s ease;
+}
+
+.navbar .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+.navbar .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* ======= Main ======= */
+main.container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* ======= Cartes / Formulaires ======= */
+.card {
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    background-color: #ffffff;
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.2);
+}
+
+/* Form labels */
+.form-label {
+    font-weight: 500;
+    color: #212529;
+}
+
+/* Inputs */
+.form-control {
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-primary:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* ======= Footer ======= */
+footer {
+    background-color: #212529;
+    color: #fff;
+    font-size: 0.875rem;
+}
+
+footer h6 {
+    font-weight: 600;
+}
+
+footer a {
+    color: #ffc107; /* jaune pour les liens */
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* ======= Responsive ======= */
+@media (max-width: 768px) {
+    .navbar .nav-link {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.85rem;
+    }
+    .navbar .btn {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+    }
+}

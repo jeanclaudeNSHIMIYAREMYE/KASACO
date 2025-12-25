@@ -11,7 +11,7 @@ from .forms import (CustomerLoginForm, CustomUserCreationForm, MarqueForm,
 from .models import (ContactInfo, CustomUser, Marque, Modele,
                      Reservation, Voiture ,Image)
 from django.core.mail import send_mail
-
+import os
 from django.conf import settings
 
 
