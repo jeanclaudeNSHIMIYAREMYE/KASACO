@@ -446,7 +446,6 @@ def disponible_liste_voitures(request):
 
 
 
-
 @staff_member_required
 def reserver_voiture(request, voiture_id):
     voiture = get_object_or_404(Voiture, id=voiture_id)
@@ -457,7 +456,6 @@ def reserver_voiture(request, voiture_id):
 
     if request.method == "POST":
         form = ReservationForm(request.POST)
-
         if form.is_valid():
             reservation = form.save(commit=False)
             reservation.voiture = voiture
@@ -489,17 +487,22 @@ L’équipe KASACO 🚀
 
             destinataire = [reservation.utilisateur.email]
 
-            send_mail(
-                subject=sujet,
-                message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=destinataire,
-                fail_silently=False,
-            )
+            # Lecture sûre du DEFAULT_FROM_EMAIL depuis l'environnement
+            from_email = os.environ.get("DEFAULT_FROM_EMAIL", settings.DEFAULT_FROM_EMAIL)
 
-            messages.success(request, "Voiture réservée avec succès. Un email de confirmation a été envoyé.")
+            try:
+                send_mail(
+                    subject=sujet,
+                    message=message,
+                    from_email=from_email,
+                    recipient_list=destinataire,
+                    fail_silently=False,
+                )
+                messages.success(request, "Voiture réservée avec succès. Un email de confirmation a été envoyé.")
+            except Exception as e:
+                messages.warning(request, f"Voiture réservée mais l'email n'a pas pu être envoyé : {e}")
+
             return redirect("liste_voitures")
-
     else:
         form = ReservationForm()
 
@@ -511,3 +514,4 @@ L’équipe KASACO 🚀
             "form": form,
         },
     )
+
