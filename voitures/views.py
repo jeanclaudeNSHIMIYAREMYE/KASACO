@@ -19,20 +19,50 @@ from django.conf import settings
 
 
 def home(request):
-    # Toutes les marques pour la section et le formulaire
-    marques = Marque.objects.all()
-    
-    # Tous les modèles
-    modeles = Modele.objects.all()[:5]
-    
-    # Voitures populaires : ici, on prend les 6 voitures les plus récentes disponibles
-    voitures_populaires = Voiture.objects.filter(etat="Disponible")[:6]
+    voitures = Voiture.objects.all().order_by('-date_ajout')
+    marques = Marque.objects.prefetch_related('modeles')
+    modeles = Modele.objects.prefetch_related('voitures')[:4]
+    voitures_populaires = Voiture.objects.order_by('-date_ajout')[:6]  # 10 dernières voitures
 
-    return render(request, "voiture/main.html", {
-        "marques": marques,
-        "modeles": modeles,
-        "voitures_populaires": voitures_populaires
-    })
+    # --- RECHERCHE ---
+    query = request.GET.get('q')
+    if query:
+        voitures = voitures.filter(
+            Q(modele__nom__icontains=query) |
+            Q(marque__nom__icontains=query) |
+            Q(numero_chassis__icontains=query) |
+            Q(numero_moteur__icontains=query) |
+            Q(couleur__icontains=query) |
+            Q(annee__icontains=query) |
+            Q(transmission__icontains=query) |
+            Q(cylindree_cc__icontains=query) |
+            Q(prix__icontains=query)
+        )
+
+    # --- Message si aucun résultat ---
+    message = None
+    if not voitures.exists():
+        message = "Aucune voiture trouvée pour votre recherche."
+
+    # --- Pagination ---
+    paginator = Paginator(voitures, 3)  # 6 voitures par page
+    page_number = request.GET.get('page')
+    voitures_page = paginator.get_page(page_number)
+
+    context = {
+        'voitures': voitures_page,
+        'marques': marques,
+        'modeles': modeles,
+        'voitures_populaires': voitures_populaires,
+        'message': message,
+    }
+    return render(request, 'voiture/main.html', context)
+
+
+
+
+
+
 
 
 
