@@ -84,31 +84,31 @@
                 </li>
             </ul>
         </div>
+<!-- Menu mobile amélioré (compact) -->
+<ul id="mobile-menu" 
+    class="absolute top-full right-4 w-56 bg-black text-white shadow-xl rounded-lg overflow-hidden transition-transform duration-300 transform translate-x-full lg:hidden">
+    <li>
+        <a href="{% url 'home' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
+            <i class="bi bi-house-door-fill mr-3 text-lg"></i> Accueil
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'pourquoi_kasaco' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
+            <i class="bi bi-question-circle-fill mr-3 text-lg"></i> Pourquoi KASACO
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'login' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
+            <i class="bi bi-box-arrow-in-right mr-3 text-lg"></i> Connexion
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'signup' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
+            <i class="bi bi-pencil-square mr-3 text-lg"></i> Inscription
+        </a>
+    </li>
+</ul>
 
-        <!-- Menu mobile amélioré (glissant) -->
-        <ul id="mobile-menu" 
-            class="fixed top-0 right-0 h-full w-64 bg-black text-white shadow-xl rounded-l-lg overflow-hidden transition-transform duration-300 transform translate-x-full z-40 lg:hidden">
-            <li>
-                <a href="{% url 'home' %}" class="flex items-center px-4 py-4 hover:bg-gray-800 transition">
-                    <i class="bi bi-house-door-fill mr-3 text-lg"></i> Accueil
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'pourquoi_kasaco' %}" class="flex items-center px-4 py-4 hover:bg-gray-800 transition">
-                    <i class="bi bi-question-circle-fill mr-3 text-lg"></i> Pourquoi KASACO
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'login' %}" class="flex items-center px-4 py-4 hover:bg-gray-800 transition">
-                    <i class="bi bi-box-arrow-in-right mr-3 text-lg"></i> Connexion
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'signup' %}" class="flex items-center px-4 py-4 hover:bg-gray-800 transition">
-                    <i class="bi bi-pencil-square mr-3 text-lg"></i> Inscription
-                </a>
-            </li>
-        </ul>
     </nav>
 
     <!-- ================= CONTENU ================= -->
