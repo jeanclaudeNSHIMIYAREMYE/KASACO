@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [
 ]
 
 
+
 AUTH_USER_MODEL = (
     "voitures.CustomUser"  # Assure-toi que CustomUser est dans l'app 'voiture'
 )
