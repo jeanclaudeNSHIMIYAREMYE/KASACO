@@ -13,81 +13,101 @@
 {% load tailwind_tags %}
 {% tailwind_css %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+<style>
+/* Gradient hover pour sidebar links */
+.nav-gradient {
+    transition: all 0.3s ease;
+}
+.nav-gradient:hover {
+    background: linear-gradient(90deg, #4f46e5, #3b82f6);
+    color: white;
+    transform: translateX(5px);
+}
+</style>
 </head>
 
 <body class="bg-gray-100 font-sans">
 
 <div class="flex h-screen">
 
-    <!-- Sidebar (desktop) -->
-    <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-gray-900 text-gray-100 transition-transform duration-300">
-        <div class="flex items-center justify-center h-20 border-b border-gray-700">
-            <i class="fa fa-user-cog fa-2x text-blue-500 mr-2"></i>
-            <span class="text-xl font-semibold">VENDEUR</span>
+    <!-- Sidebar Desktop -->
+    <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100 transition-transform duration-300 shadow-lg">
+        <!-- User Info -->
+        <div class="flex flex-col items-center justify-center h-28 border-b border-gray-700 py-4">
+            <i class="fa fa-user-cog fa-3x text-blue-500 mb-2 animate-bounce"></i>
+            <span class="text-lg font-semibold text-white text-center">
+                {{ request.user.get_full_name|default:request.user.username }}
+            </span>
         </div>
 
+        <!-- Navigation -->
         <nav class="flex-1 p-4 space-y-2">
-            <a href="{% url 'dashboard_admin' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition active:bg-blue-700">
-                <i class="fa fa-tachometer-alt mr-2"></i> Dashboard
+            <a href="{% url 'dashboard_admin' %}" class="flex items-center p-2 rounded nav-gradient">
+                <i class="fa fa-tachometer-alt mr-3 text-xl"></i> Dashboard
             </a>
-            <a href="{% url 'utilisateurs_list' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
-                <i class="fa fa-user mr-2"></i> Utilisateurs
+            <a href="{% url 'utilisateurs_list' %}" class="flex items-center p-2 rounded nav-gradient">
+                <i class="fa fa-user mr-3 text-xl"></i> Utilisateurs
             </a>
-            <a href="{% url 'liste_marques' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
-                <i class="fa fa-tags mr-2"></i> Marques
+            <a href="{% url 'liste_marques' %}" class="flex items-center p-2 rounded nav-gradient">
+                <i class="fa fa-tags mr-3 text-xl"></i> Marques
             </a>
-            <a href="{% url 'liste_modeles' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
-                <i class="fa fa-pencil-alt mr-2"></i> Modèles
+            <a href="{% url 'liste_modeles' %}" class="flex items-center p-2 rounded nav-gradient">
+                <i class="fa fa-pencil-alt mr-3 text-xl"></i> Modèles
             </a>
-            <a href="{% url 'liste_voitures' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
-                <i class="fa fa-car mr-2"></i> Voitures
+            <a href="{% url 'liste_voitures' %}" class="flex items-center p-2 rounded nav-gradient">
+                <i class="fa fa-car mr-3 text-xl"></i> Voitures
             </a>
-            <a href="{% url 'reserver_liste_voitures' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
-                <i class="fa fa-book mr-2"></i> Réservations
+            <a href="{% url 'reserver_liste_voitures' %}" class="flex items-center p-2 rounded nav-gradient">
+                <i class="fa fa-book mr-3 text-xl"></i> Réservations
             </a>
-            <a href="{% url 'logout' %}" class="flex items-center p-2 rounded hover:bg-red-600 transition mt-auto">
-                <i class="fa fa-sign-out-alt mr-2"></i> Déconnexion
+            <a href="{% url 'logout' %}" class="flex items-center p-2 rounded mt-auto hover:bg-red-600 hover:text-white transition">
+                <i class="fa fa-sign-out-alt mr-3 text-xl"></i> Déconnexion
             </a>
         </nav>
     </aside>
 
-    <!-- Sidebar mobile -->
+    <!-- Sidebar Mobile -->
     <div class="md:hidden">
-        <button id="mobile-menu-button" class="p-4 text-gray-100 bg-gray-900 fixed top-0 left-0 z-50">
+        <button id="mobile-menu-button" class="p-4 text-gray-100 bg-gray-900 fixed top-0 left-0 z-50 rounded-br-lg shadow-lg">
             <i class="fa fa-bars fa-lg"></i>
         </button>
 
-        <aside id="mobile-sidebar" class="fixed inset-y-0 left-0 w-64 bg-gray-900 text-gray-100 transform -translate-x-full transition-transform duration-300 z-40">
-            <div class="flex items-center justify-between h-20 border-b border-gray-700 p-4">
-                <span class="text-xl font-semibold">VENDEUR</span>
-                <button id="close-mobile-menu" class="text-gray-100">
+        <aside id="mobile-sidebar" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100 transform -translate-x-full transition-transform duration-300 z-40 shadow-lg">
+            <!-- User Info -->
+            <div class="flex items-center justify-center h-20 border-b border-gray-700 p-4 relative">
+                <span class="text-xl font-semibold text-white text-center">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </span>
+                <button id="close-mobile-menu" class="absolute right-4 text-gray-100">
                     <i class="fa fa-times fa-lg"></i>
                 </button>
             </div>
+
+            <!-- Navigation Mobile -->
             <nav class="flex-1 p-4 space-y-2">
-                <a href="{% url 'dashboard_admin' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition active:bg-blue-700">
-                    <i class="fa fa-tachometer-alt mr-2"></i> Dashboard
+                <a href="{% url 'dashboard_admin' %}" class="flex items-center p-2 rounded nav-gradient">
+                    <i class="fa fa-tachometer-alt mr-3 text-xl"></i> Dashboard
                 </a>
-                <a href="{% url 'utilisateurs_list' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
-                    <i class="fa fa-user mr-2"></i> Utilisateurs
+                <a href="{% url 'utilisateurs_list' %}" class="flex items-center p-2 rounded nav-gradient">
+                    <i class="fa fa-user mr-3 text-xl"></i> Utilisateurs
                 </a>
-                <a href="{% url 'liste_marques' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
-                    <i class="fa fa-tags mr-2"></i> Marques
+                <a href="{% url 'liste_marques' %}" class="flex items-center p-2 rounded nav-gradient">
+                    <i class="fa fa-tags mr-3 text-xl"></i> Marques
                 </a>
-                <a href="{% url 'liste_modeles' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
-                    <i class="fa fa-pencil-alt mr-2"></i> Modèles
+                <a href="{% url 'liste_modeles' %}" class="flex items-center p-2 rounded nav-gradient">
+                    <i class="fa fa-pencil-alt mr-3 text-xl"></i> Modèles
                 </a>
-                <a href="{% url 'liste_voitures' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
-                    <i class="fa fa-car mr-2"></i> Voitures
+                <a href="{% url 'liste_voitures' %}" class="flex items-center p-2 rounded nav-gradient">
+                    <i class="fa fa-car mr-3 text-xl"></i> Voitures
                 </a>
-                <a href="{% url 'reserver_liste_voitures' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
-                    <i class="fa fa-book mr-2"></i> Réservations
+                <a href="{% url 'reserver_liste_voitures' %}" class="flex items-center p-2 rounded nav-gradient">
+                    <i class="fa fa-book mr-3 text-xl"></i> Réservations
                 </a>
-                <a href="{% url 'logout' %}" class="flex items-center p-2 rounded hover:bg-red-600 transition mt-auto">
-                    <i class="fa fa-sign-out-alt mr-2"></i> Déconnexion
+                <a href="{% url 'logout' %}" class="flex items-center p-2 rounded mt-auto hover:bg-red-600 hover:text-white transition">
+                    <i class="fa fa-sign-out-alt mr-3 text-xl"></i> Déconnexion
                 </a>
             </nav>
         </aside>
@@ -119,4 +139,5 @@
 </script>
 
 </body>
-</html>
+</
+
