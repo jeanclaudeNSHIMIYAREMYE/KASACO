@@ -137,7 +137,6 @@ def login_view(request):
 # ----------------- Déconnexion -----------------
 def logout_view(request):
     logout(request)
-    messages.info(request, "Vous avez été déconnecté.")
     return redirect("home")
 
 
