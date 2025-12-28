@@ -106,7 +106,6 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, "Inscription réussie !")
             return redirect("redirect_by_role")
         else:
             messages.error(
