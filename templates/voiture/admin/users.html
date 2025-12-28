@@ -30,22 +30,7 @@
                 </h5>
             </div>
 
-            <!-- Messages Flash -->
-            {% if messages %}
-            <div class="my-4 px-6">
-                {% for message in messages %}
-                <div class="px-4 py-2 rounded-lg shadow-lg mb-2 animate-fadeOut
-                    {% if message.tags == 'error' %}
-                        bg-red-600 bg-opacity-80 text-white
-                    {% else %}
-                        bg-green-600 bg-opacity-80 text-white
-                    {% endif %}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
+          
             <!-- TABLE -->
             <div class="p-6 overflow-x-auto text-white">
 

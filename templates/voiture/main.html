@@ -70,8 +70,13 @@
     background-size: 200% 200%;
     animation: gradientMove 15s ease infinite;
 }
+@keyframes fadeUp {0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn {0%{opacity:0;transform:scale(0.95);}100%{opacity:1;transform:scale(1);}}
+.animate-fadeUp {animation: fadeUp 0.8s ease forwards; opacity:0;}
+.animate-fadeUp.delay-100 {animation-delay: 0.1s;}
+.animate-fadeUp.delay-200 {animation-delay: 0.2s;}
+.animate-fadeIn {animation: fadeIn 0.8s ease forwards; opacity:0;}
 </style>
-
 
 <!-- RESULTATS DE RECHERCHE -->
 {% if voitures %}
@@ -119,7 +124,6 @@
                         </a>
                     {% endif %}
                 </div>
-
             </div>
         </div>
         {% empty %}
@@ -127,7 +131,7 @@
         {% endfor %}
     </div>
 
-    <!-- Pagination -->
+    <!-- Pagination sécurisée -->
     {% if voitures.has_other_pages %}
     <div class="mt-8 flex justify-center space-x-2">
         {% if voitures.has_previous %}
@@ -169,14 +173,13 @@
                     <img src="{% static 'images/default-logo.png' %}" class="w-6 h-6 object-contain">
                 {% endif %}
             </div>
-            <span class="font-bold text-[9px] mt-1 text-gray-8 text-center">{{ marque.nom }}</span>
+            <span class="font-bold text-[9px] mt-1 text-gray-800 text-center">{{ marque.nom }}</span>
         </a>
         {% empty %}
         <p class="text-gray-500 text-xs">Aucune marque trouvée.</p>
         {% endfor %}
     </div>
 </section>
-
 
 <!-- SECTION MODEL -->
 <section class="max-w-7xl mx-auto px-6 py-20">
@@ -235,19 +238,6 @@
 </section>
 
 </main>
-
-<!-- Animations CSS -->
-<style>
-@keyframes gradientMove {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-.animate-gradient {background-size: 200% 200%; animation: gradientMove 15s ease infinite;}
-
-@keyframes fadeUp {0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
-@keyframes fadeIn {0%{opacity:0;transform:scale(0.95);}100%{opacity:1;transform:scale(1);}}
-.animate-fadeUp {animation: fadeUp 0.8s ease forwards; opacity:0;}
-.animate-fadeUp.delay-100 {animation-delay: 0.1s;}
-.animate-fadeUp.delay-200 {animation-delay: 0.2s;}
-.animate-fadeIn {animation: fadeIn 0.8s ease forwards; opacity:0;}
-</style>
 
 <!-- JS léger pour animations au scroll -->
 <script>
