@@ -10,17 +10,20 @@
 <!-- Font Awesome -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 <!-- ChartJS -->
- {% load tailwind_tags %}
- {% tailwind_css %}
+{% load tailwind_tags %}
+{% tailwind_css %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
 </head>
 
 <body class="bg-gray-100 font-sans">
 
-<div class="flex min-h-screen">
+<div class="flex h-screen">
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-gray-900 text-gray-100 flex flex-col">
+    <!-- Sidebar (desktop) -->
+    <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-gray-900 text-gray-100 transition-transform duration-300">
         <div class="flex items-center justify-center h-20 border-b border-gray-700">
             <i class="fa fa-user-cog fa-2x text-blue-500 mr-2"></i>
             <span class="text-xl font-semibold">VENDEUR</span>
@@ -41,158 +44,78 @@
             </a>
             <a href="{% url 'liste_voitures' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
                 <i class="fa fa-car mr-2"></i> Voitures
+            </a>
             <a href="{% url 'reserver_liste_voitures' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
                 <i class="fa fa-book mr-2"></i> Réservations
             </a>
-
             <a href="{% url 'logout' %}" class="flex items-center p-2 rounded hover:bg-red-600 transition mt-auto">
                 <i class="fa fa-sign-out-alt mr-2"></i> Déconnexion
             </a>
         </nav>
     </aside>
 
+    <!-- Sidebar mobile -->
+    <div class="md:hidden">
+        <button id="mobile-menu-button" class="p-4 text-gray-100 bg-gray-900 fixed top-0 left-0 z-50">
+            <i class="fa fa-bars fa-lg"></i>
+        </button>
+
+        <aside id="mobile-sidebar" class="fixed inset-y-0 left-0 w-64 bg-gray-900 text-gray-100 transform -translate-x-full transition-transform duration-300 z-40">
+            <div class="flex items-center justify-between h-20 border-b border-gray-700 p-4">
+                <span class="text-xl font-semibold">VENDEUR</span>
+                <button id="close-mobile-menu" class="text-gray-100">
+                    <i class="fa fa-times fa-lg"></i>
+                </button>
+            </div>
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="{% url 'dashboard_admin' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition active:bg-blue-700">
+                    <i class="fa fa-tachometer-alt mr-2"></i> Dashboard
+                </a>
+                <a href="{% url 'utilisateurs_list' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
+                    <i class="fa fa-user mr-2"></i> Utilisateurs
+                </a>
+                <a href="{% url 'liste_marques' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
+                    <i class="fa fa-tags mr-2"></i> Marques
+                </a>
+                <a href="{% url 'liste_modeles' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
+                    <i class="fa fa-pencil-alt mr-2"></i> Modèles
+                </a>
+                <a href="{% url 'liste_voitures' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
+                    <i class="fa fa-car mr-2"></i> Voitures
+                </a>
+                <a href="{% url 'reserver_liste_voitures' %}" class="flex items-center p-2 rounded hover:bg-blue-600 transition">
+                    <i class="fa fa-book mr-2"></i> Réservations
+                </a>
+                <a href="{% url 'logout' %}" class="flex items-center p-2 rounded hover:bg-red-600 transition mt-auto">
+                    <i class="fa fa-sign-out-alt mr-2"></i> Déconnexion
+                </a>
+            </nav>
+        </aside>
+    </div>
+
     <!-- Contenu principal -->
-    <main class="flex-1 p-6">
-
+    <main class="flex-1 p-6 overflow-auto">
         {% block content %}
-
-        <!-- Title -->
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold flex items-center">
-                <i class="fa fa-users text-blue-500 mr-2"></i> Gestion des Utilisateurs
-            </h1>
-        </div>
-
-        <!-- Statistiques -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-blue-600 text-white p-4 rounded-xl shadow-lg flex justify-between items-center hover:shadow-2xl transition transform hover:-translate-y-1">
-                <div>
-                    <h6 class="uppercase text-sm">Clients</h6>
-                    <p class="text-3xl font-bold text-center">{{ utilisateurs_count }}</p>
-                </div>
-                <i class="fa fa-users fa-2x"></i>
-            </div>
-
-            <div class="bg-green-600 text-white p-4 rounded-xl shadow-lg flex justify-between items-center hover:shadow-2xl transition transform hover:-translate-y-1">
-                <div>
-                    <h6 class="uppercase text-sm">Voitures</h6>
-                    <p class="text-3xl font-bold text-center">{{ voitures_count }}</p>
-                </div>
-                <i class="fa fa-car fa-2x"></i>
-            </div>
-
-            <div class="bg-yellow-400 text-gray-800 p-4 rounded-xl shadow-lg flex justify-between items-center hover:shadow-2xl transition transform hover:-translate-y-1">
-                <div>
-                    <h6 class="uppercase text-sm">Réservations</h6>
-                    <p class="text-3xl font-bold text-center">{{ reservations_count }}</p>
-                </div>
-                <i class="fa fa-book fa-2x"></i>
-            </div>
-
-            <div class="bg-teal-500 text-white p-4 rounded-xl shadow-lg flex justify-between items-center hover:shadow-2xl transition transform hover:-translate-y-1">
-                <div>
-                    <h6 class="uppercase text-sm">Marques</h6>
-                    <p class="text-3xl font-bold text-center">{{ marques_count }}</p>
-                </div>
-                <i class="fa fa-tags fa-2x"></i>
-            </div>
-        </div>
-
-        <!-- Table Utilisateurs -->
-        <div class="bg-white p-4 rounded-xl shadow-lg mb-6 overflow-x-auto">
-            <table id="usersTable" class="min-w-full table-auto border border-gray-200">
-                <thead class="bg-gray-800 text-white">
-                    <tr>
-                        <th class="px-4 py-2">#</th>
-                        <th class="px-4 py-2">Nom d'utilisateur</th>
-                        <th class="px-4 py-2">Email</th>
-                        <th class="px-4 py-2">Rôle</th>
-                        <th class="px-4 py-2">Date d'inscription</th>
-                        <th class="px-4 py-2">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    <tr class="text-center border-b border-gray-200">
-                        <td class="px-4 py-2">{{ forloop.counter }}</td>
-                        <td class="px-4 py-2 text-left font-semibold flex items-center"><i class="fa fa-user-circle text-gray-400 mr-1"></i>{{ user.username }}</td>
-                        <td class="px-4 py-2 text-left">{{ user.email }}</td>
-                        <td class="px-4 py-2">
-                            {% if user.is_staff %}
-                            <span class="bg-green-500 text-white px-3 py-1 rounded-full inline-flex items-center"><i class="fa fa-shield-alt mr-1"></i>Admin</span>
-                            {% else %}
-                            <span class="bg-gray-400 text-white px-3 py-1 rounded-full inline-flex items-center"><i class="fa fa-user mr-1"></i>Utilisateur</span>
-                            {% endif %}
-                        </td>
-                        <td class="px-4 py-2">{{ user.date_joined|date:"d/m/Y H:i" }}</td>
-                        <td class="px-4 py-2 flex justify-center space-x-2">
-                            <a href="{% url 'changer_role' user.id %}" class="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500"><i class="fa fa-exchange-alt"></i></a>
-                            <a href="{% url 'supprimer_utilisateur' user.id %}" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?')"><i class="fa fa-trash"></i></a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Graphiques -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-white p-4 rounded-xl shadow-lg">
-                <h6 class="font-bold mb-2">État des voitures</h6>
-                <canvas id="voituresChart"></canvas>
-            </div>
-            <div class="bg-white p-4 rounded-xl shadow-lg">
-                <h6 class="font-bold mb-2">Réservations par jour</h6>
-                <canvas id="reservationsChart"></canvas>
-            </div>
-        </div>
-
         {% endblock content %}
-
     </main>
 </div>
 
+<!-- JS -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
 <script>
-$(document).ready(function() {
-    $('#usersTable').DataTable({
-        responsive:true,
-        language:{
-            search:"Rechercher :",
-            lengthMenu:"Afficher _MENU_ entrées",
-            info:"Affichage de _START_ à _END_ sur _TOTAL_ utilisateurs",
-            paginate:{ first:"Premier", last:"Dernier", next:"Suivant", previous:"Précédent" }
-        }
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileSidebar = document.getElementById('mobile-sidebar');
+    const closeMobileMenu = document.getElementById('close-mobile-menu');
+
+    mobileMenuButton.addEventListener('click', () => {
+        mobileSidebar.classList.remove('-translate-x-full');
     });
 
-    // Chart Voitures
-    const ctxVoitures = document.getElementById('voituresChart');
-    if(ctxVoitures){
-        new Chart(ctxVoitures,{
-            type:'doughnut',
-            data:{
-                labels:['Disponible','Réservée','Vendue'],
-                datasets:[{data:[20,15,10],backgroundColor:['#28a745','#ffc107','#dc3545']}]
-            },
-            options:{responsive:true, plugins:{legend:{position:'bottom'}}}
-        });
-    }
-
-    // Chart Réservations
-    const ctxRes = document.getElementById('reservationsChart');
-    if(ctxRes){
-        new Chart(ctxRes,{
-            type:'bar',
-            data:{
-                labels:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
-                datasets:[{label:'Réservations',data:[2,4,1,5,3,2,1],backgroundColor:'#3b82f6'}]
-            },
-            options:{responsive:true, scales:{y:{beginAtZero:true}}}
-        });
-    }
-});
+    closeMobileMenu.addEventListener('click', () => {
+        mobileSidebar.classList.add('-translate-x-full');
+    });
 </script>
 
 </body>

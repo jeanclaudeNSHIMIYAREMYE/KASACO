@@ -1,77 +1,76 @@
 {% extends 'voiture/admin/navbar.html' %}
 
 {% block content %}
-  {% load tailwind_tags %}
-    {% tailwind_css %}
-
-<!-- ================= Background général ================= -->
 <div class="min-h-screen w-full bg-cover bg-center bg-fixed"
      style="background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400');">
 
     <div class="backdrop-blur-sm bg-black/50 min-h-screen px-6 py-8">
-        <!-- ================= TITRE ================= -->
+
+        <!-- TITRE -->
         <h1 class="text-4xl font-extrabold text-white tracking-wide mb-8">
             Tableau de Bord
         </h1>
 
-        <!-- ================= Statistiques ================= -->
+       
+
+        <!-- Statistiques -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
 
-          <!-- Clients -->
-          <div class="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-700
-                      transition transform hover:-translate-y-1 hover:shadow-2xl border border-white/10">
-            <div class="p-5 text-white">
-              <div class="flex justify-between items-center">
-                <div>
-                  <h6 class="uppercase text-sm opacity-90">Clients</h6>
-                  <p class="text-4xl font-extrabold">{{ utilisateurs_count }}</p>
+            <!-- Clients -->
+            <div class="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-700
+                        transition transform hover:-translate-y-1 hover:shadow-2xl border border-white/10">
+                <div class="p-5 text-white">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h6 class="uppercase text-sm opacity-90">Clients</h6>
+                            <p class="text-4xl font-extrabold">{{ utilisateurs_count }}</p>
+                        </div>
+                        <i class="fa fa-users fa-3x opacity-80"></i>
+                    </div>
                 </div>
-                <i class="fa fa-users fa-3x opacity-80"></i>
-              </div>
             </div>
-          </div>
 
-          <!-- Voitures -->
-          <div class="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-br from-emerald-400 to-emerald-700
-                      transition transform hover:-translate-y-1 hover:shadow-2xl border border-white/10">
-            <div class="p-5 text-white">
-              <div class="flex justify-between items-center">
-                <div>
-                  <h6 class="uppercase text-sm opacity-90">Voitures</h6>
-                  <p class="text-4xl font-extrabold">{{ voitures_count }}</p>
+            <!-- Voitures -->
+            <div class="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-br from-emerald-400 to-emerald-700
+                        transition transform hover:-translate-y-1 hover:shadow-2xl border border-white/10">
+                <div class="p-5 text-white">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h6 class="uppercase text-sm opacity-90">Voitures</h6>
+                            <p class="text-4xl font-extrabold">{{ voitures_count }}</p>
+                        </div>
+                        <i class="fa fa-car fa-3x opacity-80"></i>
+                    </div>
                 </div>
-                <i class="fa fa-car fa-3x opacity-80"></i>
-              </div>
             </div>
-          </div>
 
-          <!-- Réservations -->
-          <div class="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-br from-amber-300 to-amber-600
-                      text-gray-900 transition transform hover:-translate-y-1 hover:shadow-2xl border border-white/10">
-            <div class="p-5">
-              <div class="flex justify-between items-center">
-                <div>
-                  <h6 class="uppercase text-sm opacity-90">Réservations</h6>
-                  <p class="text-4xl font-extrabold">{{ reservations_count }}</p>
+            <!-- Réservations -->
+            <div class="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-br from-amber-300 to-amber-600
+                        text-gray-900 transition transform hover:-translate-y-1 hover:shadow-2xl border border-white/10">
+                <div class="p-5">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h6 class="uppercase text-sm opacity-90">Réservations</h6>
+                            <p class="text-4xl font-extrabold">{{ reservations_count }}</p>
+                        </div>
+                        <i class="fa fa-book fa-3x opacity-80"></i>
+                    </div>
                 </div>
-                <i class="fa fa-book fa-3x opacity-80"></i>
-              </div>
             </div>
-          </div>
 
-          <!-- Marques -->
-          <div class="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-br from-pink-400 to-rose-700
-                      transition transform hover:-translate-y-1 hover:shadow-2xl border border-white/10">
-            <div class="p-5 text-white">
-              <div class="flex justify-between items-center">
-                <div>
-                  <h6 class="uppercase text-sm opacity-90">Marques</h6>
-                  <p class="text-4xl font-extrabold">{{ marques_count }}</p>
+            <!-- Marques -->
+            <div class="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-br from-pink-400 to-rose-700
+                        transition transform hover:-translate-y-1 hover:shadow-2xl border border-white/10">
+                <div class="p-5 text-white">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h6 class="uppercase text-sm opacity-90">Marques</h6>
+                            <p class="text-4xl font-extrabold">{{ marques_count }}</p>
+                        </div>
+                        <i class="fa fa-tags fa-3x opacity-80"></i>
+                    </div>
                 </div>
-                <i class="fa fa-tags fa-3x opacity-80"></i>
-              </div>
             </div>
-          </div>
 
         </div>
 
@@ -88,12 +87,4 @@
   animation: fadeOut 2.2s forwards;
 }
 </style>
-
 {% endblock content %}
-
-{% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-{% endblock extra_js %}
