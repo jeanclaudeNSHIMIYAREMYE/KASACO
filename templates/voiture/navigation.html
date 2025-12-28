@@ -52,12 +52,11 @@
                      alt="KASACO">
             </a>
 
-           <!-- Bouton mobile amélioré -->
-<button id="menu-btn" 
-        class="lg:hidden text-white text-3xl p-3 rounded-full bg-blue-600 hover:bg-blue-700 hover:scale-110 transition transform duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-    <i class="bi bi-list"></i>
-</button>
-
+            <!-- Bouton mobile amélioré -->
+            <button id="menu-btn" 
+                    class="lg:hidden fixed top-5 right-5 z-50 text-white text-3xl p-3 rounded-full bg-blue-600 hover:bg-blue-700 hover:scale-110 transition transform duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <i class="bi bi-list"></i>
+            </button>
 
             <!-- Menu desktop -->
             <ul class="hidden lg:flex items-center gap-6 text-white font-medium">
@@ -84,30 +83,31 @@
             </ul>
         </div>
 
-     <!-- Menu mobile amélioré -->
-<ul id="mobile-menu" class="hidden lg:hidden bg-black text-white shadow-lg rounded-lg overflow-hidden transition-all duration-500">
-    <li>
-        <a href="{% url 'home' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
-            <i class="bi bi-house-door-fill mr-3 text-lg"></i> Accueil
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'pourquoi_kasaco' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
-            <i class="bi bi-question-circle-fill mr-3 text-lg"></i> Pourquoi KASACO
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'login' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
-            <i class="bi bi-box-arrow-in-right mr-3 text-lg"></i> Connexion
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'signup' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
-            <i class="bi bi-pencil-square mr-3 text-lg"></i> Inscription
-        </a>
-    </li>
-</ul>
-
+        <!-- Menu mobile amélioré (glissant) -->
+        <ul id="mobile-menu" 
+            class="fixed top-0 right-0 h-full w-64 bg-black text-white shadow-xl rounded-l-lg overflow-hidden transition-transform duration-300 transform translate-x-full z-40 lg:hidden">
+            <li>
+                <a href="{% url 'home' %}" class="flex items-center px-4 py-4 hover:bg-gray-800 transition">
+                    <i class="bi bi-house-door-fill mr-3 text-lg"></i> Accueil
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'pourquoi_kasaco' %}" class="flex items-center px-4 py-4 hover:bg-gray-800 transition">
+                    <i class="bi bi-question-circle-fill mr-3 text-lg"></i> Pourquoi KASACO
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'login' %}" class="flex items-center px-4 py-4 hover:bg-gray-800 transition">
+                    <i class="bi bi-box-arrow-in-right mr-3 text-lg"></i> Connexion
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'signup' %}" class="flex items-center px-4 py-4 hover:bg-gray-800 transition">
+                    <i class="bi bi-pencil-square mr-3 text-lg"></i> Inscription
+                </a>
+            </li>
+        </ul>
+    </nav>
 
     <!-- ================= CONTENU ================= -->
     <main class="pt-28 px-4 max-w-7xl mx-auto">
@@ -179,11 +179,12 @@
 
     <!-- ================= SCRIPTS ================= -->
     <script>
-        // Menu mobile toggle
+        // Menu mobile toggle avec glissement
         const btn = document.getElementById('menu-btn');
         const menu = document.getElementById('mobile-menu');
         btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
+            menu.classList.toggle('translate-x-full'); // cacher
+            menu.classList.toggle('translate-x-0');    // montrer
         });
 
         // Fade-up animation on scroll
