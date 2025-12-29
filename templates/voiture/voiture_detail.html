@@ -1,0 +1,69 @@
+{% extends "voiture/navigation.html" %}
+{% load static %}
+
+{% block content %}
+<div class="mt-24 max-w-6xl mx-auto p-4">
+
+    <!-- Nom de la voiture -->
+    <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-900 text-center">
+        {{ voiture.marque.nom }} {{ voiture.modele.nom }}
+    </h2>
+
+    <!-- Conteneur responsive : images + informations -->
+    <div class="flex flex-col lg:flex-row gap-8">
+
+        <!-- ======================= IMAGES ======================= -->
+        <div class="lg:w-1/2 space-y-5">
+
+            <!-- Image principale -->
+            <div class="relative w-full h-64 sm:h-80 lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group">
+                <img id="mainImage"
+                     src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}"
+                     class="w-full h-full object-cover transition-all duration-700 opacity-100">
+
+                <!-- Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+
+                <!-- Badge état -->
+                <span class="absolute top-4 left-4 px-4 py-1 rounded-full text-sm font-bold text-white shadow-lg
+                    {% if voiture.etat == 'Disponible' %}
+                        bg-gradient-to-r from-green-500 to-emerald-500
+                    {% elif voiture.etat == 'Réservée' %}
+                        bg-gradient-to-r from-orange-500 to-yellow-500
+                    {% else %}
+                        bg-gradient-to-r from-red-600 to-rose-600
+                    {% endif %}">
+                    <i class="bi bi-shield-check mr-1"></i>
+                    {{ voiture.etat }}
+                </span>
+            </div>
+
+            <!-- Miniatures -->
+            {% if images_supp %}
+            <div class="flex gap-4 overflow-x-auto p-3 bg-white/70 backdrop-blur-md rounded-2xl shadow-inner">
+                {% for img in images_supp %}
+                    <img src="{{ img.image.url }}"
+                         class="thumb min-w-[80px] sm:min-w-[110px] h-20 sm:h-24 rounded-xl cursor-pointer object-cover border-2 border-transparent hover:border-red-500 transition"
+                         onclick="document.getElementById('mainImage').src='{{ img.image.url }}'">
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ======================= INFORMATIONS ======================= -->
+        <div class="lg:w-1/2 flex-1">
+            <ul class="text-gray-700 space-y-2 text-base sm:text-lg">
+                <li><strong>Année :</strong> {{ voiture.annee }}</li>
+                <li><strong>Kilométrage :</strong> {{ voiture.kilometrage }} km</li>
+                <li><strong>Transmission :</strong> {{ voiture.transmission }}</li>
+                <li><strong>Cylindrée :</strong> {{ voiture.cylindree_cc }} cc</li>
+                <li><strong>Couleur :</strong> {{ voiture.couleur }}</li>
+                <li><strong>Prix :</strong> {{ voiture.prix }} BIF</li>
+                <li><strong>État :</strong> {{ voiture.etat }}</li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+{% endblock content %}

@@ -556,3 +556,71 @@ L’équipe KASACO 🚀
         },
     )
 
+#partie principale du client pour parcours des pages
+
+
+def marque_list(request):
+    marques = Marque.objects.all()
+    return render(request, "voiture/marque_list.html", {
+        "marques": marques
+    })
+
+
+def modele_list(request, marque_id):
+    marque = get_object_or_404(Marque, id=marque_id)
+    modeles = marque.modeles.all()
+
+    return render(request, "voiture/modele_list.html", {
+        "marque": marque,
+        "modeles": modeles
+    })
+
+
+def modele_search(request, modele_id):
+    modele = get_object_or_404(Modele, id=modele_id)
+
+    voitures = Voiture.objects.filter(
+        modele=modele,
+        etat="Disponible"
+    )
+
+    # FILTRES
+    annee_min = request.GET.get("annee_min")
+    annee_max = request.GET.get("annee_max")
+    prix_min = request.GET.get("prix_min")
+    prix_max = request.GET.get("prix_max")
+    transmission = request.GET.get("transmission")
+
+    if annee_min:
+        voitures = voitures.filter(annee__gte=annee_min)
+    if annee_max:
+        voitures = voitures.filter(annee__lte=annee_max)
+    if prix_min:
+        voitures = voitures.filter(prix__gte=prix_min)
+    if prix_max:
+        voitures = voitures.filter(prix__lte=prix_max)
+    if transmission:
+        voitures = voitures.filter(transmission=transmission)
+
+    return render(request, "voiture/modele_search.html", {
+        "modele": modele,
+        "voitures": voitures
+    })
+
+  # Assure-toi que ton modèle d'image s'appelle ImageVoiture
+
+def voiture_detail(request, voiture_id):
+    voiture = get_object_or_404(Voiture, id=voiture_id)
+
+    # Récupérer les images supplémentaires liées à cette voiture
+    images_supp = Image.objects.filter(voiture=voiture)
+
+    return render(request, "voiture/voiture_detail.html", {
+        "voiture": voiture,
+        "images_supp": images_supp
+    })
+
+
+
+
+

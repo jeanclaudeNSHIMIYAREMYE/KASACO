@@ -1,0 +1,29 @@
+{% extends "voiture/navigation.html" %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">Choisir une marque</h2>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    {% for marque in marques %}
+    <a href="{% url 'modele_list' marque.id %}">
+        <div class="border rounded-lg p-4 flex flex-col items-center justify-center hover:shadow-lg transition-shadow duration-300 bg-white">
+            <!-- Logo ou placeholder -->
+            {% if marque.logo %}
+            <div class="relative h-24 w-24 mb-3">
+                <img src="{{ marque.logo.url }}" alt="{{ marque.nom }}" class="h-full w-full object-contain rounded-full">
+                <span class="absolute bottom-0 right-0 bg-red-500 text-white text-xs px-1 rounded-full">{{ marque.id }}</span>
+            </div>
+            {% else %}
+            <div class="h-24 w-24 bg-gray-200 flex items-center justify-center rounded-full mb-3 relative">
+                <span class="text-gray-500 font-semibold text-lg">{{ marque.nom|slice:":1" }}</span>
+                <span class="absolute bottom-0 right-0 bg-red-500 text-white text-xs px-1 rounded-full">{{ marque.id }}</span>
+            </div>
+            {% endif %}
+            
+            <p class="text-lg font-medium text-gray-800">{{ marque.nom }}</p>
+        </div>
+    </a>
+    {% empty %}
+    <p>Aucune marque trouvée.</p>
+    {% endfor %}
+</div>
+{% endblock %}

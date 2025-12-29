@@ -4,6 +4,8 @@ from django.urls import path
 
 from . import views
 
+
+
 urlpatterns = [
     # -------------------- Accueil et Auth --------------------
     path("", views.home, name="home"),
@@ -48,6 +50,22 @@ urlpatterns = [
 
     path("reserver/voitures/", views.disponible_liste_voitures, name="reserver_liste_voitures"),
     path("voiture/<int:voiture_id>/reserver/", views.reserver_voiture, name="reserver_voiture"),
+    #################################
+    path("list", views.marque_list, name="marque_list"),
+
+    path("marque/<int:marque_id>/",
+         views.modele_list,
+         name="modele_list"),
+
+    path("modele/<int:modele_id>/",
+         views.modele_search,
+         name="modele_search"),
+
+    path("voiture/<int:voiture_id>/",
+         views.voiture_detail,
+         name="voiture_detail"),
+
+    
 ]
 
 # -------------------- Media files --------------------

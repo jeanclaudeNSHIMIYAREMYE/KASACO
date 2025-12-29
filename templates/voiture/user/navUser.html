@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}KASACO{% endblock %}</title>
-{% load static %}
-{% load tailwind_tags %}
-  <!-- Bootstrap Icons (pour les icônes) -->
+
+  {% load static %}
+  {% load tailwind_tags %}
+
+  <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
   <!-- Favicon -->
@@ -18,41 +20,80 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-  <!-- ===== Navbar ===== -->
-  <nav class="bg-white shadow-md fixed top-0 w-full z-40">
-    <div class="container mx-auto flex items-center justify-between px-4 py-3">
-      <a href="#" class="flex items-center text-red-600 font-bold text-xl space-x-2">
-        <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-16">
-        <span>KASACO</span>
-      </a>
-      <div class="lg:hidden">
-        <button id="menu-btn" class="text-gray-700 text-2xl focus:outline-none">
-          <i class="bi bi-list"></i>
-        </button>
-      </div>
-      <ul id="menu" class="hidden lg:flex lg:items-center space-x-4">
-        <li><a href="{% url 'user_home' %}" class="flex items-center px-3 py-2 rounded hover:bg-red-100 transition"><i class="bi bi-car-front-fill mr-1"></i>Chercher</a></li>
-        <li><a href="{% url 'mes_reservations' %}" class="flex items-center px-3 py-2 rounded hover:bg-red-100 transition"><i class="bi bi-bag-check-fill mr-1"></i>Mes réservations</a></li>
+  <!-- ================= NAVBAR ================= -->
+  <nav class="fixed top-0 w-full z-50 bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
+      <!-- Logo -->
+     <a href="{% url 'home' %}" class="flex items-center gap-2 text-white transition-transform transform hover:scale-110">
+                <img src="{% static 'images/logo.png' %}" 
+                     class="rounded-full object-cover"
+                     style="width: 220px; height: 50px;" 
+                     alt="KASACO">
+                    <span class="text-xl font-bold tracking-wide">KASACO</span>
+            </a>
 
-        <li><a href="{% url 'logout' %}" class="flex items-center px-3 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50 transition"><i class="bi bi-box-arrow-in-right mr-1"></i>Déconnexion</a></li>
+      <!-- Menu desktop -->
+      <ul class="hidden lg:flex items-center gap-6 text-white font-medium">
+        <li>
+          <a href="{% url 'mes_reservations' %}" class="flex items-center gap-1 hover:text-black transition">
+            <i class="bi bi-check-circle-fill"></i> Mes réservations
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'logout' %}" class="border border-white px-4 py-2 rounded-lg hover:bg-white hover:text-red-600 transition">
+            Déconnexion
+          </a>
+        </li>
       </ul>
+
+      <!-- Bouton mobile -->
+      <button id="menu-btn" 
+              class="lg:hidden text-white text-2xl p-2 rounded-md bg-blue-600 hover:bg-blue-700 hover:scale-105 transition transform duration-200 shadow focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <i class="bi bi-list"></i>
+      </button>
     </div>
+
+    <!-- Menu mobile -->
+    <ul id="mobile-menu" 
+        class="absolute top-full right-4 w-56 bg-black text-white shadow-xl rounded-lg overflow-hidden transition-transform duration-300 transform translate-x-full lg:hidden">
+      <li>
+        <a href="{% url 'home' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
+          <i class="bi bi-house-door-fill mr-3 text-lg"></i> Accueil
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'pourquoi_kasaco' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
+          <i class="bi bi-question-circle-fill mr-3 text-lg"></i> Pourquoi KASACO
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'login' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
+          <i class="bi bi-box-arrow-in-right mr-3 text-lg"></i> Connexion
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'signup' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
+          <i class="bi bi-pencil-square mr-3 text-lg"></i> Inscription
+        </a>
+      </li>
+    </ul>
   </nav>
 
   <!-- ===== Main Content ===== -->
-  <main class="container mx-auto mt-24 px-4"> <!-- mt-24 pour éviter que la navbar fixe cache le contenu -->
+  <main class="container mx-auto mt-24 px-4">
     {% block content %}
-    {% include "voiture/user/chercher.html" %}
+      {% include "voiture/user/chercher.html" %}
     {% endblock %}
   </main>
 
   <!-- Script pour toggle menu responsive -->
   <script>
     const menuBtn = document.getElementById('menu-btn');
-    const menu = document.getElementById('menu');
+    const mobileMenu = document.getElementById('mobile-menu');
+
     menuBtn.addEventListener('click', () => {
-      menu.classList.toggle('hidden');
+      mobileMenu.classList.toggle('translate-x-full');
     });
   </script>
 
