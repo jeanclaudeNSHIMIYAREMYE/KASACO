@@ -157,6 +157,8 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 NPM_BIN_PATH = "/usr/bin/npm"
+#NPM_BIN_PATH = "C:\\Program Files\\nodejs\\npm.cmd"
+
 
 
 
@@ -178,15 +180,21 @@ AUTHENTICATION_BACKENDS = [
 # EMAIL CONFIGURATION
 # =========================
 
+import os
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
+
+DEFAULT_FROM_EMAIL = os.environ.get(
+    "DEFAULT_FROM_EMAIL",
+    EMAIL_HOST_USER
+)
 
 
 

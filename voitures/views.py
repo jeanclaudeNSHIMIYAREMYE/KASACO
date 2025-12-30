@@ -59,16 +59,6 @@ def home(request):
     return render(request, 'voiture/main.html', context)
 
 
-
-
-
-
-
-
-
-# voiture/views.py
-from django.shortcuts import render
-
 def pourquoi_kasaco(request):
     """
     Page expliquant pourquoi choisir KASACO.
@@ -124,7 +114,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, "Connexion réussie !")
+         
             return redirect("redirect_by_role")
         else:
             messages.error(request, "email ou mot de passe incorrect.")
