@@ -1,40 +1,79 @@
-# ----------------- Environnements virtuels et secrets -----------------
-env/
-.env
-
-# ----------------- Fichiers compilés Python -----------------
-*.pyc
+# =========================
+# PYTHON
+# =========================
 __pycache__/
+*.py[cod]
+*$py.class
 
-# ----------------- Bases de données -----------------
-*.sqlite3
-
-# ----------------- Logs et sauvegardes -----------------
+# =========================
+# DJANGO
+# =========================
 *.log
-*.bak
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
 
-# ----------------- Médias et fichiers statiques générés -----------------
+# =========================
+# ENVIRONNEMENTS VIRTUELS
+# =========================
+env/
+venv/
+.venv/
+ENV/
+
+# =========================
+# VARIABLES D’ENVIRONNEMENT
+# =========================
+.env
+.env.*
+
+# =========================
+# MIGRATIONS (optionnel)
+# =========================
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# =========================
+# MEDIA & STATIC
+# =========================
 media/
+staticfiles/
 static/
 
-# ----------------- Fichiers de configuration IDE -----------------
+# =========================
+# FICHIERS IDE / EDITEURS
+# =========================
 .vscode/
 .idea/
+*.swp
+*.swo
+*.bak
 
-# ----------------- Rapports de tests et couverture -----------------
-.tox/
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# TESTS & COUVERTURE
+# =========================
 .coverage
 htmlcov/
 .pytest_cache/
+.tox/
 
-# ----------------- Fichiers de déploiement -----------------
-*.tar.gz
-*.zip
+# =========================
+# DEPENDANCES
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# ----------------- Migrations compilées -----------------
-**/migrations/*.pyc
-**/migrations/__pycache__/
-
-# ----------------- Fichiers temporaires -----------------
-*.swp
-*.swo
+# =========================
+# BUILD / DISTRIBUTION
+# =========================
+build/
+dist/
+*.egg-info/
