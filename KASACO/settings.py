@@ -181,22 +181,19 @@ AUTHENTICATION_BACKENDS = [
 # EMAIL CONFIGURATION
 # =========================
 
-import os
+# settings.py
 
-EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+# Email backend
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # pour Mailgun
+DEFAULT_FROM_EMAIL = "nshimiyaremyejeanclaude1@gmail.com"
 
+# Clés Mailgun (stockées comme variables d'environnement sur Render)
 ANYMAIL = {
     "MAILGUN_API_KEY": os.environ.get("MAILGUN_API_KEY"),
     "MAILGUN_SENDER_DOMAIN": os.environ.get("MAILGUN_DOMAIN"),
 }
 
-# Ton email comme expéditeur
-DEFAULT_FROM_EMAIL = os.environ.get(
-    "DEFAULT_FROM_EMAIL", "nshimiyaremyejeanclaude1@gmail.com"
-)
 
-# Ces paramètres sont optionnels pour Mailgun (TLS/port)
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
+
 
 
