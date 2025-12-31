@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "voitures",
     "theme",
     "widget_tweaks",
+     "anymail",
     
 
 ]
@@ -182,19 +183,20 @@ AUTHENTICATION_BACKENDS = [
 
 import os
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+ANYMAIL = {
+    "MAILGUN_API_KEY": os.environ.get("MAILGUN_API_KEY"),
+    "MAILGUN_SENDER_DOMAIN": os.environ.get("MAILGUN_DOMAIN"),
+}
 
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-
+# Ton email comme expéditeur
 DEFAULT_FROM_EMAIL = os.environ.get(
-    "DEFAULT_FROM_EMAIL",
-    EMAIL_HOST_USER
+    "DEFAULT_FROM_EMAIL", "nshimiyaremyejeanclaude1@gmail.com"
 )
 
+# Ces paramètres sont optionnels pour Mailgun (TLS/port)
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
 
 
