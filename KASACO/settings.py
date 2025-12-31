@@ -177,23 +177,24 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
+import os
+
 # =========================
-# EMAIL CONFIGURATION
+# EMAIL CONFIG (SENDGRID)
 # =========================
 
-# settings.py
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-# Email backend
-EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # pour Mailgun
-DEFAULT_FROM_EMAIL = "nshimiyaremyejeanclaude1@gmail.com"
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
-# Clés Mailgun (stockées comme variables d'environnement sur Render)
-ANYMAIL = {
-    "MAILGUN_API_KEY": os.environ.get("MAILGUN_API_KEY"),
-    "MAILGUN_SENDER_DOMAIN": os.environ.get("MAILGUN_DOMAIN"),
-}
+# SendGrid exige "apikey" comme username
+EMAIL_HOST_USER = "apikey"
 
+# Clé API stockée dans Render (Environment Variables)
+EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_API_KEY")
 
-
-
+# Email vérifié dans SendGrid (Single Sender ou Domain)
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
