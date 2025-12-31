@@ -12,6 +12,7 @@ from .models import (ContactInfo, CustomUser, Marque, Modele,
                      Reservation, Voiture ,Image)
 from django.core.mail import send_mail
 import os
+from django.db import transaction
 from django.conf import settings
 
 
@@ -176,37 +177,6 @@ def user_home(request):
     )
 
 
-@role_required("user")
-def reserver_voiture(request, voiture_id):
-    voiture = get_object_or_404(Voiture, id=voiture_id)
-
-    if voiture.etat == "Disponible":
-        Reservation.objects.create(utilisateur=request.user, voiture=voiture)
-        voiture.reserver()  # Assurez-vous que la méthode 'reserver' existe dans le modèle Voiture
-        messages.success(
-            request,
-            f"Vous avez réservé la voiture {voiture.marque.nom} {voiture.modele.nom} avec succès !",
-        )
-    else:
-        messages.warning(request, "Cette voiture est déjà réservée.")
-    return redirect("user_home")
-
-
-# ----------------- Liste des réservations -----------------
-@role_required("user")
-def reserver_voiture(request, voiture_id):
-    voiture = get_object_or_404(Voiture, id=voiture_id)
-
-    if voiture.etat == "Disponible":
-        Reservation.objects.create(utilisateur=request.user, voiture=voiture)
-        voiture.reserver()  # Assurez-vous que la méthode 'reserver' existe dans le modèle Voiture
-        messages.success(
-            request,
-            f"Vous avez réservé la voiture {voiture.marque.nom} {voiture.modele.nom} avec succès !",
-        )
-    else:
-        messages.warning(request, "Cette voiture est déjà réservée.")
-    return redirect("user_home")
 
 
 # ----------------- Liste des réservations -----------------
@@ -475,32 +445,36 @@ def disponible_liste_voitures(request):
 
     return render(request, "voiture/admin/disponible_liste_voiture.html", context)
 
-
-
 @staff_member_required
 def reserver_voiture(request, voiture_id):
     voiture = get_object_or_404(Voiture, id=voiture_id)
 
+    # Vérifier disponibilité
     if voiture.etat != "Disponible":
         messages.error(request, "Cette voiture n'est plus disponible.")
         return redirect("reserver_liste_voitures")
 
     if request.method == "POST":
         form = ReservationForm(request.POST)
+
         if form.is_valid():
-            reservation = form.save(commit=False)
-            reservation.voiture = voiture
-            reservation.save()
+            try:
+                with transaction.atomic():
+                    # Sauvegarde réservation
+                    reservation = form.save(commit=False)
+                    reservation.voiture = voiture
+                    reservation.save()
 
-            # Mettre la voiture en état réservé
-            voiture.reserver()
+                    # Mettre la voiture en état réservé
+                    voiture.reserver()  # suppose que cette méthode fait voiture.save()
 
-            # =========================
-            # 📧 ENVOI EMAIL
-            # =========================
-            sujet = "Confirmation de réservation - KASACO 🚗"
+                # =========================
+                # 📧 ENVOI EMAIL
+                # =========================
+                if reservation.utilisateur.email:
+                    sujet = "Confirmation de réservation - KASACO 🚗"
 
-            message = f"""
+                    message = f"""
 Bonjour {reservation.utilisateur.username},
 
 Votre réservation a été effectuée avec succès.
@@ -516,24 +490,41 @@ Cordialement,
 L’équipe KASACO 🚀
 """
 
-            destinataire = [reservation.utilisateur.email]
+                    from_email = os.environ.get(
+                        "DEFAULT_FROM_EMAIL",
+                        settings.DEFAULT_FROM_EMAIL
+                    )
 
-            # Lecture sûre du DEFAULT_FROM_EMAIL depuis l'environnement
-            from_email = os.environ.get("DEFAULT_FROM_EMAIL", settings.DEFAULT_FROM_EMAIL)
+                    try:
+                        send_mail(
+                            subject=sujet,
+                            message=message,
+                            from_email=from_email,
+                            recipient_list=[reservation.utilisateur.email],
+                            fail_silently=False,
+                        )
+                        messages.success(
+                            request,
+                            "Voiture réservée avec succès. Un email de confirmation a été envoyé."
+                        )
+                    except Exception as e:
+                        messages.warning(
+                            request,
+                            "Voiture réservée avec succès, mais l'email n'a pas pu être envoyé."
+                        )
+                else:
+                    messages.warning(
+                        request,
+                        "Voiture réservée, mais l'utilisateur n'a pas d'adresse email."
+                    )
 
-            try:
-                send_mail(
-                    subject=sujet,
-                    message=message,
-                    from_email=from_email,
-                    recipient_list=destinataire,
-                    fail_silently=False,
-                )
-                messages.success(request, "Voiture réservée avec succès. Un email de confirmation a été envoyé.")
+                return redirect("liste_voitures")
+
             except Exception as e:
-                messages.warning(request, f"Voiture réservée mais l'email n'a pas pu être envoyé : {e}")
-
-            return redirect("liste_voitures")
+                messages.error(
+                    request,
+                    "Une erreur est survenue lors de la réservation."
+                )
     else:
         form = ReservationForm()
 
@@ -545,6 +536,7 @@ L’équipe KASACO 🚀
             "form": form,
         },
     )
+
 
 #partie principale du client pour parcours des pages
 
