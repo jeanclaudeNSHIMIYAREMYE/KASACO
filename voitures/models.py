@@ -85,19 +85,24 @@ class Marque(models.Model):
         return self.nom
 
 
+
 # --- Modele ---
 class Modele(models.Model):
     marque = models.ForeignKey(Marque, on_delete=models.CASCADE, related_name="modeles")
     nom = models.CharField(max_length=100)
+    image = models.ImageField(upload_to="modeles", null=True, blank=True)  # ImageField pour vérifier les images
 
     class Meta:
         ordering = ["nom"]
         verbose_name = "Modèle"
         verbose_name_plural = "Modèles"
-        unique_together = ("marque", "nom")
+        constraints = [
+            models.UniqueConstraint(fields=["marque", "nom"], name="unique_marque_nom")
+        ]
 
     def __str__(self):
         return f"{self.marque.nom} - {self.nom}"
+
 
 
 # --- Voiture ---

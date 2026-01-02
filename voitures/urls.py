@@ -50,6 +50,7 @@ urlpatterns = [
 
     path("reserver/voitures/", views.disponible_liste_voitures, name="reserver_liste_voitures"),
     path("voiture/<int:voiture_id>/reserver/", views.reserver_voiture, name="reserver_voiture"),
+    path('reservation/annuler/<int:reservation_id>/', views.annuler_reservation, name='annuler_reservation'),
     #################################
     path("list", views.marque_list, name="marque_list"),
 

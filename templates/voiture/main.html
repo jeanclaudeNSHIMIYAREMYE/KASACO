@@ -158,32 +158,47 @@
 
 
 
-<!-- SECTION MODEL -->
+<!-- SECTION MODELE -->
 <section class="max-w-7xl mx-auto px-6 py-20">
   <div class="text-center mb-14">
     <h2 class="text-4xl font-bold mb-4">Parcourir par modèle de voiture</h2>
     <p class="text-gray-500 max-w-2xl mx-auto">
-        Découvrez notre large sélection de véhicules classés par modèles.
+      Découvrez notre large sélection de véhicules classés par modèles.
     </p>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-    {% for modele in modeles %}
-      <div class="relative group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-500">
-        <img src="{% if modele.voitures.first and modele.voitures.first.photo %}{{ modele.voitures.first.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}" class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500">
-        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition duration-500"></div>
-        <div class="absolute bottom-6 left-6 text-white">
-          <h3 class="text-2xl font-bold">{{ modele.nom }}</h3>
-          <p class="text-sm mt-1">
-            {% if modele.voitures.first %}À partir de {{ modele.voitures.first.prix }}$ {% else %}Prix non disponible{% endif %}
-          </p>
+  {% if modeles %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {% for modele in modeles %}
+        <div class="relative group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-500">
+          
+          {% if modele.image %}
+            <img src="{{ modele.image.url }}" alt="Image du modèle {{ modele.nom }}"
+                 class="w-full h-48 object-cover">
+          {% else %}
+            <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+              <span class="text-gray-400 text-sm">Bientôt disponible</span>
+            </div>
+          {% endif %}
+
+          <div class="p-4">
+            <h3 class="text-2xl font-bold truncate">{{ modele.nom }}</h3>
+            <p class="text-sm mt-1 text-gray-600">
+              {% if modele.voitures.first %}
+                À partir de {{ modele.voitures.first.prix|floatformat:2 }}$
+              {% else %}
+                Prix non disponible
+              {% endif %}
+            </p>
+          </div>
         </div>
-      </div>
-    {% empty %}
-      <p>Aucun modèle trouvé.</p>
-    {% endfor %}
-  </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-center text-gray-500">Aucun modèle trouvé.</p>
+  {% endif %}
 </section>
+
 
 <!-- SECTION POPULAIRE -->
 <section class="max-w-7xl mx-auto px-6 py-20">

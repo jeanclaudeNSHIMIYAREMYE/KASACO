@@ -33,7 +33,7 @@ class AdminMarque(admin.ModelAdmin):
 # ----------------- Modele Admin -----------------
 @admin.register(Modele)
 class AdminModele(admin.ModelAdmin):
-    list_display = ["nom", "marque"]
+    list_display = ["nom", "marque","image"]
     list_filter = ["marque"]
     search_fields = ["nom", "marque__nom"]
     ordering = ["marque__nom", "nom"]

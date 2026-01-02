@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from .models import CustomUser, Marque, Modele, Voiture, Reservation
 from .validators import validate_strong_password,validate_voiture_form
-
+from django.contrib.auth import authenticate
 # ----------------- User Forms -----------------
 class CustomUserCreationForm(UserCreationForm):
     username = forms.CharField(
@@ -107,10 +107,38 @@ class CustomerLoginForm(AuthenticationForm):
         ),
     )
 
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("username")
+        password = cleaned_data.get("password")
+
+        if email and password:
+            user = authenticate(
+                self.request,
+                username=email,
+                password=password
+            )
+
+            if user is None:
+                raise ValidationError(
+                    "Les informations de connexion sont incorrectes. "
+                    "Veuillez vérifier votre email et votre mot de passe."
+                )
+
+            if not user.is_active:
+                raise ValidationError(
+                    "Votre compte est désactivé. Veuillez contacter l’administrateur."
+                )
+
+        return cleaned_data
+
+
+
+from django import forms
+from django.core.exceptions import ValidationError
+from .models import Marque, Modele
 
 # ----------------- Marque Form -----------------
-
-
 class MarqueForm(forms.ModelForm):
     class Meta:
         model = Marque
@@ -129,32 +157,56 @@ class MarqueForm(forms.ModelForm):
             ),
         }
 
-def clean_nom(self):
-    nom = self.cleaned_data.get("nom")
-    qs = Marque.objects.filter(nom__iexact=nom)
-    if self.instance.pk:
-        qs = qs.exclude(pk=self.instance.pk)
-    if qs.exists():
-        raise ValidationError("Cette marque existe déjà.")
-    return nom
-
-
+    def clean_nom(self):
+        nom = self.cleaned_data.get("nom")
+        qs = Marque.objects.filter(nom__iexact=nom)
+        # Si on modifie une instance existante, on l'exclut de la vérification
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise ValidationError("Cette marque existe déjà.")
+        return nom
 
 
 # ----------------- Modele Form -----------------
+
+
 class ModeleForm(forms.ModelForm):
     class Meta:
         model = Modele
-        fields = ["nom", "marque"]
+        fields = ["nom", "marque", "image"]
         widgets = {
             "nom": forms.TextInput(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
-                       "placeholder": "Nom du modèle"}
+                attrs={
+                    "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
+                    "placeholder": "Nom du modèle"
+                }
             ),
             "marque": forms.Select(
-                attrs={"class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500"}
+                attrs={
+                    "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500"
+                }
+            ),
+            "image": forms.ClearableFileInput(
+                attrs={
+                    "class": "w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-red-500"
+                }
             ),
         }
+
+    def clean_nom(self):
+        nom = self.cleaned_data.get("nom")
+        marque = self.cleaned_data.get("marque")
+        qs = Modele.objects.filter(nom__iexact=nom, marque=marque)
+        # Exclure l'instance actuelle si on modifie un modèle existant
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise ValidationError("Ce modèle existe déjà pour cette marque.")
+        return nom
+
+   
+
 
 
 # ----------------- Voiture Form -----------------

@@ -33,76 +33,83 @@
         </button>
 
         <!-- TABLE MODELES -->
-        <div class="mt-6 backdrop-blur-xl bg-white bg-opacity-10 rounded-2xl shadow-2xl p-4 text-white border border-white/20">
+        <div class="mt-6 backdrop-blur-xl bg-white bg-opacity-10 rounded-2xl shadow-2xl p-4 text-white border border-white/20 overflow-x-auto">
 
-            <div class="overflow-x-auto">
-                <table class="min-w-full table-auto text-sm text-center">
-                    <thead>
-                        <tr class="bg-white bg-opacity-10 text-green-300 uppercase text-xs">
-                            <th class="px-4 py-2 border-white/20 border">#</th>
-                            <th class="px-4 py-2 border-white/20 border">Nom</th>
-                            <th class="px-4 py-2 border-white/20 border">Marque</th>
-                            <th class="px-4 py-2 border-white/20 border">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for m in page_obj %}
-                        <tr class="border-b border-white/20 hover:bg-white hover:bg-opacity-10 transition">
-                            <td class="px-4 py-2 text-gray-200">{{ forloop.counter }}</td>
+            <table class="min-w-full table-auto text-sm text-center">
+                <thead>
+                    <tr class="bg-white bg-opacity-10 text-green-300 uppercase text-xs">
+                        <th class="px-4 py-2 border-white/20 border">#</th>
+                        <th class="px-4 py-2 border-white/20 border">Image</th>
+                        <th class="px-4 py-2 border-white/20 border">Nom</th>
+                        <th class="px-4 py-2 border-white/20 border">Marque</th>
+                        <th class="px-4 py-2 border-white/20 border">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in page_obj %}
+                    <tr class="border-b border-white/20 hover:bg-white hover:bg-opacity-10 transition">
+                        <td class="px-4 py-2 text-gray-200">{{ forloop.counter }}</td>
 
-                            <td class="px-4 py-2 flex items-center justify-center text-gray-100 space-x-2">
-                                <i class="fa fa-car-side text-gray-400"></i>
-                                <span>{{ m.nom }}</span>
-                            </td>
-
-                            <td class="px-4 py-2 text-gray-100">{{ m.marque.nom }}</td>
-
-                            <td class="px-4 py-2">
-                                <a href="{% url 'supprimer_modele' m.id %}"
-                                   onclick="return confirm('Supprimer ce modèle ?')"
-                                   class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm shadow">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="py-4 text-gray-300">Aucun modèle trouvé.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
-                <!-- Pagination -->
-                <div class="mt-6 flex justify-center">
-                    <nav class="inline-flex shadow-sm text-white" aria-label="Pagination">
-
-                        {% if page_obj.has_previous %}
-                            <a href="?page={{ page_obj.previous_page_number }}"
-                               class="px-3 py-1 bg-white/20 text-white rounded-l hover:bg-white/30">&laquo;</a>
-                        {% else %}
-                            <span class="px-3 py-1 bg-white/10 text-gray-400 rounded-l cursor-not-allowed">&laquo;</span>
-                        {% endif %}
-
-                        {% for num in page_obj.paginator.page_range %}
-                            {% if page_obj.number == num %}
-                                <span class="px-3 py-1 bg-green-600 text-white font-bold">{{ num }}</span>
-                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                <a href="?page={{ num }}"
-                                   class="px-3 py-1 bg-white/20 text-white hover:bg-white/30">{{ num }}</a>
+                        <!-- IMAGE -->
+                        <td class="px-4 py-2">
+                            {% if m.image %}
+                                <img src="{{ m.image.url }}" alt="Image {{ m.nom }}" class="w-16 h-10 object-cover rounded">
+                            {% else %}
+                                <span class="text-gray-400 text-sm">Pas d'image</span>
                             {% endif %}
-                        {% endfor %}
+                        </td>
 
-                        {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}"
-                               class="px-3 py-1 bg-white/20 text-white rounded-r hover:bg-white/30">&raquo;</a>
-                        {% else %}
-                            <span class="px-3 py-1 bg-white/10 text-gray-400 rounded-r cursor-not-allowed">&raquo;</span>
+                        <td class="px-4 py-2 flex items-center justify-center text-gray-100 space-x-2">
+                            <i class="fa fa-car-side text-gray-400"></i>
+                            <span>{{ m.nom }}</span>
+                        </td>
+
+                        <td class="px-4 py-2 text-gray-100">{{ m.marque.nom }}</td>
+
+                        <td class="px-4 py-2 space-x-1">
+                            <a href="{% url 'supprimer_modele' m.id %}"
+                               onclick="return confirm('Supprimer ce modèle ?')"
+                               class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm shadow">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="py-4 text-gray-300">Aucun modèle trouvé.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-center">
+                <nav class="inline-flex shadow-sm text-white" aria-label="Pagination">
+
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}"
+                           class="px-3 py-1 bg-white/20 text-white rounded-l hover:bg-white/30">&laquo;</a>
+                    {% else %}
+                        <span class="px-3 py-1 bg-white/10 text-gray-400 rounded-l cursor-not-allowed">&laquo;</span>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="px-3 py-1 bg-green-600 text-white font-bold">{{ num }}</span>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <a href="?page={{ num }}"
+                               class="px-3 py-1 bg-white/20 text-white hover:bg-white/30">{{ num }}</a>
                         {% endif %}
+                    {% endfor %}
 
-                    </nav>
-                </div>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}"
+                           class="px-3 py-1 bg-white/20 text-white rounded-r hover:bg-white/30">&raquo;</a>
+                    {% else %}
+                        <span class="px-3 py-1 bg-white/10 text-gray-400 rounded-r cursor-not-allowed">&raquo;</span>
+                    {% endif %}
 
+                </nav>
             </div>
 
         </div>
@@ -115,7 +122,7 @@
 
     <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
 
-        <form method="POST" action="{% url 'ajouter_modele' %}">
+        <form method="POST" action="{% url 'ajouter_modele' %}" enctype="multipart/form-data">
             {% csrf_token %}
 
             <!-- HEADER -->
@@ -157,8 +164,9 @@
     closeBtn.onclick = () => modal.classList.add('hidden');
     cancelBtn.onclick = () => modal.classList.add('hidden');
 
+    // Messages flash fade out
     document.querySelectorAll('.animate-fadeOut').forEach(el =>
-        setTimeout(() => el.remove(), 2500)
+        setTimeout(() => el.classList.add('opacity-0', 'transition', 'duration-700'), 2500)
     );
 </script>
 

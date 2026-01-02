@@ -145,6 +145,7 @@ def admin_dashboard(request):
         "voitures_count": Voiture.objects.count(),
         "reservations_count": Reservation.objects.count(),
         "marques_count": Marque.objects.count(),
+        
     }
     return render(request, "voiture/admin/dashboard.html", stats)
 
@@ -177,10 +178,7 @@ def user_home(request):
     )
 
 
-
-
 # ----------------- Liste des réservations -----------------
-
 
 @role_required("admin")
 def reserver(request):
@@ -321,15 +319,16 @@ def liste_modeles(request):
     )
 
 
+
 @role_required("admin")
 def ajouter_modele(request):
     if request.method == "POST":
-        form = ModeleForm(request.POST)
+        form = ModeleForm(request.POST, request.FILES)  # <- ajouter request.FILES
         if form.is_valid():
             form.save()
             messages.success(request, "Modèle ajouté avec succès !")
         else:
-            messages.error(request, "Erreur lors de l'ajout du modèle.")
+           messages.error(request, "Erreur lors de l'ajout du modele.")
     return redirect("liste_modeles")
 
 
@@ -388,8 +387,6 @@ def ajouter_voiture(request):
 
 
 
-
-
 @role_required("admin")
 def supprimer_voiture(request, id):
     voiture = get_object_or_404(Voiture, id=id)
@@ -427,9 +424,31 @@ def mes_reservations(request):
 
 
 
+def annuler_reservation(request, reservation_id):
+    # Récupérer la réservation ou renvoyer 404
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+
+    # Changer l'état de la voiture en "Disponible"
+    voiture = reservation.voiture
+    voiture.etat = "Disponible"
+    voiture.save()
+
+    # Supprimer la réservation
+    reservation.delete()
+
+    # Message de succès
+    messages.success(request, f"La réservation de {voiture.marque.nom} {voiture.modele.nom} a été annulée.")
+
+    # Rediriger vers la page des réservations
+    return redirect('liste_voitures')
+
+
+
 @staff_member_required
 def disponible_liste_voitures(request):
-    voitures_list = Voiture.objects.filter(etat="Disponible").order_by('-id')  # ordonner par ID décroissant
+    voitures_list = Voiture.objects.filter(etat="Disponible").order_by('-id')
+      # ordonner par ID décroissant
+
 
     # Pagination
     paginator = Paginator(voitures_list, 5)  # 10 voitures par page
@@ -444,42 +463,38 @@ def disponible_liste_voitures(request):
     }
 
     return render(request, "voiture/admin/disponible_liste_voiture.html", context)
+# views.py
+
 
 @staff_member_required
 def reserver_voiture(request, voiture_id):
     voiture = get_object_or_404(Voiture, id=voiture_id)
 
-    # Vérifier disponibilité
     if voiture.etat != "Disponible":
         messages.error(request, "Cette voiture n'est plus disponible.")
-        return redirect("reserver_liste_voitures")
+        return redirect("liste_voitures")
 
     if request.method == "POST":
         form = ReservationForm(request.POST)
-
         if form.is_valid():
             try:
                 with transaction.atomic():
-                    # Sauvegarde réservation
                     reservation = form.save(commit=False)
                     reservation.voiture = voiture
                     reservation.save()
 
-                    # Mettre la voiture en état réservé
-                    voiture.reserver()  # suppose que cette méthode fait voiture.save()
+                    # Mettre la voiture en réservé
+                    voiture.reserver()
 
-                # =========================
-                # 📧 ENVOI EMAIL
-                # =========================
+                # Envoi email
                 if reservation.utilisateur.email:
                     sujet = "Confirmation de réservation - KASACO 🚗"
-
                     message = f"""
 Bonjour {reservation.utilisateur.username},
 
 Votre réservation a été effectuée avec succès.
 
-📌 Détails de la réservation :
+Détails de la réservation :
 - Voiture : {voiture}
 - Prix : {voiture.prix} $
 - Date : {reservation.date_reservation.strftime('%d/%m/%Y %H:%M')}
@@ -489,57 +504,30 @@ Merci de faire confiance à KASACO.
 Cordialement,
 L’équipe KASACO 🚀
 """
-
                     from_email = os.environ.get(
                         "DEFAULT_FROM_EMAIL",
                         settings.DEFAULT_FROM_EMAIL
                     )
-
                     try:
-                        send_mail(
-                            subject=sujet,
-                            message=message,
-                            from_email=from_email,
-                            recipient_list=[reservation.utilisateur.email],
-                            fail_silently=False,
-                        )
-                        messages.success(
-                            request,
-                            "Voiture réservée avec succès. Un email de confirmation a été envoyé."
-                        )
-                    except Exception as e:
-                        messages.warning(
-                            request,
-                            "Voiture réservée avec succès, mais l'email n'a pas pu être envoyé."
-                        )
+                        send_mail(sujet, message, from_email, [reservation.utilisateur.email])
+                        messages.success(request, "Voiture réservée et email envoyé avec succès.")
+                    except Exception:
+                        messages.warning(request, "Voiture réservée, mais l'email n'a pas pu être envoyé.")
                 else:
-                    messages.warning(
-                        request,
-                        "Voiture réservée, mais l'utilisateur n'a pas d'adresse email."
-                    )
+                    messages.warning(request, "Voiture réservée, mais l'utilisateur n'a pas d'adresse email.")
 
                 return redirect("liste_voitures")
 
-            except Exception as e:
-                messages.error(
-                    request,
-                    "Une erreur est survenue lors de la réservation."
-                )
+            except Exception:
+                messages.error(request, "Une erreur est survenue lors de la réservation.")
     else:
         form = ReservationForm()
 
-    return render(
-        request,
-        "voiture/admin/reserver.html",
-        {
-            "voiture": voiture,
-            "form": form,
-        },
-    )
+    return render(request, "voiture/admin/reserver.html", {"voiture": voiture, "form": form})
+
 
 
 #partie principale du client pour parcours des pages
-
 
 def marque_list(request):
     marques = Marque.objects.all()
