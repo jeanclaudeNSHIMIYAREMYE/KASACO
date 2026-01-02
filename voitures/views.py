@@ -12,6 +12,7 @@ from .models import (ContactInfo, CustomUser, Marque, Modele,
                      Reservation, Voiture ,Image)
 from django.core.mail import send_mail
 import os
+import re
 from django.db import transaction
 from django.conf import settings
 
@@ -122,6 +123,89 @@ def login_view(request):
     else:
         form = CustomerLoginForm()
     return render(request, "voiture/auth/login.html", {"form": form})
+#------------------------------------changement de mot de passe-------------------------
+
+
+# Fonction pour vérifier l'email
+def verification_email(request):
+    if request.method == "POST":
+        email = request.POST.get('email', '').strip()
+
+        # Vérifier que l'email est saisi
+        if not email:
+            messages.error(request, "Veuillez entrer une adresse email valide.")
+            return render(request, 'voiture/auth/verification.html')
+
+        # Vérifier si l'utilisateur existe
+        user = CustomUser.objects.filter(email=email).first()
+
+        if user:
+            # Rediriger vers la page de changement de mot de passe en passant l'email
+            return redirect('changementCode', email=email)
+        else:
+            messages.error(request, "Cette adresse email ne correspond à aucun compte.")
+            return redirect('verification')
+
+    return render(request, 'voiture/auth/verification.html')
+import re
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import CustomUser
+
+def changementCode(request, email):
+    """
+    Vue pour changer le mot de passe d'un utilisateur identifié par son email.
+    """
+    try:
+        customer = CustomUser.objects.get(email=email)
+    except CustomUser.DoesNotExist:
+        messages.error(request, "Utilisateur introuvable")
+        return redirect('login')
+     
+    if request.method == "POST":
+        # Récupération des mots de passe depuis le formulaire
+        password = request.POST.get('password', '').strip()
+        confirm_password = request.POST.get('password_confirm', '').strip()
+
+        # Vérification de la correspondance
+        if password != confirm_password:
+            messages.error(request, "Les mots de passe ne correspondent pas.")
+            return redirect('changementCode', email=email)
+
+        # Vérification de la complexité du mot de passe
+        if (len(password) < 8
+            or not re.search(r'[A-Za-z]', password)
+            or not re.search(r'\d', password)
+            or not re.search(r'[!@#$%^&*]', password)):
+            messages.error(
+                request,
+                "Le mot de passe doit contenir au moins 8 caractères, "
+                "une lettre, un chiffre et un caractère spécial"
+            )
+            return redirect('changementCode', email=email)
+
+        # Enregistrer le nouveau mot de passe
+        customer.set_password(password)
+        customer.save()
+
+        messages.success(request, "Mot de passe modifié avec succès ✅")
+        return redirect('login')
+
+    # Affichage du formulaire
+    return render(request, 'voiture/auth/changementCode.html', {'email': email})
+
+
+     
+
+
+
+
+
+
+
+
+
+
 
 
 # ----------------- Déconnexion -----------------

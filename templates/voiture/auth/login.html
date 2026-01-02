@@ -16,16 +16,11 @@
             <div id="messages-container" class="space-y-3 mb-4">
                 {% for message in messages %}
                     <div class="message-alert px-4 py-3 rounded-lg text-sm font-medium border transition-opacity duration-500
-                        {% if message.tags == 'success' %}
-                            bg-green-100 text-green-800 border-green-300
-                        {% elif message.tags == 'error' %}
-                            bg-red-100 text-red-800 border-red-300
-                        {% elif message.tags == 'warning' %}
-                            bg-yellow-100 text-yellow-800 border-yellow-300
-                        {% else %}
-                            bg-blue-100 text-blue-800 border-blue-300
-                        {% endif %}
-                    ">
+                        {% if message.tags == 'success' %} bg-green-100 text-green-800 border-green-300
+                        {% elif message.tags == 'error' %} bg-red-100 text-red-800 border-red-300
+                        {% elif message.tags == 'warning' %} bg-yellow-100 text-yellow-800 border-yellow-300
+                        {% else %} bg-blue-100 text-blue-800 border-blue-300
+                        {% endif %}">
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -55,14 +50,10 @@
             <!-- CHAMPS -->
             {% for field in form %}
                 <div class="flex flex-col">
-                    <label for="{{ field.id_for_label }}"
-                           class="mb-1 font-medium text-gray-700 text-xs sm:text-sm">
-                        {% if field.name == "username" %}
-                            Email
-                        {% elif field.name == "password" %}
-                            Mot de passe
-                        {% else %}
-                            {{ field.label }}
+                    <label for="{{ field.id_for_label }}" class="mb-1 font-medium text-gray-700 text-xs sm:text-sm">
+                        {% if field.name == "username" %} Email
+                        {% elif field.name == "password" %} Mot de passe
+                        {% else %} {{ field.label }}
                         {% endif %}
                     </label>
 
@@ -83,6 +74,13 @@
                 <i class="fa fa-sign-in-alt mr-2"></i> Se connecter
             </button>
         </form>
+
+        <!-- LIEN MOT DE PASSE OUBLIE -->
+        <div class="text-center mt-2 sm:mt-3 text-xs sm:text-sm">
+            <a href="{% url 'verification' %}" class="text-blue-800 font-medium hover:underline">
+                Mot de passe oublié ?
+            </a>
+        </div>
 
         <!-- LIEN INSCRIPTION -->
         <div class="text-center mt-3 sm:mt-4 text-xs sm:text-sm">
