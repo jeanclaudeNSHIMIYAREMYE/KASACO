@@ -4,260 +4,203 @@
 
 <main class="container mx-auto mt-5 px-4">
 
-<!-- HERO SECTION -->
-<section class="relative h-[600px] rounded-xl overflow-hidden shadow-lg"
-         style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('{% static "images/home2.jpg" %}'); background-size: cover; background-position: center;">
-    <div class="relative h-full flex items-center">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- LEFT: Search Form -->
-            <div class="bg-white p-6 rounded-2xl shadow-xl max-w-md hover:scale-105 transition-transform duration-500">
-                <h2 class="text-gray-700 text-xl font-bold mb-4 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Trouver une voiture
-                </h2>
-                <form method="get" action="{% url 'home' %}" class="space-y-3">
-                    <div class="relative">
-                        <input
-                            type="text"
-                            name="q"
-                            placeholder="Nom, marque ou n° de châssis"
-                            value="{{ request.GET.q|default_if_none:'' }}"
-                            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition"
-                        >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="absolute right-3 top-3 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16l4-4-4-4m8 8l-4-4 4-4" />
-                        </svg>
-                    </div>
-                    <button type="submit" class="w-full p-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition duration-300 flex items-center justify-center gap-2">
-                        Rechercher
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </form>
-            </div>
+  <!-- ================= HERO SECTION ================= -->
+  <section
+      class="relative h-[600px] rounded-xl overflow-hidden shadow-lg animate-section"
+      style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('{% static "images/home2.jpg" %}');
+             background-size: cover; background-position: center;"
+  >
+      <div class="relative h-full flex items-center">
+          <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
 
-<h1 class="text-white text-5xl md:text-6xl font-extrabold drop-shadow-2xl leading-tight animate-fadeUp">
-    Roulez vers l’avenir avec <span class="text-red-600"> KASACO</span>
-</h1>
+              <!-- SEARCH CARD -->
+              <div class="bg-white p-6 rounded-2xl shadow-xl max-w-md
+                          transition-all duration-700 ease-out
+                          animate-item"
+                   data-delay="100">
+                  <h2 class="text-gray-700 text-xl font-bold mb-4 flex items-center gap-2">
+                      🔍 Trouver une voiture
+                  </h2>
 
+                  <form method="get" action="{% url 'home' %}" class="space-y-3">
+                      <input
+                          type="text"
+                          name="q"
+                          placeholder="Nom, marque ou n° de châssis"
+                          value="{{ request.GET.q|default_if_none:'' }}"
+                          class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 transition"
+                      >
+                      <button
+                          type="submit"
+                          class="w-full p-3 bg-red-600 text-white font-bold rounded-lg
+                                 hover:bg-red-700 transition-all duration-300 hover:scale-105"
+                      >
+                          Rechercher →
+                      </button>
+                  </form>
+              </div>
 
+              <!-- HERO TEXT -->
+              <div class="text-center md:text-left animate-item" data-delay="200">
+                  <h1 class="text-white text-5xl md:text-6xl font-extrabold drop-shadow-2xl">
+                      Roulez vers l’avenir avec <span class="text-red-600">KASACO</span>
+                  </h1>
+                  <p class="mt-6 text-gray-300 text-lg md:text-xl">
+                      L’innovation au bout de vos roues.
+                  </p>
+                  <button
+                      class="mt-8 px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-lg
+                             transform hover:scale-110 transition-transform duration-300"
+                  >
+                      Découvrez nos voitures
+                  </button>
+              </div>
 
-</section>
-
-<!-- RESULTATS DE RECHERCHE -->
-{% if voitures %}
-<section class="max-w-7xl mx-auto px-6 py-12">
-    <h2 class="text-3xl font-bold mb-6">Résultats de votre recherche</h2>
-
-    {% if message %}
-        <p class="text-gray-500 mb-4">{{ message }}</p>
-    {% endif %}
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {% for voiture in voitures %}
-        <div class="bg-white rounded-2xl shadow hover:shadow-2xl transition overflow-hidden transform hover:-translate-y-1 duration-300">
-            <div class="relative">
-                <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}"
-                     class="w-full h-64 object-cover transition-transform duration-500 hover:scale-110">
-                <span class="absolute top-4 right-4 {% if voiture.etat == 'Disponible' %}bg-green-500{% else %}bg-red-500{% endif %} text-white text-sm px-4 py-1 rounded-full shadow-lg">
-                    {{ voiture.etat }}
-                </span>
-            </div>
-            <div class="p-4">
-                <h3 class="text-xl font-bold flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h4v4H3v-4zm7 0h4v4h-4v-4zm7 0h4v4h-4v-4z" />
-                    </svg>
-                    {{ voiture.modele.nom }} - {{ voiture.marque.nom }}
-                </h3>
-
-
-                <p class="text-red-600 font-semibold mt-2 flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-3 0-6 3-6 6s3 6 6 6 6-3 6-6-3-6-6-6z" />
-                    </svg>
-                    Prix : {{ voiture.prix }}$
-                </p>
-
-                <!-- BOUTON VOIR DETAIL -->
-                <div class="mt-4">
-                    {% if request.user.is_authenticated %}
-                        <a href="{% url 'voiture_detail' voiture.id %}"
-                           class="w-full inline-block text-center bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition">
-                           Voir le détail
-                        </a>
-                    {% else %}
-                        <a href="{% url 'login' %}"
-                           class="w-full inline-block text-center bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition">
-                           Voir le détail
-                        </a>
-                    {% endif %}
-                </div>
-
-            </div>
-        </div>
-        {% empty %}
-        <p class="text-gray-500">Aucun résultat trouvé pour votre recherche.</p>
-        {% endfor %}
-    </div>
-
-    <!-- Pagination -->
-    {% if voitures.has_other_pages %}
-    <div class="mt-8 flex justify-center space-x-2">
-        {% if voitures.has_previous %}
-            <a href="?q={{ request.GET.q|default_if_none:'' }}&page={{ voitures.previous_page_number }}"
-               class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition">Précédent</a>
-        {% endif %}
-        {% for num in voitures.paginator.page_range %}
-            {% if voitures.number == num %}
-                <span class="px-3 py-1 bg-red-600 text-white rounded">{{ num }}</span>
-            {% elif num > voitures.number|add:-3 and num < voitures.number|add:3 %}
-                <a href="?q={{ request.GET.q|default_if_none:'' }}&page={{ num }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition">{{ num }}</a>
-            {% endif %}
-        {% endfor %}
-        {% if voitures.has_next %}
-            <a href="?q={{ request.GET.q|default_if_none:'' }}&page={{ voitures.next_page_number }}"
-               class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition">Suivant</a>
-        {% endif %}
-    </div>
-    {% endif %}
-</section>
-{% endif %}
-<!-- SECTION MARQUES --><!-- SECTION MARQUES -->
-<section class="py-10 px-6 bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50">
-    <h2 class="text-3xl font-bold mb-8 text-gray-900 text-center">Choisir une marque</h2>
-
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
-        {% for marque in marques %}
-        <a href="{% url 'modele_list' marque.id %}" aria-label="Voir les modèles de {{ marque.nom }}">
-            <div class="bg-gradient-to-br from-pink-200 via-yellow-200 to-green-200
-                        rounded-2xl p-4 flex flex-col items-center justify-center
-                        hover:shadow-2xl hover:scale-105 transform transition-all duration-300">
-                <!-- Logo ou placeholder -->
-                {% if marque.logo %}
-                <img src="{{ marque.logo.url }}" alt="{{ marque.nom }}"
-                     class="h-16 w-16 object-contain mb-3 rounded-full border-2 border-white shadow-md p-1 bg-white">
-                {% else %}
-                <div class="h-16 w-16 bg-white flex items-center justify-center rounded-full mb-3
-                            text-pink-600 font-bold text-lg shadow-inner border-2 border-gray-300">
-                    {{ marque.nom|slice:":1" }}
-                </div>
-                {% endif %}
-                <p class="text-sm font-semibold text-gray-900 text-center">{{ marque.nom }}</p>
-            </div>
-        </a>
-        {% empty %}
-        <p class="text-gray-500 col-span-full text-center">Aucune marque trouvée.</p>
-        {% endfor %}
-    </div>
-</section>
-
-
-
-
-<!-- SECTION MODELE -->
-<section class="max-w-7xl mx-auto px-6 py-20">
-  <div class="text-center mb-14">
-    <h2 class="text-4xl font-bold mb-4">Parcourir par modèle de voiture</h2>
-    <p class="text-gray-500 max-w-2xl mx-auto">
-      Découvrez notre large sélection de véhicules classés par modèles.
-    </p>
-  </div>
-
-  {% if modeles %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      {% for modele in modeles %}
-        <div class="relative group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-500">
-
-          {% if modele.image %}
-            <img src="{{ modele.image.url }}" alt="Image du modèle {{ modele.nom }}"
-                 class="w-full h-48 object-cover">
-          {% else %}
-            <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-              <span class="text-gray-400 text-sm">Bientôt disponible</span>
-            </div>
-          {% endif %}
-
-          <div class="p-4">
-            <h3 class="text-2xl font-bold truncate">{{ modele.nom }}</h3>
-            <p class="text-sm mt-1 text-gray-600">
-              {% if modele.voitures.first %}
-                À partir de {{ modele.voitures.first.prix|floatformat:2 }}$
-              {% else %}
-                Prix non disponible
-              {% endif %}
-            </p>
           </div>
-        </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <p class="text-center text-gray-500">Aucun modèle trouvé.</p>
-  {% endif %}
-</section>
-
-
-<!-- SECTION POPULAIRE -->
-<section class="max-w-7xl mx-auto px-6 py-20">
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
-    <div>
-      <h2 class="text-4xl font-bold mb-3">Voitures les plus populaires</h2>
-      <p class="text-gray-500">Nos véhicules les plus récents et disponibles.</p>
-    </div>
-    <a href="{% url 'home' %}" class="mt-6 md:mt-0 inline-flex items-center gap-2 text-green-500 font-semibold hover:underline">
-      Voir toutes
-      <span>→</span>
-    </a>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-    {% for voiture in voitures_populaires %}
-      <div class="bg-white rounded-2xl shadow hover:shadow-2xl transition overflow-hidden">
-        <div class="relative">
-          <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}" class="w-full h-64 object-cover transition-transform duration-500 hover:scale-105">
-          <span class="absolute top-4 right-4 {% if voiture.etat == 'Disponible' %}bg-green-500{% else %}bg-red-500{% endif %} text-white text-sm px-4 py-1 rounded-full shadow-lg">
-            {{ voiture.etat }}
-          </span>
-        </div>
       </div>
-    {% empty %}
-      <p>Aucune voiture disponible.</p>
-    {% endfor %}
-  </div>
-</section>
+  </section>
+
+  <!-- ================= RESULTATS ================= -->
+  {% if voitures %}
+  <section class="max-w-7xl mx-auto px-6 py-12 animate-section">
+      <h2 class="text-3xl font-bold mb-6 animate-item">Résultats de votre recherche</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          {% for voiture in voitures %}
+          <div class="bg-white rounded-2xl shadow overflow-hidden
+                      transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl
+                      animate-item">
+              <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}"
+                   class="w-full h-64 object-cover transition-transform duration-500 hover:scale-110">
+              <div class="p-4">
+                  <h3 class="text-xl font-bold">{{ voiture.modele.nom }} - {{ voiture.marque.nom }}</h3>
+                  <p class="text-red-600 font-semibold mt-2">Prix : {{ voiture.prix }} $</p>
+                  <a href="{% if request.user.is_authenticated %}{% url 'voiture_detail' voiture.id %}{% else %}{% url 'login' %}{% endif %}"
+                     class="block mt-4 text-center bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">
+                      Voir le détail
+                  </a>
+              </div>
+          </div>
+          {% endfor %}
+      </div>
+  </section>
+  {% endif %}
+
+  <!-- ================= MARQUES ================= -->
+  <section class="py-16 bg-gradient-to-b from-indigo-50 to-pink-50 overflow-hidden">
+      <h2 class="text-3xl font-bold mb-10 text-center animate-item" id="marques-title">
+          Choisir une marque
+      </h2>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 px-4" id="marques-grid">
+          {% for marque in marques %}
+          <a href="{% url 'modele_list' marque.id %}" class="group">
+              <div class="rounded-xl p-2 flex flex-col items-center justify-center
+                          text-white shadow-md transition-all duration-500
+                          animate-item marque-card
+                          bg-gradient-to-br from-orange-400 via-yellow-300 to-pink-400
+                          hover:scale-110 hover:shadow-lg hover:brightness-110">
+                  {% if marque.logo %}
+                  <img src="{{ marque.logo.url }}" class="h-12 w-12 object-contain mb-2 transition-transform duration-300 group-hover:scale-125">
+                  {% else %}
+                  <div class="h-12 w-12 bg-white rounded-full flex items-center justify-center mb-2 text-sm font-semibold text-gray-800">
+                      {{ marque.nom|slice:":1" }}
+                  </div>
+                  {% endif %}
+              </div>
+          </a>
+          {% endfor %}
+      </div>
+  </section>
+
+  <!-- ================= MODELES ================= -->
+  <section class="max-w-7xl mx-auto px-6 py-20 animate-section">
+      <h2 class="text-4xl font-extrabold mb-12 text-center text-gradient animate-item"
+          style="background: linear-gradient(90deg, #FF6B6B, #FFD93D, #6BCB77); -webkit-background-clip: text; color: transparent;">
+          Parcourir par modèle
+      </h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {% for modele in modeles %}
+          <div class="rounded-2xl overflow-hidden shadow-lg
+                      bg-gradient-to-br from-purple-400 via-pink-400 to-yellow-300
+                      transition-transform duration-500 hover:scale-105 hover:rotate-1 hover:shadow-2xl
+                      animate-item cursor-pointer">
+              {% if modele.image %}
+              <img src="{{ modele.image.url }}" class="w-full h-48 object-cover border-b-4 border-white">
+              {% endif %}
+              <div class="p-4">
+                  <h3 class="text-xl font-bold text-black text-center">{{ modele.nom }}</h3>
+              </div>
+          </div>
+          {% endfor %}
+      </div>
+  </section>
+
+  <!-- ================= POPULAIRES ================= -->
+  <section class="max-w-7xl mx-auto px-6 py-20 animate-section">
+      <h2 class="text-4xl font-extrabold mb-12 text-center text-gradient animate-item"
+          style="background: linear-gradient(90deg, #FF6B6B, #FFD93D, #6BCB77); -webkit-background-clip: text; color: transparent;">
+          Voitures les plus populaires
+      </h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          {% for voiture in voitures_populaires %}
+          <div class="rounded-2xl overflow-hidden shadow-lg
+                      bg-gradient-to-br from-blue-400 via-green-400 to-teal-300
+                      transition-transform duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl
+                      animate-item cursor-pointer">
+              <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}"
+                   class="w-full h-64 object-cover border-b-4 border-white">
+              <div class="p-4 text-center">
+                  <h3 class="text-lg font-semibold text-white">{{ voiture.nom }}</h3>
+              </div>
+          </div>
+          {% endfor %}
+      </div>
+  </section>
 
 </main>
 
-<!-- Animations CSS -->
-<style>
-@keyframes fadeUp {0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);} }
-@keyframes fadeIn {0%{opacity:0;transform:scale(0.95);}100%{opacity:1;transform:scale(1);} }
-.animate-fadeUp { animation: fadeUp 0.8s ease forwards; }
-.animate-fadeUp.delay-100 { animation-delay: 0.1s; }
-.animate-fadeUp.delay-200 { animation-delay: 0.2s; }
-.animate-fadeIn { animation: fadeIn 0.8s ease forwards; }
-</style>
-
-<!-- JS léger pour animations au scroll -->
+<!-- ================= ANIMATION JS ================= -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const animatedElements = document.querySelectorAll('.animate-fadeUp, .animate-fadeIn');
-    const observer = new IntersectionObserver((entries) => {
+document.addEventListener("DOMContentLoaded", () => {
+    const items = document.querySelectorAll('.animate-item');
+    const sections = document.querySelectorAll('.animate-section');
+
+    const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-            if(entry.isIntersecting) {
-                entry.target.classList.add('opacity-100');
-                entry.target.classList.remove('opacity-0');
+            if(entry.isIntersecting){
+                entry.target.classList.add('show');
             }
         });
-    }, { threshold: 0.2 });
-    animatedElements.forEach(el => {
-        el.classList.add('opacity-0');
-        observer.observe(el);
-    });
+    }, { threshold: 0.15 });
+
+    sections.forEach(sec => observer.observe(sec));
+    items.forEach(item => observer.observe(item));
 });
 </script>
 
-{% endblock content %}
+<!-- ================= ANIMATION CSS ================= -->
+<style>
+.animate-section {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease;
+}
+.animate-section.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.animate-item {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s ease;
+}
+.animate-item.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+</style>
+
+{% endblock %}
