@@ -2,12 +2,9 @@ asgiref==3.11.0
 certifi==2025.11.12
 cfgv==3.5.0
 charset-normalizer==3.4.4
-crispy-bootstrap4==2025.6
 distlib==0.4.0
 dj-database-url==3.0.1
 Django==4.2.26
-django-anymail==14.0
-django-crispy-forms==2.5
 django-tailwind==4.4.2
 django-widget-tweaks==1.5.0
 filelock==3.20.1
