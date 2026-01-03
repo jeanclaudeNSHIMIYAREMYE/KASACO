@@ -46,15 +46,15 @@
 
             <!-- Logo avec animation hover -->
             <a href="{% url 'home' %}" class="flex items-center gap-2 text-white transition-transform transform hover:scale-110">
-                <img src="{% static 'images/logo.png' %}" 
+                <img src="{% static 'images/logo.png' %}"
                      class="rounded-full object-cover"
-                     style="width: 220px; height: 50px;" 
+                     style="width: 220px; height: 50px;"
                      alt="KASACO">
                     <span class="text-xl font-bold tracking-wide">KASACO</span>
             </a>
 
           <!-- Bouton mobile amélioré dans la navbar -->
-<button id="menu-btn" 
+<button id="menu-btn"
         class="lg:hidden text-white text-2xl p-2 rounded-md bg-blue-600 hover:bg-blue-700 hover:scale-105 transition transform duration-200 shadow focus:outline-none focus:ring-2 focus:ring-blue-400">
     <i class="bi bi-list"></i>
 </button>
@@ -85,7 +85,7 @@
             </ul>
         </div>
 <!-- Menu mobile amélioré (compact) -->
-<ul id="mobile-menu" 
+<ul id="mobile-menu"
     class="absolute top-full right-4 w-56 bg-black text-white shadow-xl rounded-lg overflow-hidden transition-transform duration-300 transform translate-x-full lg:hidden">
     <li>
         <a href="{% url 'home' %}" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">

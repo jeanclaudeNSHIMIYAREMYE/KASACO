@@ -2,10 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 
-from .models import (
-     ContactInfo, CustomUser, Marque, Modele, Image,
-    Reservation, Voiture
-)
+from .models import ContactInfo, CustomUser, Image, Marque, Modele, Reservation, Voiture
 
 # ----------------- Admin Site Header -----------------
 admin.site.site_header = "E_COMMERCE"
@@ -25,7 +22,7 @@ class CustomUserAdmin(admin.ModelAdmin):
 # ----------------- Marque Admin -----------------
 @admin.register(Marque)
 class AdminMarque(admin.ModelAdmin):
-    list_display = ["nom","logo"]
+    list_display = ["nom", "logo"]
     search_fields = ["nom"]
     ordering = ["nom"]
 
@@ -33,7 +30,7 @@ class AdminMarque(admin.ModelAdmin):
 # ----------------- Modele Admin -----------------
 @admin.register(Modele)
 class AdminModele(admin.ModelAdmin):
-    list_display = ["nom", "marque","image"]
+    list_display = ["nom", "marque", "image"]
     list_filter = ["marque"]
     search_fields = ["nom", "marque__nom"]
     ordering = ["marque__nom", "nom"]
@@ -43,14 +40,20 @@ class AdminModele(admin.ModelAdmin):
 class ImageInline(admin.TabularInline):
     model = Image
     extra = 1
-    fields = ('image', 'image_tag',)
-    readonly_fields = ('image_tag',)
+    fields = (
+        "image",
+        "image_tag",
+    )
+    readonly_fields = ("image_tag",)
 
     def image_tag(self, obj):
         if obj.image:
-            return format_html('<img src="{}" style="width: 100px; height:auto;" />', obj.image.url)
+            return format_html(
+                '<img src="{}" style="width: 100px; height:auto;" />', obj.image.url
+            )
         return "-"
-    image_tag.short_description = 'Aperçu'
+
+    image_tag.short_description = "Aperçu"
 
 
 # ----------------- Voiture Admin -----------------
@@ -74,9 +77,12 @@ class AdminVoiture(admin.ModelAdmin):
 
     def photo_tag(self, obj):
         if obj.photo:
-            return format_html('<img src="{}" style="width: 100px; height:auto;" />', obj.photo.url)
+            return format_html(
+                '<img src="{}" style="width: 100px; height:auto;" />', obj.photo.url
+            )
         return "-"
-    photo_tag.short_description = 'Photo'
+
+    photo_tag.short_description = "Photo"
 
 
 # ----------------- Reservation Admin -----------------
@@ -97,15 +103,17 @@ class AdminContactInfo(admin.ModelAdmin):
 # ----------------- Commande Admin -----------------
 
 
-
 # ----------------- Image Admin -----------------
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ('voiture', 'image_tag')
+    list_display = ("voiture", "image_tag")
     search_fields = ["voiture__numero_chassis"]
 
     def image_tag(self, obj):
         if obj.image:
-            return format_html('<img src="{}" style="width: 100px; height:auto;" />', obj.image.url)
+            return format_html(
+                '<img src="{}" style="width: 100px; height:auto;" />', obj.image.url
+            )
         return "-"
-    image_tag.short_description = 'Aperçu'
+
+    image_tag.short_description = "Aperçu"

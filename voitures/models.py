@@ -1,7 +1,7 @@
 from django.contrib.auth.models import (
     AbstractBaseUser,
-    PermissionsMixin,
     BaseUserManager,
+    PermissionsMixin,
 )
 from django.db import models
 
@@ -70,8 +70,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-
-
 # --- Marque ---
 class Marque(models.Model):
     nom = models.CharField(max_length=100, unique=True)
@@ -85,12 +83,13 @@ class Marque(models.Model):
         return self.nom
 
 
-
 # --- Modele ---
 class Modele(models.Model):
     marque = models.ForeignKey(Marque, on_delete=models.CASCADE, related_name="modeles")
     nom = models.CharField(max_length=100)
-    image = models.ImageField(upload_to="modeles", null=True, blank=True)  # ImageField pour vérifier les images
+    image = models.ImageField(
+        upload_to="modeles", null=True, blank=True
+    )  # ImageField pour vérifier les images
 
     class Meta:
         ordering = ["nom"]
@@ -102,7 +101,6 @@ class Modele(models.Model):
 
     def __str__(self):
         return f"{self.marque.nom} - {self.nom}"
-
 
 
 # --- Voiture ---
@@ -119,8 +117,12 @@ class Voiture(models.Model):
         ("Vendue", "Vendue"),
     ]
 
-    marque = models.ForeignKey(Marque, on_delete=models.CASCADE, related_name="voitures")
-    modele = models.ForeignKey(Modele, on_delete=models.CASCADE, related_name="voitures")
+    marque = models.ForeignKey(
+        Marque, on_delete=models.CASCADE, related_name="voitures"
+    )
+    modele = models.ForeignKey(
+        Modele, on_delete=models.CASCADE, related_name="voitures"
+    )
     numero_chassis = models.CharField(max_length=100, unique=True)
     numero_moteur = models.CharField(max_length=100)
     annee = models.PositiveIntegerField()
@@ -149,19 +151,15 @@ class Voiture(models.Model):
 # --- Reservation ---
 class Reservation(models.Model):
     voiture = models.OneToOneField(
-        Voiture,
-        on_delete=models.CASCADE,
-        related_name="reservation"
+        Voiture, on_delete=models.CASCADE, related_name="reservation"
     )
-    utilisateur = models.ForeignKey(CustomUser,
-        on_delete=models.CASCADE,
-        related_name="reservations"
+    utilisateur = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="reservations"
     )
     date_reservation = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.utilisateur.username} → {self.voiture}"
-
 
 
 # --- ContactInfo ---
@@ -180,10 +178,11 @@ class ContactInfo(models.Model):
         return "Informations de contact de KASACO"
 
 
-
 # --- Images supplémentaires pour Voiture ---
 class Image(models.Model):
-    voiture = models.ForeignKey(Voiture, on_delete=models.CASCADE, related_name="images")
+    voiture = models.ForeignKey(
+        Voiture, on_delete=models.CASCADE, related_name="images"
+    )
     image = models.ImageField(upload_to="voitures_supplementaires/")
 
     class Meta:

@@ -1,9 +1,12 @@
 from django import forms
+from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
-from .models import CustomUser, Marque, Modele, Voiture, Reservation
-from .validators import validate_strong_password,validate_voiture_form
-from django.contrib.auth import authenticate
+
+from .models import CustomUser, Marque, Modele, Reservation, Voiture
+from .validators import validate_strong_password, validate_voiture_form
+
+
 # ----------------- User Forms -----------------
 class CustomUserCreationForm(UserCreationForm):
     username = forms.CharField(
@@ -49,14 +52,10 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ["username", "email", "password1", "password2"]
         help_texts = {field: "" for field in fields}
 
-
     def clean_username(self):
-        username=self.cleaned_data.get("username")
+        username = self.cleaned_data.get("username")
         if CustomUser.objects.filter(username=username).exists():
-            raise ValidationError(
-                "Cette nom d'utilisateur est déjà utilisée."
-
-            )
+            raise ValidationError("Cette nom d'utilisateur est déjà utilisée.")
         return username
 
     def clean_email(self):
@@ -90,7 +89,7 @@ class CustomerLoginForm(AuthenticationForm):
         widget=forms.EmailInput(
             attrs={
                 "class": "w-full border border-gray-300 rounded-lg px-4 py-2 "
-                         "focus:ring-2 focus:ring-red-500 focus:border-red-500 transition",
+                "focus:ring-2 focus:ring-red-500 focus:border-red-500 transition",
                 "placeholder": "exemple@gmail.com",
             }
         ),
@@ -101,7 +100,7 @@ class CustomerLoginForm(AuthenticationForm):
         widget=forms.PasswordInput(
             attrs={
                 "class": "w-full border border-gray-300 rounded-lg px-4 py-2 "
-                         "focus:ring-2 focus:ring-red-500 focus:border-red-500 transition",
+                "focus:ring-2 focus:ring-red-500 focus:border-red-500 transition",
                 "placeholder": "Votre mot de passe",
             }
         ),
@@ -113,11 +112,7 @@ class CustomerLoginForm(AuthenticationForm):
         password = cleaned_data.get("password")
 
         if email and password:
-            user = authenticate(
-                self.request,
-                username=email,
-                password=password
-            )
+            user = authenticate(self.request, username=email, password=password)
 
             if user is None:
                 raise ValidationError(
@@ -133,10 +128,11 @@ class CustomerLoginForm(AuthenticationForm):
         return cleaned_data
 
 
-
 from django import forms
 from django.core.exceptions import ValidationError
+
 from .models import Marque, Modele
+
 
 # ----------------- Marque Form -----------------
 class MarqueForm(forms.ModelForm):
@@ -147,7 +143,7 @@ class MarqueForm(forms.ModelForm):
             "nom": forms.TextInput(
                 attrs={
                     "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
-                    "placeholder": "Nom de la marque"
+                    "placeholder": "Nom de la marque",
                 }
             ),
             "logo": forms.ClearableFileInput(
@@ -179,7 +175,7 @@ class ModeleForm(forms.ModelForm):
             "nom": forms.TextInput(
                 attrs={
                     "class": "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500",
-                    "placeholder": "Nom du modèle"
+                    "placeholder": "Nom du modèle",
                 }
             ),
             "marque": forms.Select(
@@ -205,64 +201,95 @@ class ModeleForm(forms.ModelForm):
             raise ValidationError("Ce modèle existe déjà pour cette marque.")
         return nom
 
-   
-
-
 
 # ----------------- Voiture Form -----------------
 class VoitureForm(forms.ModelForm):
     class Meta:
         model = Voiture
         fields = [
-            "marque", "modele", "numero_chassis", "numero_moteur",
-            "annee", "transmission", "kilometrage", "couleur",
-            "cylindree_cc", "prix", "photo", "etat",
+            "marque",
+            "modele",
+            "numero_chassis",
+            "numero_moteur",
+            "annee",
+            "transmission",
+            "kilometrage",
+            "couleur",
+            "cylindree_cc",
+            "prix",
+            "photo",
+            "etat",
         ]
 
         widgets = {
-            "marque": forms.Select(attrs={
-                "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-            }),
-            "modele": forms.Select(attrs={
-                "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-            }),
-            "transmission": forms.Select(attrs={
-                "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-            }),
-            "etat": forms.Select(attrs={
-                "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-            }),
-            "numero_chassis": forms.TextInput(attrs={
-                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
-            }),
-            "numero_moteur": forms.TextInput(attrs={
-                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
-            }),
-            "couleur": forms.TextInput(attrs={
-                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
-            }),
-            "annee": forms.NumberInput(attrs={
-                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
-            }),
-            "kilometrage": forms.NumberInput(attrs={
-                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
-            }),
-            "cylindree_cc": forms.NumberInput(attrs={
-                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
-            }),
-            "prix": forms.NumberInput(attrs={
-                "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
-            }),
-            "photo": forms.FileInput(attrs={
-                "class": "w-full text-gray-700 bg-white border border-gray-300 rounded-lg cursor-pointer "
-                         "file:bg-blue-600 file:text-white file:px-4 file:py-2 file:rounded-md "
-                         "file:border-none hover:file:bg-blue-700 shadow-sm"
-            }),
+            "marque": forms.Select(
+                attrs={
+                    "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                }
+            ),
+            "modele": forms.Select(
+                attrs={
+                    "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                }
+            ),
+            "transmission": forms.Select(
+                attrs={
+                    "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                }
+            ),
+            "etat": forms.Select(
+                attrs={
+                    "class": "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                }
+            ),
+            "numero_chassis": forms.TextInput(
+                attrs={
+                    "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+                }
+            ),
+            "numero_moteur": forms.TextInput(
+                attrs={
+                    "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+                }
+            ),
+            "couleur": forms.TextInput(
+                attrs={
+                    "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+                }
+            ),
+            "annee": forms.NumberInput(
+                attrs={
+                    "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+                }
+            ),
+            "kilometrage": forms.NumberInput(
+                attrs={
+                    "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+                }
+            ),
+            "cylindree_cc": forms.NumberInput(
+                attrs={
+                    "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+                }
+            ),
+            "prix": forms.NumberInput(
+                attrs={
+                    "class": "w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+                }
+            ),
+            "photo": forms.FileInput(
+                attrs={
+                    "class": "w-full text-gray-700 bg-white border border-gray-300 rounded-lg cursor-pointer "
+                    "file:bg-blue-600 file:text-white file:px-4 file:py-2 file:rounded-md "
+                    "file:border-none hover:file:bg-blue-700 shadow-sm"
+                }
+            ),
         }
 
-         # Validation champ spécifique
+        # Validation champ spécifique
+
     def clean_numero_chassis(self):
-        numero_chassis = self.cleaned_data.get('numero_chassis')
+        numero_chassis = self.cleaned_data.get("numero_chassis")
         if Voiture.objects.filter(numero_chassis=numero_chassis).exists():
             raise forms.ValidationError("Ce numéro de châssis est déjà utilisé.")
         return numero_chassis
@@ -280,15 +307,18 @@ class VoitureForm(forms.ModelForm):
 # ----------------- Multiple images -----------------
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
+
     def __init__(self, attrs=None):
         attrs = attrs or {}
-        attrs.update({
-            "multiple": True,
-            "accept": "image/*",
-            "class": "w-full px-4 py-3 border border-gray-300 rounded-lg bg-white cursor-pointer shadow-sm "
-                     "file:bg-green-600 file:text-white file:border-none file:px-4 file:py-2 file:rounded-lg "
-                     "hover:file:bg-green-700 focus:ring-2 focus:ring-green-500"
-        })
+        attrs.update(
+            {
+                "multiple": True,
+                "accept": "image/*",
+                "class": "w-full px-4 py-3 border border-gray-300 rounded-lg bg-white cursor-pointer shadow-sm "
+                "file:bg-green-600 file:text-white file:border-none file:px-4 file:py-2 file:rounded-lg "
+                "hover:file:bg-green-700 focus:ring-2 focus:ring-green-500",
+            }
+        )
         super().__init__(attrs)
 
 

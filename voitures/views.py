@@ -1,44 +1,51 @@
-from django.contrib import messages
-from django.contrib.auth import login, logout
-from django.core.paginator import Paginator
-from django.db.models import Q
-from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import get_object_or_404, redirect, render
-from django.core.mail import send_mail
-from .decorators import role_required
-from .forms import (CustomerLoginForm, CustomUserCreationForm, MarqueForm,
-                    ModeleForm, VoitureForm ,ImageForm , ReservationForm)
-from .models import (ContactInfo, CustomUser, Marque, Modele,
-                     Reservation, Voiture ,Image)
-from django.core.mail import send_mail
 import os
 import re
-from django.db import transaction
-from django.conf import settings
 
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.core.mail import send_mail
+from django.core.paginator import Paginator
+from django.db import transaction
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .decorators import role_required
+from .forms import (
+    CustomerLoginForm,
+    CustomUserCreationForm,
+    ImageForm,
+    MarqueForm,
+    ModeleForm,
+    ReservationForm,
+    VoitureForm,
+)
+from .models import ContactInfo, CustomUser, Image, Marque, Modele, Reservation, Voiture
 
 # ----------------- Page d'accueil -----------------
 
 
 def home(request):
-    voitures = Voiture.objects.all().order_by('-date_ajout')
-    marques = Marque.objects.prefetch_related('modeles')
-    modeles = Modele.objects.prefetch_related('voitures')[:4]
-    voitures_populaires = Voiture.objects.order_by('-date_ajout')[:6]  # 10 dernières voitures
+    voitures = Voiture.objects.all().order_by("-date_ajout")
+    marques = Marque.objects.prefetch_related("modeles")
+    modeles = Modele.objects.prefetch_related("voitures")[:4]
+    voitures_populaires = Voiture.objects.order_by("-date_ajout")[
+        :6
+    ]  # 10 dernières voitures
 
     # --- RECHERCHE ---
-    query = request.GET.get('q')
+    query = request.GET.get("q")
     if query:
         voitures = voitures.filter(
-            Q(modele__nom__icontains=query) |
-            Q(marque__nom__icontains=query) |
-            Q(numero_chassis__icontains=query) |
-            Q(numero_moteur__icontains=query) |
-            Q(couleur__icontains=query) |
-            Q(annee__icontains=query) |
-            Q(transmission__icontains=query) |
-            Q(cylindree_cc__icontains=query) |
-            Q(prix__icontains=query)
+            Q(modele__nom__icontains=query)
+            | Q(marque__nom__icontains=query)
+            | Q(numero_chassis__icontains=query)
+            | Q(numero_moteur__icontains=query)
+            | Q(couleur__icontains=query)
+            | Q(annee__icontains=query)
+            | Q(transmission__icontains=query)
+            | Q(cylindree_cc__icontains=query)
+            | Q(prix__icontains=query)
         )
 
     # --- Message si aucun résultat ---
@@ -48,17 +55,17 @@ def home(request):
 
     # --- Pagination ---
     paginator = Paginator(voitures, 3)  # 6 voitures par page
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     voitures_page = paginator.get_page(page_number)
 
     context = {
-        'voitures': voitures_page,
-        'marques': marques,
-        'modeles': modeles,
-        'voitures_populaires': voitures_populaires,
-        'message': message,
+        "voitures": voitures_page,
+        "marques": marques,
+        "modeles": modeles,
+        "voitures_populaires": voitures_populaires,
+        "message": message,
     }
-    return render(request, 'voiture/main.html', context)
+    return render(request, "voiture/main.html", context)
 
 
 def pourquoi_kasaco(request):
@@ -66,29 +73,26 @@ def pourquoi_kasaco(request):
     Page expliquant pourquoi choisir KASACO.
     """
     context = {
-        'title': "Pourquoi KASACO ?",
-        'features': [
+        "title": "Pourquoi KASACO ?",
+        "features": [
             {
-                'icon': 'bi bi-building text-red-500',
-                'title': 'Vente et importation des véhicules locales',
-                'description': 'Nous proposons un large choix de véhicules locaux de qualité soigneusement inspectés et certifiés.',
+                "icon": "bi bi-building text-red-500",
+                "title": "Vente et importation des véhicules locales",
+                "description": "Nous proposons un large choix de véhicules locaux de qualité soigneusement inspectés et certifiés.",
             },
             {
-                'icon': 'bi bi-globe2 text-blue-500',
-                'title': 'Vente et importation des véhicules en ligne',
-                'description': 'Achetez facilement votre véhicule en ligne avec livraison rapide et sécurisée partout au Burundi.',
+                "icon": "bi bi-globe2 text-blue-500",
+                "title": "Vente et importation des véhicules en ligne",
+                "description": "Achetez facilement votre véhicule en ligne avec livraison rapide et sécurisée partout au Burundi.",
             },
             {
-                'icon': 'bi bi-car-front-fill text-green-500',
-                'title': 'Garage',
-                'description': 'Nos garages sont équipés pour l’entretien, la réparation et le service après-vente de votre véhicule.',
+                "icon": "bi bi-car-front-fill text-green-500",
+                "title": "Garage",
+                "description": "Nos garages sont équipés pour l’entretien, la réparation et le service après-vente de votre véhicule.",
             },
-        ]
+        ],
     }
-    return render(request, 'voiture/pourquoi_kasaco.html', context)
-
-
-
+    return render(request, "voiture/pourquoi_kasaco.html", context)
 
 
 # ----------------- Inscription -----------------
@@ -116,41 +120,42 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-         
+
             return redirect("redirect_by_role")
         else:
             messages.error(request, "email ou mot de passe incorrect.")
     else:
         form = CustomerLoginForm()
     return render(request, "voiture/auth/login.html", {"form": form})
-#------------------------------------changement de mot de passe-------------------------
+
+
+# ------------------------------------changement de mot de passe-------------------------
 
 
 # Fonction pour vérifier l'email
 def verification_email(request):
     if request.method == "POST":
-        email = request.POST.get('email', '').strip()
+        email = request.POST.get("email", "").strip()
 
         # Vérifier que l'email est saisi
         if not email:
             messages.error(request, "Veuillez entrer une adresse email valide.")
-            return render(request, 'voiture/auth/verification.html')
+            return render(request, "voiture/auth/verification.html")
 
         # Vérifier si l'utilisateur existe
         user = CustomUser.objects.filter(email=email).first()
 
         if user:
             # Rediriger vers la page de changement de mot de passe en passant l'email
-            return redirect('changementCode', email=email)
+            return redirect("changementCode", email=email)
         else:
             messages.error(request, "Cette adresse email ne correspond à aucun compte.")
-            return redirect('verification')
+            return redirect("verification")
 
-    return render(request, 'voiture/auth/verification.html')
-import re
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import CustomUser
+    return render(request, "voiture/auth/verification.html")
+
+    # fonction de changement du mot de pass
+
 
 def changementCode(request, email):
     """
@@ -160,52 +165,41 @@ def changementCode(request, email):
         customer = CustomUser.objects.get(email=email)
     except CustomUser.DoesNotExist:
         messages.error(request, "Utilisateur introuvable")
-        return redirect('login')
-     
+        return redirect("login")
+
     if request.method == "POST":
         # Récupération des mots de passe depuis le formulaire
-        password = request.POST.get('password', '').strip()
-        confirm_password = request.POST.get('password_confirm', '').strip()
+        password = request.POST.get("password", "").strip()
+        confirm_password = request.POST.get("password_confirm", "").strip()
 
         # Vérification de la correspondance
         if password != confirm_password:
             messages.error(request, "Les mots de passe ne correspondent pas.")
-            return redirect('changementCode', email=email)
+            return redirect("changementCode", email=email)
 
         # Vérification de la complexité du mot de passe
-        if (len(password) < 8
-            or not re.search(r'[A-Za-z]', password)
-            or not re.search(r'\d', password)
-            or not re.search(r'[!@#$%^&*]', password)):
+        if (
+            len(password) < 8
+            or not re.search(r"[A-Za-z]", password)
+            or not re.search(r"\d", password)
+            or not re.search(r"[!@#$%^&*]", password)
+        ):
             messages.error(
                 request,
                 "Le mot de passe doit contenir au moins 8 caractères, "
-                "une lettre, un chiffre et un caractère spécial"
+                "une lettre, un chiffre et un caractère spécial",
             )
-            return redirect('changementCode', email=email)
+            return redirect("changementCode", email=email)
 
         # Enregistrer le nouveau mot de passe
         customer.set_password(password)
         customer.save()
 
         messages.success(request, "Mot de passe modifié avec succès ✅")
-        return redirect('login')
+        return redirect("login")
 
     # Affichage du formulaire
-    return render(request, 'voiture/auth/changementCode.html', {'email': email})
-
-
-     
-
-
-
-
-
-
-
-
-
-
+    return render(request, "voiture/auth/changementCode.html", {"email": email})
 
 
 # ----------------- Déconnexion -----------------
@@ -229,7 +223,6 @@ def admin_dashboard(request):
         "voitures_count": Voiture.objects.count(),
         "reservations_count": Reservation.objects.count(),
         "marques_count": Marque.objects.count(),
-        
     }
     return render(request, "voiture/admin/dashboard.html", stats)
 
@@ -264,12 +257,17 @@ def user_home(request):
 
 # ----------------- Liste des réservations -----------------
 
+
 @role_required("admin")
 def reserver(request):
     # Récupérer toutes les réservations avec info voiture et utilisateur
-    voitures_reservees = Reservation.objects.select_related(
-        'voiture', 'utilisateur', 'voiture__marque', 'voiture__modele'
-    ).all().order_by('-date_reservation')
+    voitures_reservees = (
+        Reservation.objects.select_related(
+            "voiture", "utilisateur", "voiture__marque", "voiture__modele"
+        )
+        .all()
+        .order_by("-date_reservation")
+    )
 
     # Statistiques
     total_voitures = Voiture.objects.count()
@@ -278,7 +276,7 @@ def reserver(request):
 
     # Pagination (10 réservations par page)
     paginator = Paginator(voitures_reservees, 10)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
     context = {
@@ -292,8 +290,8 @@ def reserver(request):
     return render(request, "voiture/admin/reserver.html", context)
 
 
-
 # ----------------- Détails d'une voiture -----------------
+@role_required("user")
 def detail(request, myid):
     voiture = get_object_or_404(Voiture, id=myid)
     images_supp = Image.objects.filter(voiture=voiture)
@@ -304,20 +302,29 @@ def detail(request, myid):
         {
             "voiture": voiture,
             "images_supp": images_supp,
-        }
+        },
     )
+
 
 # ----------------- Gestion utilisateurs -----------------
 @role_required("admin")
 def utilisateurs_list(request):
-    users = CustomUser.objects.all().order_by('-date_joined')  # Les plus récents d'abord
+    users = CustomUser.objects.all().order_by(
+        "-date_joined"
+    )  # Les plus récents d'abord
     paginator = Paginator(users, 5)  # 5 utilisateurs par page
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    return render(request, "voiture/admin/users.html", {
-        'page_obj': page_obj,
-    })
+    return render(
+        request,
+        "voiture/admin/users.html",
+        {
+            "page_obj": page_obj,
+        },
+    )
+
+
 @role_required("admin")
 def supprimer_utilisateur(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
@@ -361,8 +368,6 @@ def liste_marques(request):
     )
 
 
-
-
 @role_required("admin")
 def add_mark(request):
     if request.method == "POST":
@@ -397,11 +402,8 @@ def liste_modeles(request):
     form = ModeleForm()
 
     return render(
-        request,
-        "voiture/admin/modele.html",
-        {"page_obj": page_obj, "form": form}
+        request, "voiture/admin/modele.html", {"page_obj": page_obj, "form": form}
     )
-
 
 
 @role_required("admin")
@@ -412,7 +414,7 @@ def ajouter_modele(request):
             form.save()
             messages.success(request, "Modèle ajouté avec succès !")
         else:
-           messages.error(request, "Erreur lors de l'ajout du modele.")
+            messages.error(request, "Erreur lors de l'ajout du modele.")
     return redirect("liste_modeles")
 
 
@@ -428,13 +430,14 @@ def supprimer_modele(request, id):
 @role_required("admin")
 def liste_voitures(request):
     voitures = Voiture.objects.all()
-    paginator = Paginator(voitures, 5)   # 10 véhicules par page
+    paginator = Paginator(voitures, 5)  # 10 véhicules par page
     page = request.GET.get("page")
     voitures = paginator.get_page(page)
     form = VoitureForm()
     return render(
         request, "voiture/admin/voiture.html", {"voitures": voitures, "form": form}
     )
+
 
 @role_required("admin")
 def ajouter_voiture(request):
@@ -453,7 +456,7 @@ def ajouter_voiture(request):
 
             messages.success(
                 request,
-                f"La voiture {voiture.marque.nom} {voiture.modele.nom} a été publiée avec succès."
+                f"La voiture {voiture.marque.nom} {voiture.modele.nom} a été publiée avec succès.",
             )
             return redirect("liste_voitures")
         else:
@@ -470,13 +473,15 @@ def ajouter_voiture(request):
     return render(request, "voiture/admin/ajouter_voiture.html", context)
 
 
-
 @role_required("admin")
 def supprimer_voiture(request, id):
     voiture = get_object_or_404(Voiture, id=id)
     voiture.delete()
     messages.success(request, f"La voiture {voiture} a été supprimée avec succès.")
     return redirect("liste_voitures")
+
+
+# fonctions pour afficher l'info du vendeur
 
 
 def info(request):
@@ -495,19 +500,18 @@ def mes_reservations(request):
     """
     Affiche les réservations de l'utilisateur connecté
     """
-    reservations = Reservation.objects.select_related('voiture').filter(
-        utilisateur=request.user
-    ).order_by('-date_reservation')
+    reservations = (
+        Reservation.objects.select_related("voiture")
+        .filter(utilisateur=request.user)
+        .order_by("-date_reservation")
+    )
 
-    context = {
-        "reservations": reservations
-    }
+    context = {"reservations": reservations}
 
     return render(request, "voiture/user/mes_reservations.html", context)
 
 
-
-
+@role_required("admin")
 def annuler_reservation(request, reservation_id):
     # Récupérer la réservation ou renvoyer 404
     reservation = get_object_or_404(Reservation, id=reservation_id)
@@ -521,36 +525,40 @@ def annuler_reservation(request, reservation_id):
     reservation.delete()
 
     # Message de succès
-    messages.success(request, f"La réservation de {voiture.marque.nom} {voiture.modele.nom} a été annulée.")
+    messages.success(
+        request,
+        f"La réservation de {voiture.marque.nom} {voiture.modele.nom} a été annulée.",
+    )
 
     # Rediriger vers la page des réservations
-    return redirect('liste_voitures')
+    return redirect("liste_voitures")
 
 
-
-@staff_member_required
+@role_required("admin")
 def disponible_liste_voitures(request):
-    voitures_list = Voiture.objects.filter(etat="Disponible").order_by('-id')
-      # ordonner par ID décroissant
-
+    voitures_list = Voiture.objects.filter(etat="Disponible").order_by("-id")
+    # ordonner par ID décroissant
 
     # Pagination
     paginator = Paginator(voitures_list, 5)  # 10 voitures par page
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     voitures = paginator.get_page(page_number)
 
-    reservations = Reservation.objects.select_related('voiture', 'utilisateur').all().order_by('-date_reservation')
+    reservations = (
+        Reservation.objects.select_related("voiture", "utilisateur")
+        .all()
+        .order_by("-date_reservation")
+    )
 
-    context = {
-        "voitures": voitures,
-        "reservations": reservations
-    }
+    context = {"voitures": voitures, "reservations": reservations}
 
     return render(request, "voiture/admin/disponible_liste_voiture.html", context)
+
+
 # views.py
 
 
-@staff_member_required
+@role_required("admin")
 def reserver_voiture(request, voiture_id):
     voiture = get_object_or_404(Voiture, id=voiture_id)
 
@@ -589,54 +597,61 @@ Cordialement,
 L’équipe KASACO 🚀
 """
                     from_email = os.environ.get(
-                        "DEFAULT_FROM_EMAIL",
-                        settings.DEFAULT_FROM_EMAIL
+                        "DEFAULT_FROM_EMAIL", settings.DEFAULT_FROM_EMAIL
                     )
                     try:
-                        send_mail(sujet, message, from_email, [reservation.utilisateur.email])
-                        messages.success(request, "Voiture réservée et email envoyé avec succès.")
+                        send_mail(
+                            sujet, message, from_email, [reservation.utilisateur.email]
+                        )
+                        messages.success(
+                            request, "Voiture réservée et email envoyé avec succès."
+                        )
                     except Exception:
-                        messages.warning(request, "Voiture réservée, mais l'email n'a pas pu être envoyé.")
+                        messages.warning(
+                            request,
+                            "Voiture réservée, mais l'email n'a pas pu être envoyé.",
+                        )
                 else:
-                    messages.warning(request, "Voiture réservée, mais l'utilisateur n'a pas d'adresse email.")
+                    messages.warning(
+                        request,
+                        "Voiture réservée, mais l'utilisateur n'a pas d'adresse email.",
+                    )
 
                 return redirect("liste_voitures")
 
             except Exception:
-                messages.error(request, "Une erreur est survenue lors de la réservation.")
+                messages.error(
+                    request, "Une erreur est survenue lors de la réservation."
+                )
     else:
         form = ReservationForm()
 
-    return render(request, "voiture/admin/reserver.html", {"voiture": voiture, "form": form})
+    return render(
+        request, "voiture/admin/reserver.html", {"voiture": voiture, "form": form}
+    )
 
 
+# partie principale du client pour parcours des pages
 
-#partie principale du client pour parcours des pages
 
 def marque_list(request):
     marques = Marque.objects.all()
-    return render(request, "voiture/marque_list.html", {
-        "marques": marques
-    })
+    return render(request, "voiture/marque_list.html", {"marques": marques})
 
 
 def modele_list(request, marque_id):
     marque = get_object_or_404(Marque, id=marque_id)
     modeles = marque.modeles.all()
 
-    return render(request, "voiture/modele_list.html", {
-        "marque": marque,
-        "modeles": modeles
-    })
+    return render(
+        request, "voiture/modele_list.html", {"marque": marque, "modeles": modeles}
+    )
 
 
 def modele_search(request, modele_id):
     modele = get_object_or_404(Modele, id=modele_id)
 
-    voitures = Voiture.objects.filter(
-        modele=modele,
-        etat="Disponible"
-    )
+    voitures = Voiture.objects.filter(modele=modele, etat="Disponible")
 
     # FILTRES
     annee_min = request.GET.get("annee_min")
@@ -656,12 +671,13 @@ def modele_search(request, modele_id):
     if transmission:
         voitures = voitures.filter(transmission=transmission)
 
-    return render(request, "voiture/modele_search.html", {
-        "modele": modele,
-        "voitures": voitures
-    })
+    return render(
+        request, "voiture/modele_search.html", {"modele": modele, "voitures": voitures}
+    )
 
-  # Assure-toi que ton modèle d'image s'appelle ImageVoiture
+
+# datails du vouture pour acceuil
+
 
 def voiture_detail(request, voiture_id):
     voiture = get_object_or_404(Voiture, id=voiture_id)
@@ -669,12 +685,8 @@ def voiture_detail(request, voiture_id):
     # Récupérer les images supplémentaires liées à cette voiture
     images_supp = Image.objects.filter(voiture=voiture)
 
-    return render(request, "voiture/voiture_detail.html", {
-        "voiture": voiture,
-        "images_supp": images_supp
-    })
-
-
-
-
-
+    return render(
+        request,
+        "voiture/voiture_detail.html",
+        {"voiture": voiture, "images_supp": images_supp},
+    )

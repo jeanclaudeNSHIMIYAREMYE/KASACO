@@ -10,23 +10,23 @@
 
 <!-- FORMULAIRE DE RECHERCHE -->
 <form method="get" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-    <input type="number" name="annee_min" placeholder="Année min" 
+    <input type="number" name="annee_min" placeholder="Année min"
            class="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none">
-    <input type="number" name="annee_max" placeholder="Année max" 
+    <input type="number" name="annee_max" placeholder="Année max"
            class="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none">
-    <input type="number" name="prix_min" placeholder="Prix min" 
+    <input type="number" name="prix_min" placeholder="Prix min"
            class="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none">
-    <input type="number" name="prix_max" placeholder="Prix max" 
+    <input type="number" name="prix_max" placeholder="Prix max"
            class="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none">
 
-    <select name="transmission" 
+    <select name="transmission"
             class="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none col-span-2 md:col-span-1">
         <option value="">Transmission</option>
         <option value="Manuelle">Manuelle</option>
         <option value="Automatique">Automatique</option>
     </select>
 
-    <button type="submit" 
+    <button type="submit"
             class="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg
                    hover:scale-105 hover:shadow-lg transition-transform duration-300 p-2 col-span-2 md:col-span-1">
         Rechercher
@@ -39,10 +39,10 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
     {% for voiture in voitures %}
     <a href="{% url 'voiture_detail' voiture.id %}" aria-label="Voir détails de la voiture {{ voiture.nom }}">
-        <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden 
+        <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden
                     hover:shadow-2xl hover:scale-105 transform transition-all duration-300">
             {% if voiture.photo %}
-            <img src="{{ voiture.photo.url }}" alt="Photo de {{ voiture.nom }}" 
+            <img src="{{ voiture.photo.url }}" alt="Photo de {{ voiture.nom }}"
                  class="h-48 w-full object-cover">
             {% else %}
             <div class="h-48 w-full bg-gray-200 flex items-center justify-center">
