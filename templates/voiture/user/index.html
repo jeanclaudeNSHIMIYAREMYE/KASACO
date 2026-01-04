@@ -91,81 +91,149 @@
   </section>
   {% endif %}
 
-  <!-- ================= MARQUES ================= -->
-  <section class="py-16 bg-gradient-to-b from-indigo-50 to-pink-50 overflow-hidden">
-      <h2 class="text-3xl font-bold mb-10 text-center animate-item" id="marques-title">
-          Choisir une marque
-      </h2>
+  <!-- ================= MARQUES ================= --><!-- ================= MARQUES ================= -->
+<section class="py-16 bg-gradient-to-b from-indigo-50 to-pink-50 overflow-hidden">
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 px-4" id="marques-grid">
-          {% for marque in marques %}
-          <a href="{% url 'modele_auth' marque.id %}" class="group">
-              <div class="rounded-xl p-2 flex flex-col items-center justify-center
-                          text-white shadow-md transition-all duration-500
-                          animate-item marque-card
-                          bg-gradient-to-br from-orange-400 via-yellow-300 to-pink-400
-                          hover:scale-110 hover:shadow-lg hover:brightness-110">
-                  {% if marque.logo %}
-                  <img src="{{ marque.logo.url }}" class="h-12 w-12 object-contain mb-2 transition-transform duration-300 group-hover:scale-125">
-                  {% else %}
-         <div id="marque-{{ marque.id }}"
-     class="h-12 w-12 bg-white rounded-full flex items-center justify-center mb-2 text-xs font-semibold text-gray-800 shadow overflow-hidden text-center">
-    {{ marque.nom }}<span class='text-black'>({{ marque.id }}_)</span>
-</div>
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-10 text-center animate-item">
+        Choisir une marque
+    </h2>
 
-                  {% endif %}
-              </div>
-          </a>
-          {% endfor %}
-      </div>
-  </section>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 px-4">
+
+        {% for marque in marques %}
+        <a href="{% url 'modele_auth' marque.id %}"
+           class="group block text-center animate-item">
+
+            <div class="rounded-xl p-3 flex flex-col items-center justify-center
+                        shadow-md transition-all duration-500
+                        bg-gradient-to-br from-orange-400 via-yellow-300 to-pink-400
+                        hover:scale-105 hover:shadow-xl hover:brightness-110">
+
+                <!-- Logo ou initial -->
+                {% if marque.logo %}
+                    <img src="{{ marque.logo.url }}"
+                         alt="{{ marque.nom }}"
+                         class="h-12 w-12 object-contain mb-2
+                                transition-transform duration-300
+                                group-hover:scale-125">
+                {% else %}
+                    <div class="h-12 w-12 bg-white rounded-full
+                                flex items-center justify-center
+                                mb-2 text-sm font-bold text-gray-800 shadow">
+                        {{ marque.nom|slice:":1" }}
+                    </div>
+                {% endif %}
+
+                <!-- Nom de la marque (TOUJOURS AFFICHÉ) -->
+                <span class="text-xs sm:text-sm font-semibold text-gray-900
+                             transition-colors duration-300
+                             group-hover:text-red-700">
+                    {{ marque.nom }}
+                </span>
+
+            </div>
+        </a>
+        {% endfor %}
+
+    </div>
+</section>
+
 
   <!-- ================= MODELES ================= -->
   <section class="max-w-7xl mx-auto px-6 py-20 animate-section">
-      <h2 class="text-4xl font-extrabold mb-12 text-center text-gradient animate-item"
-          style="background: linear-gradient(90deg, #FF6B6B, #FFD93D, #6BCB77); -webkit-background-clip: text; color: transparent;">
-          Parcourir par modèle
-      </h2>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {% for modele in modeles %}
-          <div class="rounded-2xl overflow-hidden shadow-lg
-                      bg-gradient-to-br from-purple-400 via-pink-400 to-yellow-300
-                      transition-transform duration-500 hover:scale-105 hover:rotate-1 hover:shadow-2xl
-                      animate-item cursor-pointer">
-              {% if modele.image %}
-              <img src="{{ modele.image.url }}" class="w-full h-48 object-cover border-b-4 border-white">
-              {% endif %}
-              <div class="p-4">
-                  <h3 class="text-xl font-bold text-black text-center">{{ modele.nom }}</h3>
-              </div>
-          </div>
-          {% endfor %}
-      </div>
-  </section>
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-10 text-center
+               bg-gradient-to-r from-red-500 via-yellow-400 to-green-500
+               bg-clip-text text-transparent animate-item">
+        Parcourir par modèle
+    </h2>
 
-  <!-- ================= POPULAIRES ================= -->
-  <section class="max-w-7xl mx-auto px-6 py-20 animate-section">
-      <h2 class="text-4xl font-extrabold mb-12 text-center text-gradient animate-item"
-          style="background: linear-gradient(90deg, #FF6B6B, #FFD93D, #6BCB77); -webkit-background-clip: text; color: transparent;">
-          Voitures les plus populaires
-      </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {% for voiture in voitures_populaires %}
-          <div class="rounded-2xl overflow-hidden shadow-lg
-                      bg-gradient-to-br from-blue-400
-                      transition-transform duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl
-                      animate-item cursor-pointer">
-              <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}"
-                   class="w-full h-64 object-cover border-b-4 border-white">
-                  <div class="p-4 text-center   bg-amber-400">
-                  <h3 class="text-lg font-semibold text-black">{{voiture.modele.nom}}</h3>
-              </div>
-          </div>
-          {% endfor %}
-      </div>
-  </section>
+        {% for modele in modeles %}
+        <a href="{% url 'modele_search_auth' modele.id %}"
+           class="group block rounded-2xl overflow-hidden shadow-lg
+                  bg-gradient-to-br from-purple-400 via-pink-400 to-yellow-300
+                  transition-all duration-500
+                  hover:scale-105 hover:-translate-y-1 hover:shadow-2xl
+                  animate-item">
+
+            <!-- Image -->
+            {% if modele.image %}
+            <div class="overflow-hidden">
+                <img src="{{ modele.image.url }}"
+                     alt="{{ modele.nom }}"
+                     class="w-full h-40 sm:h-44 lg:h-48 object-cover
+                            transition-transform duration-500
+                            group-hover:scale-110">
+            </div>
+            {% endif %}
+
+            <!-- Texte -->
+            <div class="p-4 bg-white/90 backdrop-blur text-center">
+                <h3 class="text-base sm:text-lg font-bold text-gray-900
+                           transition-colors duration-300
+                           group-hover:text-red-600">
+                    {{ modele.nom }}
+                </h3>
+
+                <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                    Voir les véhicules →
+                </p>
+            </div>
+
+        </a>
+        {% endfor %}
+
+    </div>
+</section>
+
+<!-- ================= POPULAIRES ================= -->
+<section class="max-w-7xl mx-auto px-6 py-20 animate-section">
+
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-10 text-center
+               bg-gradient-to-r from-red-500 via-yellow-400 to-green-500
+               bg-clip-text text-transparent animate-item">
+        Voitures les plus populaires
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+
+        {% for voiture in voitures_populaires %}
+        <a href="{% url 'voiture_detail_auth' voiture.id %}"
+           class="group block rounded-2xl overflow-hidden shadow-lg
+                  bg-gradient-to-br from-blue-400 via-green-400 to-teal-300
+                  transition-all duration-500
+                  hover:scale-105 hover:-translate-y-1 hover:shadow-2xl
+                  animate-item">
+
+            <!-- Image -->
+            <div class="overflow-hidden">
+                <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}"
+                     alt="{{ voiture.modele.nom }}"
+                     class="w-full h-48 sm:h-56 md:h-64 object-cover
+                            transition-transform duration-500
+                            group-hover:scale-110">
+            </div>
+
+            <!-- Infos -->
+            <div class="p-4 text-center bg-white/90 backdrop-blur">
+                <h3 class="text-base sm:text-lg font-bold text-gray-900
+                           transition-colors duration-300
+                           group-hover:text-red-600">
+                    {{ voiture.marque.nom }} {{ voiture.modele.nom }}
+                </h3>
+
+                <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                    Voir les détails →
+                </p>
+            </div>
+
+        </a>
+        {% endfor %}
+
+    </div>
+</section>
 
 
 <!-- ================= FLASH MESSAGES ================= -->

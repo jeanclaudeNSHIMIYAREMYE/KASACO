@@ -7,9 +7,8 @@
   <!-- ================= HERO SECTION ================= -->
   <section
       class="relative h-[600px] rounded-xl overflow-hidden shadow-lg animate-section"
-      style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('{% static "images/home2.jpg" %}');
-             background-size: cover; background-position: center;"
-  >
+      style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('{% static "images/home2.jpg" %}'); background-size: cover; background-position: center;">
+
       <div class="relative h-full flex items-center">
           <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -28,13 +27,11 @@
                           name="q"
                           placeholder="Nom, marque ou n° de châssis"
                           value="{{ request.GET.q|default_if_none:'' }}"
-                          class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 transition"
-                      >
+                          class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 transition">
                       <button
                           type="submit"
                           class="w-full p-3 bg-red-600 text-white font-bold rounded-lg
-                                 hover:bg-red-700 transition-all duration-300 hover:scale-105"
-                      >
+                                 hover:bg-red-700 transition-all duration-300 hover:scale-105">
                           Rechercher →
                       </button>
                   </form>
@@ -48,115 +45,216 @@
                   <p class="mt-6 text-gray-300 text-lg md:text-xl">
                       L’innovation au bout de vos roues.
                   </p>
-                  <button
-                      class="mt-8 px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-lg
-                             transform hover:scale-110 transition-transform duration-300"
-                  >
-                      Découvrez nos voitures
-                  </button>
-              </div>
-
-          </div>
-      </div>
-  </section>
-
-  <!-- ================= RESULTATS ================= -->
-  {% if voitures %}
-  <section class="max-w-7xl mx-auto px-6 py-12 animate-section">
-      <h2 class="text-3xl font-bold mb-6 animate-item">Résultats de votre recherche</h2>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {% for voiture in voitures %}
-          <div class="bg-white rounded-2xl shadow overflow-hidden
-                      transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl
-                      animate-item">
-              <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}"
-                   class="w-full h-64 object-cover transition-transform duration-500 hover:scale-110">
-              <div class="p-4">
-                  <h3 class="text-xl font-bold">{{ voiture.modele.nom }} - {{ voiture.marque.nom }}</h3>
-                  <p class="text-red-600 font-semibold mt-2">Prix : {{ voiture.prix }} $</p>
-                  <a href="{% if request.user.is_authenticated %}{% url 'voiture_detail' voiture.id %}{% else %}{% url 'login' %}{% endif %}"
-                     class="block mt-4 text-center bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">
-                      Voir le détail
+                  <a href="{% url 'login' %}"
+                     class="mt-8 inline-block px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-lg
+                             transform hover:scale-110 transition-transform duration-300">
+                     Découvrez nos voitures
                   </a>
               </div>
+
           </div>
-          {% endfor %}
       </div>
   </section>
-  {% endif %}
 
-  <!-- ================= MARQUES ================= -->
-  <section class="py-16 bg-gradient-to-b from-indigo-50 to-pink-50 overflow-hidden">
-      <h2 class="text-3xl font-bold mb-10 text-center animate-item" id="marques-title">
-          Choisir une marque
-      </h2>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 px-4" id="marques-grid">
-          {% for marque in marques %}
-          <a href="{% url 'modele_list' marque.id %}" class="group">
-              <div class="rounded-xl p-2 flex flex-col items-center justify-center
-                          text-white shadow-md transition-all duration-500
-                          animate-item marque-card
-                          bg-gradient-to-br from-orange-400 via-yellow-300 to-pink-400
-                          hover:scale-110 hover:shadow-lg hover:brightness-110">
-                  {% if marque.logo %}
-                  <img src="{{ marque.logo.url }}" class="h-12 w-12 object-contain mb-2 transition-transform duration-300 group-hover:scale-125">
-                  {% else %}
-                  <div class="h-12 w-12 bg-white rounded-full flex items-center justify-center mb-2 text-sm font-semibold text-gray-800">
-                      {{ marque.nom|slice:":1" }}
+
+
+      <!-- ================= RESULTATS ================= -->
+      {% if voitures %}
+      <section class="max-w-7xl mx-auto px-6 py-12 animate-section">
+          <h2 class="text-3xl font-bold mb-6 animate-item">Résultats de votre recherche</h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+              {% for voiture in voitures %}
+              <div class="bg-white rounded-2xl shadow overflow-hidden
+                          transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl
+                          animate-item">
+                  <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}"
+                       class="w-full h-64 object-cover transition-transform duration-500 hover:scale-110">
+                  <div class="p-4">
+                      <h3 class="text-xl font-bold">{{ voiture.modele.nom }} - {{ voiture.marque.nom }}</h3>
+                      <p class="text-red-600 font-semibold mt-2">Prix : {{ voiture.prix }} $</p>
+                      <a href="{% url 'login'%}"
+                         class="block mt-4 text-center bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">
+                          Voir le détail
+                      </a>
+                  </div>
+              </div>
+              {% endfor %}
+          </div>
+      </section>
+      {% endif %}
+
+  <!-- ================= PROTECTION UTILISATEUR ================= -->
+
+        {% if user.is_authenticated %}
+
+      <!-- ================= MARQUES ================= -->
+      <section class="py-16 bg-gradient-to-b from-indigo-50 to-pink-50 overflow-hidden">
+          <h2 class="text-3xl font-bold mb-10 text-center animate-item" id="marques-title">
+              Choisir une marque
+          </h2>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 px-4" id="marques-grid">
+              {% for marque in marques %}
+              <a href="{% url 'modele_list' marque.id %}" class="group">
+                  <div class="rounded-xl p-3 flex flex-col items-center justify-center
+                              shadow-md transition-all duration-500
+                              animate-item marque-card
+                              bg-gradient-to-br from-orange-400 via-yellow-300 to-pink-400
+                              hover:scale-110 hover:shadow-lg hover:brightness-110">
+
+                      {% if marque.logo %}
+                      <img src="{{ marque.logo.url }}" alt="{{ marque.nom }}"
+                           class="h-12 w-12 object-contain mb-2 transition-transform duration-300 group-hover:scale-125">
+                      {% else %}
+                      <div class="h-12 w-12 bg-white rounded-full flex items-center justify-center mb-2
+                                  text-base font-bold text-gray-800">
+                          {{ marque.nom|slice:":1" }}
+                      </div>
+                      {% endif %}
+
+                      <span class="text-xs sm:text-sm md:text-base font-semibold text-black text-center mt-1
+                                   transition-colors duration-300 group-hover:text-white">
+                          {{ marque.nom }}
+                      </span>
+
+                  </div>
+              </a>
+              {% endfor %}
+          </div>
+      </section>
+
+      <!-- ================= MODELES ================= -->
+      <section class="max-w-7xl mx-auto px-6 py-20 animate-section">
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-10 text-center
+                     bg-gradient-to-r from-red-500 via-yellow-400 to-green-500
+                     bg-clip-text text-transparent animate-item">
+              Parcourir par modèle
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+              {% for modele in modeles %}
+              <a href="{% url 'modele_search' modele.id %}"
+                 class="group block rounded-2xl overflow-hidden shadow-lg
+                        bg-gradient-to-br from-purple-400 via-pink-400 to-yellow-300
+                        transition-all duration-500
+                        hover:scale-105 hover:-translate-y-1 hover:shadow-2xl
+                        animate-item">
+
+                  {% if modele.image %}
+                  <div class="overflow-hidden">
+                      <img src="{{ modele.image.url }}" alt="{{ modele.nom }}"
+                           class="w-full h-40 sm:h-44 lg:h-48 object-cover transition-transform duration-500 group-hover:scale-110">
                   </div>
                   {% endif %}
-              </div>
-          </a>
-          {% endfor %}
-      </div>
-  </section>
- <!-- ================= MODELES ================= -->
-  <section class="max-w-7xl mx-auto px-6 py-20 animate-section">
-      <h2 class="text-4xl font-extrabold mb-12 text-center text-gradient animate-item"
-          style="background: linear-gradient(90deg, #FF6B6B, #FFD93D, #6BCB77); -webkit-background-clip: text; color: transparent;">
-          Parcourir par modèle
-      </h2>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {% for modele in modeles %}
-          <div class="rounded-2xl overflow-hidden shadow-lg
-                      bg-gradient-to-br from-purple-400 via-pink-400 to-yellow-300
-                      transition-transform duration-500 hover:scale-105 hover:rotate-1 hover:shadow-2xl
-                      animate-item cursor-pointer">
-              {% if modele.image %}
-              <img src="{{ modele.image.url }}" class="w-full h-48 object-cover border-b-4 border-white">
-              {% endif %}
-              <div class="p-4">
-                  <h3 class="text-xl font-bold text-black text-center">{{ modele.nom }}</h3>
-              </div>
-          </div>
-          {% endfor %}
-      </div>
-  </section>
-  <!-- ================= POPULAIRES ================= -->
-  <section class="max-w-7xl mx-auto px-6 py-20 animate-section">
-      <h2 class="text-4xl font-extrabold mb-12 text-center text-gradient animate-item"
-          style="background: linear-gradient(90deg, #FF6B6B, #FFD93D, #6BCB77); -webkit-background-clip: text; color: transparent;">
-          Voitures les plus populaires
-      </h2>
+                  <div class="p-4 bg-white/90 backdrop-blur text-center">
+                      <span class="text-xs sm:text-sm font-semibold text-gray-900 transition-colors duration-300 group-hover:text-red-700">
+                          {{ modele.nom }}
+                      </span>
+                      <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                          Voir les véhicules →
+                      </p>
+                  </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {% for voiture in voitures_populaires %}
-          <div class="rounded-2xl overflow-hidden shadow-lg
-                      bg-gradient-to-br from-blue-400 via-green-400 to-teal-300
-                      transition-transform duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl
-                      animate-item cursor-pointer">
-              <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}"
-                   class="w-full h-64 object-cover border-b-4 border-white">
-              <div class="p-4 text-center   bg-amber-400">
-                  <h3 class="text-lg font-semibold  text-black">{{ voiture.modele.nom }}</h3>
-              </div>
+              </a>
+              {% endfor %}
           </div>
-          {% endfor %}
-      </div>
-  </section>
+      </section>
+
+      <!-- ================= POPULAIRES ================= -->
+      <section class="max-w-7xl mx-auto px-6 py-20 animate-section">
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-10 text-center
+                     bg-gradient-to-r from-red-500 via-yellow-400 to-green-500
+                     bg-clip-text text-transparent animate-item">
+              Voitures les plus populaires
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+              {% for voiture in voitures_populaires %}
+              <a href="{% url 'voiture_detail' voiture.id %}"
+                 class="group block rounded-2xl overflow-hidden shadow-lg
+                        bg-gradient-to-br from-blue-400 via-green-400 to-teal-300
+                        transition-all duration-500
+                        hover:scale-105 hover:-translate-y-1 hover:shadow-2xl
+                        animate-item">
+
+                  <div class="overflow-hidden">
+                      <img src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}"
+                           alt="{{ voiture.modele.nom }}"
+                           class="w-full h-48 sm:h-56 md:h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                  </div>
+
+                  <div class="p-4 text-center bg-white/90 backdrop-blur">
+                      <h3 class="text-base sm:text-lg font-bold text-gray-900 transition-colors duration-300 group-hover:text-red-600">
+                          {{ voiture.marque.nom }} {{ voiture.modele.nom }}
+                      </h3>
+                      <p class="text-xs sm:text-sm text-gray-600 mt-1">Voir les détails →</p>
+                  </div>
+
+              </a>
+              {% endfor %}
+          </div>
+      </section>
+
+  {% else %}
+   <!-- MESSAGE SI NON CONNECTÉ - VERSION PREMIUM -->
+<section class="py-24 px-4 text-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 rounded-3xl shadow-2xl max-w-3xl mx-auto mt-16 animate-item">
+
+    <!-- Icône attention -->
+    <div class="flex justify-center mb-6">
+        <i class="fa fa-exclamation-triangle text-6xl text-yellow-300 animate-bounce"></i>
+    </div>
+
+    <!-- Texte principal -->
+    <h2 class="text-4xl sm:text-5xl font-extrabold text-white mb-4 drop-shadow-lg">
+        🚀 Accès réservé aux membres !
+    </h2>
+
+    <!-- Sous-texte engageant -->
+    <p class="text-lg sm:text-xl text-white/90 mb-8">
+        Connectez-vous pour découvrir nos voitures exclusives et profiter des meilleures offres. <br>
+        Chaque modèle est choisi pour vous garantir confort et style !
+    </p>
+
+    <!-- Bouton de connexion -->
+    <a href="{% url 'login' %}"
+       class="inline-flex items-center gap-2 px-8 py-4 bg-yellow-400 text-gray-900 font-bold rounded-full
+              shadow-lg hover:bg-yellow-300 hover:scale-105 transition transform duration-300">
+        <i class="fa fa-sign-in-alt text-lg"></i> Se connecter maintenant
+    </a>
+</section>
+
+<!-- Animation CSS -->
+<style>
+.animate-item {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+}
+.animate-item.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const items = document.querySelectorAll('.animate-item');
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting){
+                entry.target.classList.add('show');
+            }
+        });
+    }, { threshold: 0.2 });
+
+    items.forEach(item => observer.observe(item));
+});
+</script>
+
+  {% endif %}
 
 </main>
 
