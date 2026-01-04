@@ -106,33 +106,6 @@ class CustomerLoginForm(AuthenticationForm):
         ),
     )
 
-    def clean(self):
-        cleaned_data = super().clean()
-        email = cleaned_data.get("username")
-        password = cleaned_data.get("password")
-
-        if email and password:
-            user = authenticate(self.request, username=email, password=password)
-
-            if user is None:
-                raise ValidationError(
-                    "Les informations de connexion sont incorrectes. "
-                    "Veuillez vérifier votre email et votre mot de passe."
-                )
-
-            if not user.is_active:
-                raise ValidationError(
-                    "Votre compte est désactivé. Veuillez contacter l’administrateur."
-                )
-
-        return cleaned_data
-
-
-from django import forms
-from django.core.exceptions import ValidationError
-
-from .models import Marque, Modele
-
 
 # ----------------- Marque Form -----------------
 class MarqueForm(forms.ModelForm):

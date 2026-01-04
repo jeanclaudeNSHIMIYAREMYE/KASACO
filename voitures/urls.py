@@ -79,6 +79,23 @@ urlpatterns = [
     path("marque/<int:marque_id>/", views.modele_list, name="modele_list"),
     path("modele/<int:modele_id>/", views.modele_search, name="modele_search"),
     path("voiture/<int:voiture_id>/", views.voiture_detail, name="voiture_detail"),
+    ###################################user connecte##################
+    # Liste des marques
+    path("marques/", views.marque_auth, name="marque_auth"),
+    # Liste des modèles d'une marque
+    path("marques/<int:marque_id>/modeles/", views.modele_auth, name="modele_auth"),
+    # Recherche de voitures par modèle avec filtres
+    path(
+        "modeles/<int:modele_id>/recherche/",
+        views.modele_search_auth,
+        name="modele_search_auth",
+    ),
+    # Détails d'une voiture
+    path(
+        "voitures/<int:voiture_id>/",
+        views.voiture_detail_auth,
+        name="voiture_detail_auth",
+    ),
 ]
 
 # -------------------- Media files --------------------

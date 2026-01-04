@@ -228,31 +228,56 @@ def admin_dashboard(request):
 
 
 # ----------------- Dashboard utilisateur -----------------
+
+
 @role_required("user")
 def user_home(request):
-    item_name = request.GET.get("item_name")
+    # --- Recherche depuis le champ "q" ---
+    query = request.GET.get("q", "")
+
+    # --- Toutes les voitures triées par date d'ajout ---
     voitures = Voiture.objects.all().order_by("-date_ajout")
 
-    if item_name:
+    # --- Filtrage si recherche ---
+    if query:
         voitures = voitures.filter(
-            Q(modele__nom__icontains=item_name)
-            | Q(marque__nom__icontains=item_name)
-            | Q(numero_chassis__icontains=item_name)
+            Q(modele__nom__icontains=query)
+            | Q(marque__nom__icontains=query)
+            | Q(numero_chassis__icontains=query)
+            | Q(numero_moteur__icontains=query)
+            | Q(couleur__icontains=query)
+            | Q(annee__icontains=query)
+            | Q(transmission__icontains=query)
+            | Q(cylindree_cc__icontains=query)
+            | Q(prix__icontains=query)
         )
 
+    # --- Message si aucun résultat ---
     message = None
     if not voitures.exists():
         message = "Aucune voiture trouvée pour votre recherche."
 
-    paginator = Paginator(voitures, 4)  # 4 voitures par page
-    page = request.GET.get("page")
-    voitures = paginator.get_page(page)
+    # --- Pagination ---
+    paginator = Paginator(voitures, 3)  # 3 voitures par page
+    page_number = request.GET.get("page")
+    voitures_page = paginator.get_page(page_number)
 
-    return render(
-        request,
-        "voiture/user/index.html",
-        {"voitures": voitures, "item_name": item_name, "message": message},
-    )
+    # --- Autres données pour le template ---
+    marques = Marque.objects.prefetch_related("modeles")
+    modeles = Modele.objects.prefetch_related("voitures")[:4]
+    voitures_populaires = Voiture.objects.order_by("-date_ajout")[:6]
+
+    # --- Context ---
+    context = {
+        "voitures": voitures_page,
+        "marques": marques,
+        "modeles": modeles,
+        "voitures_populaires": voitures_populaires,
+        "item_name": query,
+        "message": message,
+    }
+
+    return render(request, "voiture/user/index.html", context)
 
 
 # ----------------- Liste des réservations -----------------
@@ -688,5 +713,79 @@ def voiture_detail(request, voiture_id):
     return render(
         request,
         "voiture/voiture_detail.html",
+        {"voiture": voiture, "images_supp": images_supp},
+    )
+
+
+# Assurez-vous que votre décorateur est bien importé user
+
+
+# ---------------------------
+# LISTE DES MARQUES
+# ---------------------------
+@role_required("user")
+def marque_auth(request):
+    marques = Marque.objects.all()
+    return render(request, "voiture/user/marque_auth.html", {"marques": marques})
+
+
+# ---------------------------
+# LISTE DES MODÈLES D'UNE MARQUE
+# ---------------------------
+@role_required("user")
+def modele_auth(request, marque_id):
+    marque = get_object_or_404(Marque, id=marque_id)
+    modeles = (
+        marque.modeles.all()
+    )  # suppose que vous avez une relation related_name='modeles'
+    return render(
+        request, "voiture/user/modele_auth.html", {"marque": marque, "modeles": modeles}
+    )
+
+
+# ---------------------------
+# RECHERCHE PAR MODÈLE AVEC FILTRES USER
+# ---------------------------
+@role_required("user")
+def modele_search_auth(request, modele_id):
+    modele = get_object_or_404(Modele, id=modele_id)
+    voitures = Voiture.objects.filter(modele=modele, etat="Disponible")
+
+    # --- FILTRES ---
+    annee_min = request.GET.get("annee_min")
+    annee_max = request.GET.get("annee_max")
+    prix_min = request.GET.get("prix_min")
+    prix_max = request.GET.get("prix_max")
+    transmission = request.GET.get("transmission")
+
+    if annee_min:
+        voitures = voitures.filter(annee__gte=annee_min)
+    if annee_max:
+        voitures = voitures.filter(annee__lte=annee_max)
+    if prix_min:
+        voitures = voitures.filter(prix__gte=prix_min)
+    if prix_max:
+        voitures = voitures.filter(prix__lte=prix_max)
+    if transmission:
+        voitures = voitures.filter(transmission=transmission)
+
+    return render(
+        request,
+        "voiture/user/modele_search_auth.html",
+        {"modele": modele, "voitures": voitures},
+    )
+
+
+# ---------------------------
+# DÉTAILS D'UNE VOITURE
+# ---------------------------
+@role_required("user")
+def voiture_detail_auth(request, voiture_id):
+    voiture = get_object_or_404(Voiture, id=voiture_id)
+    images_supp = Image.objects.filter(voiture=voiture)
+
+    return render(
+        request,
+        "voiture/user/voiture_detail_auth.html",
         {"voiture": voiture, "images_supp": images_supp},
     )

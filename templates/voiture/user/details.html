@@ -8,132 +8,110 @@
     {% if messages %}
     <div class="fixed top-24 right-4 z-50 space-y-3">
         {% for message in messages %}
-        <div class="flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-white animate-fadeIn
+        <div class="flex items-center gap-2 px-4 py-2 rounded-lg shadow text-white animate-fadeIn
             {% if message.tags == 'success' %} bg-gradient-to-r from-green-500 to-emerald-600 {% endif %}
             {% if message.tags == 'error' %} bg-gradient-to-r from-red-600 to-rose-600 {% endif %}">
-            <i class="bi bi-info-circle-fill text-xl"></i>
+            <i class="bi bi-info-circle-fill text-lg"></i>
             {{ message }}
         </div>
         {% endfor %}
     </div>
     {% endif %}
 
-    <div class="container mx-auto px-4 py-14 relative z-10">
+    <div class="container mx-auto px-4 py-10 relative z-10">
 
-        <div class="flex flex-col lg:flex-row gap-12 items-start">
+        <div class="flex flex-col lg:flex-row gap-6 lg:gap-10 items-start">
 
             <!-- ======================= IMAGES ======================= -->
-            <div class="w-full lg:w-1/2 space-y-5">
+            <div class="w-full lg:w-1/2 space-y-3">
 
-                <!-- Image principale (TOUJOURS AFFICHÉE) -->
-                <div class="relative w-full h-80 lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group">
+                <!-- Image principale -->
+                <div class="relative w-full h-48 sm:h-56 lg:h-64 xl:h-72 rounded-xl overflow-hidden shadow-lg group">
 
                     <img id="mainImage"
                          src="{% if voiture.photo %}{{ voiture.photo.url }}{% else %}{% static 'images/default-car.jpg' %}{% endif %}"
-                         class="w-full h-full object-cover transition-all duration-700 opacity-100 group-hover:scale-105">
+                         class="w-full h-full object-cover transition-all duration-500 opacity-100 group-hover:scale-105 rounded-lg">
 
                     <!-- Overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent rounded-lg"></div>
 
-                    <!-- Boutons slider -->
+                    <!-- Badge état -->
+                    <span class="absolute top-2 left-2 px-3 py-0.5 text-xs font-bold text-white shadow rounded-full
+                        {% if voiture.etat == 'Disponible' %} bg-green-500
+                        {% elif voiture.etat == 'Réservée' %} bg-orange-500
+                        {% else %} bg-red-600 {% endif %}">
+                        {{ voiture.etat }}
+                    </span>
+
+                    <!-- Boutons slider (desktop seulement) -->
                     <button onclick="prevImage()"
-                            class="absolute top-1/2 -translate-y-1/2 left-4
-                                   bg-white/30 backdrop-blur-md text-white p-3 rounded-full
+                            class="hidden lg:flex absolute top-1/2 -translate-y-1/2 left-2
+                                   bg-white/30 backdrop-blur-md text-white p-2 rounded-full
                                    hover:bg-red-600 transition shadow-lg">
-                        <i class="bi bi-chevron-left text-2xl"></i>
+                        <i class="bi bi-chevron-left text-xl"></i>
                     </button>
 
                     <button onclick="nextImage()"
-                            class="absolute top-1/2 -translate-y-1/2 right-4
-                                   bg-white/30 backdrop-blur-md text-white p-3 rounded-full
+                            class="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2
+                                   bg-white/30 backdrop-blur-md text-white p-2 rounded-full
                                    hover:bg-red-600 transition shadow-lg">
-                        <i class="bi bi-chevron-right text-2xl"></i>
+                        <i class="bi bi-chevron-right text-xl"></i>
                     </button>
 
-                    <!-- Badge état -->
-                    <span class="absolute top-4 left-4 px-4 py-1 rounded-full text-sm font-bold text-white shadow-lg
-                        {% if voiture.etat == 'Disponible' %}
-                            bg-gradient-to-r from-green-500 to-emerald-500
-                        {% elif voiture.etat == 'Réservée' %}
-                            bg-gradient-to-r from-orange-500 to-yellow-500
-                        {% else %}
-                            bg-gradient-to-r from-red-600 to-rose-600
-                        {% endif %}">
-                        <i class="bi bi-shield-check mr-1"></i>
-                        {{ voiture.etat }}
-                    </span>
                 </div>
 
                 <!-- Miniatures -->
                 {% if images_supp %}
-                <div class="flex gap-4 overflow-x-auto p-3 bg-white/70 backdrop-blur-md rounded-2xl shadow-inner">
+                <div class="flex gap-2 overflow-x-auto p-2 bg-white/80 backdrop-blur-md rounded-lg shadow-inner">
                     {% for img in images_supp %}
                         <img src="{{ img.image.url }}"
-                             class="thumb min-w-[110px] h-24 rounded-xl cursor-pointer object-cover
-                                    border-2 border-transparent hover:border-red-500 transition"
+                             class="thumb min-w-[60px] h-16 sm:h-20 rounded-md cursor-pointer object-cover border-2 border-transparent hover:border-red-500 transition"
                              onclick="selectImage({{ forloop.counter0|add:1 }})">
                     {% endfor %}
                 </div>
                 {% endif %}
+
             </div>
 
             <!-- ======================= INFOS ======================= -->
             <div class="w-full lg:w-1/2">
-                <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 space-y-6">
+                <div class="bg-white/90 backdrop-blur-xl rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 space-y-4">
 
-                    <h2 class="text-4xl font-extrabold text-gray-800">
-                        <i class="bi bi-car-front-fill text-red-600 mr-2"></i>
+                    <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 flex items-center gap-1">
+                        <i class="bi bi-car-front-fill text-red-600"></i>
                         {{ voiture.marque.nom }} {{ voiture.modele.nom }}
                     </h2>
 
-                    <h4 class="text-3xl font-bold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
-                        <i class="bi bi-cash-stack mr-2"></i>
+                    <h4 class="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent flex items-center gap-1">
+                        <i class="bi bi-cash-stack"></i>
                         {{ voiture.prix }} $
                     </h4>
 
-                    <!-- Infos -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700 text-sm">
+                    <!-- Infos détaillées -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-700 text-xs sm:text-sm">
 
-                        <p class="flex items-center gap-2"><i class="bi bi-hash text-indigo-500"></i>
-                            <b>Châssis :</b> {{ voiture.numero_chassis }}</p>
+                        <p class="flex items-center gap-1"><i class="bi bi-hash text-indigo-500"></i><b>Châssis:</b> {{ voiture.numero_chassis }}</p>
+                        <p class="flex items-center gap-1"><i class="bi bi-gear-fill text-indigo-500"></i><b>Moteur:</b> {{ voiture.numero_moteur }}</p>
+                        <p class="flex items-center gap-1"><i class="bi bi-calendar3 text-indigo-500"></i><b>Année:</b> {{ voiture.annee }}</p>
+                        <p class="flex items-center gap-1"><i class="bi bi-arrow-repeat text-indigo-500"></i><b>Transmission:</b> {{ voiture.transmission }}</p>
+                        <p class="flex items-center gap-1"><i class="bi bi-speedometer2 text-indigo-500"></i><b>Kilométrage:</b> {{ voiture.kilometrage }} km</p>
+                        <p class="flex items-center gap-1"><i class="bi bi-palette-fill text-indigo-500"></i><b>Couleur:</b> {{ voiture.couleur }}</p>
+                        <p class="flex items-center gap-1"><i class="bi bi-fuel-pump-fill text-indigo-500"></i><b>Cylindrée:</b> {{ voiture.cylindree_cc }} cc</p>
+                        <p class="flex items-center gap-1"><i class="bi bi-clock-history text-indigo-500"></i><b>Ajout:</b> {{ voiture.date_ajout|date:"d/m/Y H:i" }}</p>
 
-                        <p class="flex items-center gap-2"><i class="bi bi-gear-fill text-indigo-500"></i>
-                            <b>Moteur :</b> {{ voiture.numero_moteur }}</p>
-
-                        <p class="flex items-center gap-2"><i class="bi bi-calendar3 text-indigo-500"></i>
-                            <b>Année :</b> {{ voiture.annee }}</p>
-
-                        <p class="flex items-center gap-2"><i class="bi bi-arrow-repeat text-indigo-500"></i>
-                            <b>Transmission :</b> {{ voiture.transmission }}</p>
-
-                        <p class="flex items-center gap-2"><i class="bi bi-speedometer2 text-indigo-500"></i>
-                            <b>Kilométrage :</b> {{ voiture.kilometrage }} km</p>
-
-                        <p class="flex items-center gap-2"><i class="bi bi-palette-fill text-indigo-500"></i>
-                            <b>Couleur :</b> {{ voiture.couleur }}</p>
-
-                        <p class="flex items-center gap-2"><i class="bi bi-fuel-pump-fill text-indigo-500"></i>
-                            <b>Cylindrée :</b> {{ voiture.cylindree_cc }} cc</p>
-
-                        <p class="flex items-center gap-2"><i class="bi bi-clock-history text-indigo-500"></i>
-                            <b>Ajout :</b> {{ voiture.date_ajout|date:"d/m/Y H:i" }}</p>
                     </div>
 
-                    <!-- Boutons -->
-                    <div class="flex flex-wrap gap-4 pt-4">
+                    <!-- Boutons CTA -->
+                    <div class="flex flex-wrap gap-2 pt-2">
                         <a href="{% url 'user_home' %}"
-                           class="inline-flex items-center gap-2 px-6 py-3
-                                  bg-gradient-to-r from-indigo-600 to-indigo-700
-                                  text-white font-bold rounded-xl shadow-lg hover:scale-105 transition">
+                           class="inline-flex items-center gap-1 px-4 py-2 bg-indigo-600 text-white font-bold rounded-md shadow hover:scale-105 transition text-sm sm:text-base">
                             <i class="bi bi-house-door-fill"></i> Accueil
                         </a>
 
-                        {% if voiture.etat == 'Disponible' %}
-                        <a href="{% url 'reserver_voiture' voiture.id %}"
-                           class="inline-flex items-center gap-2 px-6 py-3
-                                  bg-gradient-to-r from-red-600 to-orange-500
-                                  text-white font-bold rounded-xl shadow-lg hover:scale-105 transition">
-                            <i class="bi bi-calendar-check-fill"></i> Réserver
+                        {% if voiture.etat == "Disponible" %}
+                        <a href="#reserver"
+                           class="inline-flex items-center gap-1 px-4 py-2 bg-red-600 text-white font-bold rounded-md shadow hover:scale-105 transition text-sm sm:text-base">
+                            <i class="bi bi-cart-plus-fill"></i> Réserver
                         </a>
                         {% endif %}
                     </div>
@@ -180,7 +158,7 @@ function updateImage() {
     setTimeout(() => {
         mainImage.src = images[index];
         mainImage.classList.remove("opacity-0");
-    }, 250);
+    }, 200);
 
     document.querySelectorAll(".thumb").forEach((t, i) => {
         t.classList.toggle("border-red-500", i + 1 === index);
@@ -188,15 +166,12 @@ function updateImage() {
 }
 </script>
 
-<!-- ======================= ANIMATION ======================= -->
 <style>
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
-.animate-fadeIn {
-    animation: fadeIn .8s ease forwards;
-}
+.animate-fadeIn { animation: fadeIn .6s ease forwards; }
 </style>
 
 {% endblock %}

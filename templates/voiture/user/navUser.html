@@ -21,23 +21,27 @@
 </head>
 
 <body class="bg-gray-50 text-gray-800">
-
 <!-- ================= NAVBAR ================= -->
 <nav class="fixed top-0 w-full z-50 bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 shadow-lg">
   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
-
-   <!-- Logo avec animation hover -->
-            <a href="{% url 'home' %}" class="flex items-center gap-2 text-white transition-transform transform hover:scale-110">
-                <img src="{% static 'images/logo.png' %}"
-                     class="rounded-full object-cover"
-                     style="width: 220px; height: 50px;"
-                     alt="KASACO">
-                    <span class="text-xl font-bold tracking-wide">KASACO</span>
-            </a>
+    <!-- Logo avec animation hover -->
+    <a href="{% url 'user_home' %}" class="flex items-center gap-2 text-white transition-transform transform hover:scale-110">
+      <img src="{% static 'images/logo.png' %}"
+           class="rounded-full object-cover"
+           style="width: 220px; height: 50px;"
+           alt="KASACO">
+      <span class="text-xl font-bold tracking-wide">KASACO</span>
+    </a>
 
     <!-- Menu Desktop -->
     <ul class="hidden lg:flex items-center gap-8 text-white font-medium">
+
+      <li>
+        <a href="{% url 'user_home' %}" class="flex items-center px-4 py-3  hover:text-black transition">
+          <i class="bi bi-house-door-fill mr-3 text-lg"></i> Accueil
+        </a>
+      </li>
 
       <li>
         <a href="{% url 'mes_reservations' %}"
@@ -63,7 +67,16 @@
           Déconnexion
         </a>
       </li>
+      {% else %}
+      <li>
+        <a href="{% url 'login' %}"
+           class="border border-white px-4 py-2 rounded-lg
+                  hover:bg-white hover:text-red-600 transition">
+          Connexion
+        </a>
+      </li>
       {% endif %}
+
     </ul>
 
     <!-- Bouton Mobile -->
@@ -75,14 +88,17 @@
   </div>
 
   <!-- ================= MENU MOBILE ================= -->
-  <div id="mobile-menu"
-       class="lg:hidden hidden bg-white shadow-xl border-t">
-
+  <div id="mobile-menu" class="lg:hidden hidden bg-white shadow-xl border-t">
     <ul class="flex flex-col divide-y text-gray-800 font-medium">
 
       <li>
-        <a href="{% url 'mes_reservations' %}"
-           class="flex items-center gap-3 px-6 py-4 hover:bg-gray-100">
+        <a href="{% url 'user_home' %}" class="flex items-center px-4 py-3  hover:text-black transition">
+          <i class="bi bi-house-door-fill mr-3 text-lg"></i> Accueil
+        </a>
+      </li>
+
+      <li>
+        <a href="{% url 'mes_reservations' %}" class="flex items-center gap-3 px-6 py-4 hover:bg-gray-100">
           <i class="bi bi-check-circle-fill text-red-600"></i>
           Mes réservations
         </a>
@@ -97,10 +113,16 @@
       </li>
 
       <li>
-        <a href="{% url 'logout' %}"
-           class="flex items-center gap-3 px-6 py-4 text-red-600 hover:bg-red-50">
+        <a href="{% url 'logout' %}" class="flex items-center gap-3 px-6 py-4 text-red-600 hover:bg-red-50">
           <i class="bi bi-box-arrow-right"></i>
           Déconnexion
+        </a>
+      </li>
+      {% else %}
+      <li>
+        <a href="{% url 'login' %}" class="flex items-center gap-3 px-6 py-4 text-red-600 hover:bg-red-50">
+          <i class="bi bi-box-arrow-in-right"></i>
+          Connexion
         </a>
       </li>
       {% endif %}
@@ -108,6 +130,16 @@
     </ul>
   </div>
 </nav>
+
+<!-- ================= SCRIPT MOBILE MENU ================= -->
+<script>
+  const btn = document.getElementById('menu-btn');
+  const menu = document.getElementById('mobile-menu');
+
+  btn.addEventListener('click', () => {
+    menu.classList.toggle('hidden');
+  });
+</script>
 
 <!-- ================= MAIN ================= -->
 <main class="max-w-7xl mx-auto mt-28 px-4">
