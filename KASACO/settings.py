@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "kasaco.onrender.com",
@@ -93,15 +93,35 @@ WSGI_APPLICATION = "KASACO.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {"default": dj_database_url.parse(config("DATABASE_URL"))}
+"""DATABASES = {
+    "default": dj_database_url.parse(config("DATABASE_URL"))
+}"""
 
-
+##SQLITE#######
 """DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }"""
+
+##MySQL#######
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",  # pour MySQL
+        "NAME": "kasaco_db",  # nom de votre base
+        "USER": "root",  # utilisateur MySQL
+        "PASSWORD": "",  # mot de passe
+        "HOST": "localhost",  # ou l'IP du serveur MySQL
+        "PORT": "3306",  # port par défaut MySQL
+        "OPTIONS": {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            "charset": "utf8mb4",
+        },
+    }
+}
 
 
 # Password validation
@@ -148,8 +168,8 @@ TAILWIND_APP_NAME = "theme"
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
-NPM_BIN_PATH = "/usr/bin/npm"
-# NPM_BIN_PATH = "C:\\Program Files\\nodejs\\npm.cmd"
+# NPM_BIN_PATH = "/usr/bin/npm"
+NPM_BIN_PATH = "C:\\Program Files\\nodejs\\npm.cmd"
 
 
 # settings.py
